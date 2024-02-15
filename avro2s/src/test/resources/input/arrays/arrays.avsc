@@ -1,0 +1,150 @@
+{
+  "type": "record",
+  "name": "Arrays",
+  "namespace": "avro2s.test.arrays",
+  "fields": [
+    {
+      "name": "_array_of_arrays",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string",
+          "default": []
+        },
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_maps",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": "string",
+          "default": {}
+        },
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_unions",
+      "type": {
+        "type": "array",
+        "items": [
+          "string",
+          "int"
+        ],
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_records",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Record",
+          "namespace": "avro2s.test.arrays",
+          "fields": [
+            {
+              "name": "_string",
+              "type": "string"
+            },
+            {
+              "name": "_int",
+              "type": "int"
+            }
+          ]
+        },
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_enums",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "enum",
+          "name": "Enum",
+          "namespace": "avro2s.test.arrays",
+          "symbols": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_fixed",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "fixed",
+          "name": "Fixed",
+          "namespace": "avro2s.test.arrays",
+          "size": 2
+        },
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_bytes",
+      "type": {
+        "type": "array",
+        "items": "bytes",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_strings",
+      "type": {
+        "type": "array",
+        "items": "string",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_ints",
+      "type": {
+        "type": "array",
+        "items": "int",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_longs",
+      "type": {
+        "type": "array",
+        "items": "long",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_floats",
+      "type": {
+        "type": "array",
+        "items": "float",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_doubles",
+      "type": {
+        "type": "array",
+        "items": "double",
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_booleans",
+      "type": {
+        "type": "array",
+        "items": "boolean",
+        "default": []
+      }
+    }
+  ]
+}

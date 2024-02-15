@@ -1,0 +1,56 @@
+name: Pull Request
+on:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+    - name: Build and Test
+      run: sbt -v test
+  snapshot-check:
+    needs: test
+    outputs:
+      is_snapshot: ${{ steps.snapshot_check.outputs.is_snapshot }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Check for Snapshot
+      id: snapshot_check
+      run: |
+        version=$(grep 'ThisBuild / version :=' build.sbt | cut -d '"' -f 2)
+        if [[ $version == *"-SNAPSHOT" ]]; then
+          echo "::set-output name=is_snapshot::true"
+        else
+          echo "::set-output name=is_snapshot::false"
+        fi
+  publish-snapshot:
+    needs: snapshot-check
+    if: ${{ needs.snapshot-check.outputs.is_snapshot == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+    - name: Import GPG Key
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --batch --yes --import
+    - name: List GPG Keys
+      run: gpg --list-keys
+    - name: Build and Publish
+      run: sbt +publishSigned
+      env:
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

@@ -1,0 +1,67 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  check-commit-message:
+    if: "contains(github.event.head_commit.message, '[release]')"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Release Commit Message Detected
+      run: echo "Release commit message successfully detected"
+  test:
+    needs: check-commit-message
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+    - name: Build and Test
+      run: sbt -v test
+  publish:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+    - name: Import GPG Key
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --batch --yes --import
+    - name: List GPG Keys
+      run: gpg --list-keys
+    - name: Build and Publish
+      run: sbt +publishSigned
+      env:
+        NEXUS_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  prepare-snapshot:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GH_PAT }}
+    - name: Increment Version and Add Snapshot Suffix
+      run: bash scripts/increment-version.sh
+    - name: Extract Version Number
+      run: echo "AVRO2S_VERSION=$(grep 'ThisBuild / version :=' build.sbt | cut -d '"' -f 2)" >> $GITHUB_ENV
+    - name: Push Changes
+      run: |
+        git config --local user.name 'psilicon'
+        git config --local user.email 'bot@psilicon.io'
+        git add build.sbt
+        git commit -m "Version ${{ env.AVRO2S_VERSION }} [snapshot]"
+        git push

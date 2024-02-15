@@ -1,0 +1,28 @@
+name: Pre-Release
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/**'
+jobs:
+  remove-snapshot:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[snapshot]') && !contains(github.event.head_commit.message, '[release]')"
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GH_PAT }}
+    - name: Remove Snapshot Suffix
+      run: bash scripts/remove-snapshot.sh
+    - name: Extract Version Number
+      run: echo "AVRO2S_VERSION=$(grep 'ThisBuild / version :=' build.sbt | cut -d '"' -f 2 | sed 's/-SNAPSHOT//')" >> $GITHUB_ENV
+    - name: Push Changes
+      run: |
+        git config --local user.name 'psilicon'
+        git config --local user.email 'bot@psilicon.io'
+        git add build.sbt
+        git commit -m "Version ${{ env.AVRO2S_VERSION }} [release]"
+        git push

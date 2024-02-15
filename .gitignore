@@ -1,0 +1,9 @@
+*.class
+*.log
+
+target
+.idea
+.bsp
+
+.DS_Store
+*ignored*
