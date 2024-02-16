@@ -9,7 +9,7 @@ import avro2s.language.ScalaVersion
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type.{ENUM, FIXED, RECORD}
 
-object SpecificGenerator {
+private[avro2s] object SpecificGenerator {
 
   def compile(
     schema: Schema,
@@ -18,11 +18,11 @@ object SpecificGenerator {
 
     targetScalaVersion match {
       case ScalaVersion.Scala_2_13 => compileScala2(schema, namespace)
-      case ScalaVersion.Scala_3_X => throw NotImplementedError("Scala 3 not implemented yet")
+      case ScalaVersion.Scala_3 => throw NotImplementedError("Scala 3 not implemented yet")
     }
   }
 
-  def compileScala2(schema: Schema, namespace: Option[String]): GeneratedCode = {
+  private def compileScala2(schema: Schema, namespace: Option[String]): GeneratedCode = {
     schema.getType match {
       case RECORD => schemaToScala2Record(schema, namespace)
       case ENUM => schemaToJavaEnum(schema, namespace)

@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-object RecordInspector {
+private[avro2s] object RecordInspector {
   import Schema.Type._
   
   def containsType(schema: Schema, schemaType: Schema.Type): Boolean = {

@@ -2,7 +2,7 @@ package avro2s.generator.specific.scala2
 
 import org.apache.avro.Schema
 
-object FieldOps {
+private[avro2s] object FieldOps {
   implicit class FieldOps(field: Schema.Field) {
     def safeName: String = {
       val name = field.name()

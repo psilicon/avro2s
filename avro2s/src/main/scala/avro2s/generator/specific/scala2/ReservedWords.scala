@@ -1,6 +1,6 @@
 package avro2s.generator.specific.scala2
 
-object ReservedWords {
+private[avro2s] object ReservedWords {
   def set: Set[String] = Set(
     "abstract", "case", "catch", "class", "def",
     "do", "else", "extends", "false", "final",

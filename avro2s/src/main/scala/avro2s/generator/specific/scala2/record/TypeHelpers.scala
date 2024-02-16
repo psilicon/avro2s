@@ -7,7 +7,7 @@ import org.apache.avro.Schema.Type._
 import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-object TypeHelpers {
+private[avro2s] object TypeHelpers {
 
   import UnionRepresentation._
 

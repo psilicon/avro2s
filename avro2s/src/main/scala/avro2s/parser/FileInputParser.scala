@@ -13,7 +13,7 @@ class FileInputParser {
   val schemaParser = new Parser()
 
   def getSchemas(
-    infile: File,
+    file: File,
     parser: Parser = schemaParser): List[Schema] = {
     def unUnion(schema: Schema): List[Schema] = {
       schema.getType match {
@@ -34,7 +34,7 @@ class FileInputParser {
         parser.getTypes.get(element) != tempParser.getTypes.get(element)
       }
       if (nonEqualElements.nonEmpty) {
-        sys.error(s"Can't redefine:  ${nonEqualElements.mkString(",")} in $infile")
+        sys.error(s"Can't redefine:  ${nonEqualElements.mkString(",")} in $file")
       } else {
         if (commonElements.isEmpty) {
           val _ = parser.addTypes(tempParser.getTypes)
@@ -65,8 +65,8 @@ class FileInputParser {
 
     val schema: List[Schema] = {
 
-      infile.getName.split("\\.").last match {
-        case "avsc" => tryParse(infile, parser)
+      file.getName.split("\\.").last match {
+        case "avsc" => tryParse(file, parser)
         case _ => throw new Exception("""File must end in ".avsc"""".trim.stripMargin)
       }
     }

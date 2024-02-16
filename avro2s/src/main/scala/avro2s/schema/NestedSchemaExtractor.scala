@@ -5,7 +5,7 @@ import org.apache.avro.Schema.Type._
 
 import scala.jdk.CollectionConverters._
 
-object NestedSchemaExtractor {
+private[avro2s] object NestedSchemaExtractor {
   def getNestedSchemas(
     schema: Schema,
     schemaStore: SchemaStore): List[Schema] = {

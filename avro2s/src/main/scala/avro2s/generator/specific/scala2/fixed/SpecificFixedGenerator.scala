@@ -2,8 +2,8 @@ package avro2s.generator.specific.scala2.fixed
 
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 
-object SpecificFixedGenerator {
-  val dollar = "$"
+private[avro2s] object SpecificFixedGenerator {
+  private val dollar = "$"
 
   def schemaToScala2Fixed(schema: org.apache.avro.Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName

@@ -57,7 +57,6 @@ lazy val avro2s = (project in file("avro2s"))
     libraryDependencies ++= Seq(
       "org.apache.avro" % "avro" % versions.avro,
       "org.apache.avro" % "avro-compiler" % versions.avro,
-      "com.beachape" %% "enumeratum" % "1.7.2",
       "io.circe" %% "circe-core" % "0.14.6",
       "io.circe" %% "circe-parser" % "0.14.6",
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.4",

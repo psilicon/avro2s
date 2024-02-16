@@ -2,7 +2,7 @@ package avro2s.filesorter
 
 import io.circe.parser._
 
-object TypeComparator {
+private[avro2s] object TypeComparator {
   def strContainsType(candName: String, str: String, name: String): Boolean = {
     def isMatch(regex: String): Boolean = {
       regex.r.findFirstIn(str).isDefined

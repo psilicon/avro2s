@@ -2,7 +2,7 @@ package avro2s.filesorter
 
 import io.circe._
 
-object ReferredTypeFinder {
+private[avro2s] object ReferredTypeFinder {
   def findReferredTypes(json: Json): List[String] = {
     json.fold(
       jsonNull = List.empty,

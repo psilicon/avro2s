@@ -6,7 +6,7 @@ import org.apache.commons.text.StringEscapeUtils
 import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-object JavaGenericEnumGenerator {
+private[avro2s] object JavaGenericEnumGenerator {
   def schemaToJavaEnum(schema: org.apache.avro.Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
     val enumSymbols = schema.getEnumSymbols.asScala

@@ -12,39 +12,30 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
  - Compatibility with all Avro types.
 
 #### Usage:
+Add avro2s to your `build.sbt`:
 ```scala
-  val inputDir = "input"
-  val outputDir = "output"
-  val schemaStore = new SchemaStore()
-  
-  val unsortedFiles = getFilesInDirectory(inputDir)
-  val sortedFiles = AvscFileSorter.sortSchemaFiles(unsortedFiles)
-  val schemas = getSchemasFromFiles(sortedFiles)
-  val generatedCode = schemas.flatMap { schema =>
-    CodeGenerator.generateCode(schema, schemaStore, ScalaVersion.Scala_2_13)
-  }
-  
-  CodeWriter.writeToDirectory(outputDir)(generatedCode)
-  
-  private def getFilesInDirectory(dir: String): List[File] = {
-    val d = new File(dir)
-    if (d.exists && d.isDirectory) {
-      d.listFiles.filter(_.isFile).toList
-    } else {
-      List[File]()
-    }
-  }
+libraryDependencies += "io.psilicon" % "avro2s_2.13" % "0.1.0"
+```
+If you are using Union types, other than unions representing nullable (`["null", T]`), you will need to add shapeless to your `build.sbt`:
+```scala
+libraryDependencies += "com.chuusai" % "shapeless_2.13" % "2.3.10"
+```
+Example usage:
+```scala
+import avro2s.generator.CodeGenerator
+import avro2s.language.ScalaVersion
 
-  private def getSchemasFromFiles(files: List[File]): List[Schema] = {
-    val fileInputParser = new FileInputParser()
-    files.flatMap { file =>
-      fileInputParser.getSchemas(file)
-    }
-  }
+object Demo extends App {
+  
+  CodeGenerator.generateCode(
+    "input_directory",
+    "output_directory",
+    ScalaVersion.Scala_2_13
+  )
+}  
 ```
 
 #### Roadmap:
- - Simplify usage.
  - Logical Types.
  - SBT plugin.
  - Scala 3 support.

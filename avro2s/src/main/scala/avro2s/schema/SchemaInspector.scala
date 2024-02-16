@@ -2,7 +2,7 @@ package avro2s.schema
 
 import org.apache.avro.Schema
 
-object SchemaInspector {
+private[avro2s] object SchemaInspector {
 
   import Schema.Type._
 

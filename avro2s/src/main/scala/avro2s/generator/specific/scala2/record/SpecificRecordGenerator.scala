@@ -10,7 +10,7 @@ import org.apache.avro.Schema.Type._
 import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-object SpecificRecordGenerator {
+private[avro2s] object SpecificRecordGenerator {
   private val dollar = "$"
 
   def schemaToScala2Record(schema: Schema, namespace: Option[String]): GeneratedCode = {

@@ -20,7 +20,7 @@ object AvscFileSorter {
     sortedButReversed.reverse.toList
   }
 
-  def usedUnusedSchemas(files: Iterable[File]): (Iterable[File], Iterable[File]) = {
+  private def usedUnusedSchemas(files: Iterable[File]): (Iterable[File], Iterable[File]) = {
     val usedUnused = files.map { file =>
       val fullName = extractFullName(file)
       val numUsages = files.count { candidate =>
@@ -32,7 +32,7 @@ object AvscFileSorter {
     (usedUnused._1.map(_._1), usedUnused._2.map(_._1))
   }
 
-  def extractFullName(f: File): String = {
+  private def extractFullName(f: File): String = {
     val txt = fileText(f)
     val namespace = namespaceRegex.findFirstMatchIn(txt)
     val name = nameRegex.findFirstMatchIn(txt)
@@ -44,7 +44,7 @@ object AvscFileSorter {
     }
   }
 
-  def fileText(f: File): String = {
+  private def fileText(f: File): String = {
     val src = Source.fromFile(f)
     try {
       src.getLines().mkString
@@ -53,6 +53,6 @@ object AvscFileSorter {
     }
   }
 
-  val namespaceRegex = "\\\"namespace\\\"\\s*:\\s*\"([^\\\"]+)\\\"".r
-  val nameRegex = "\\\"name\\\"\\s*:\\s*\"([^\\\"]+)\\\"".r
+  private val namespaceRegex = "\\\"namespace\\\"\\s*:\\s*\"([^\\\"]+)\\\"".r
+  private val nameRegex = "\\\"name\\\"\\s*:\\s*\"([^\\\"]+)\\\"".r
 }

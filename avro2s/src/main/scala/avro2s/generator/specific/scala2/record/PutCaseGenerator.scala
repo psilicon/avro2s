@@ -12,7 +12,7 @@ import org.apache.avro.Schema.Type.{ARRAY, BYTES, ENUM, FIXED, MAP, RECORD, UNIO
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
  */
-object PutCaseGenerator {
+private[avro2s] object PutCaseGenerator {
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
       case UNION =>
