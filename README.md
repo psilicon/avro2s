@@ -14,7 +14,7 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
 #### Usage:
 Add avro2s to your `build.sbt`:
 ```scala
-libraryDependencies += "io.psilicon" % "avro2s_2.13" % "0.1.0"
+libraryDependencies += "io.psilicon" % "avro2s_2.13" % "0.3.0"
 ```
 If you are using Union types, other than unions representing nullable (`["null", T]`), you will need to add shapeless to your `build.sbt`:
 ```scala
@@ -42,4 +42,5 @@ object Demo extends App {
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.
+   - Parts of this code are directly copied from avrohugger; a lot of the code within the `filesorter`, `parser` and `schema` packages has been changed only slightly.
  - [ScalaPB](https://github.com/scalapb/ScalaPB), for inspiration on streamlining the code generation process, particularly for the `FunctionalPrinter` class.
