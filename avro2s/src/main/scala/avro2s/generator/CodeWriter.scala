@@ -4,8 +4,8 @@ import java.io.{File, FileWriter}
 import scala.util.Using
 
 object CodeWriter {
-  def writeToDirectory(outDir: String)(generatedCode: List[GeneratedCode]): Unit = {
-    generatedCode.foreach { generated =>
+  def writeToDirectory(outDir: String)(generatedCode: List[GeneratedCode]): List[File] = {
+    generatedCode.map { generated =>
       val path = generated.path
       val code = generated.code
       val file = new File(outDir, path)
@@ -13,6 +13,7 @@ object CodeWriter {
       Using(new FileWriter(file)) { writer =>
         writer.write(code)
       }
+      file
     }
   }
 }

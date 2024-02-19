@@ -7,13 +7,15 @@ import avro2s.language.ScalaVersion
 import avro2s.schema.{NestedSchemaExtractor, SchemaInspector, SchemaStore}
 import org.apache.avro.Schema
 
+import java.io.File
+
 object CodeGenerator {
   
   def generateCode(
     inputDirectory: String,
     outputDirectory: String,
     targetScalaVersion: ScalaVersion
-  ): Unit = {
+  ): List[File] = {
     val unsortedFiles = FileHelper.findAvscFiles(inputDirectory)
     val sortedFiles = AvscFileSorter.sortSchemaFiles(unsortedFiles)
     val schemas = FileHelper.getSchemasFromFiles(sortedFiles)
