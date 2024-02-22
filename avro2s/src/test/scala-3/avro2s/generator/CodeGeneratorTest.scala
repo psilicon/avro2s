@@ -11,71 +11,88 @@ import scala.io.Source
 import scala.util.Using
 
 class CodeGeneratorTest extends AnyFunSuite with Matchers {
-  
   test("avro spec schema should produce expected output") {
     val code = generateCode("input/spec/spec.avsc")
-    
+
     code.foreach { code =>
       val expectedCode = loadTestCode("spec", code.path.split("/").last)
-      code.code shouldBe expectedCode
+      testResult(code, expectedCode)
     }
   }
-  
+
   test("arrays schema should produce expected output") {
     val code = generateCode("input/arrays/arrays.avsc")
-    
+
     code.foreach { code =>
       val expectedCode = loadTestCode("arrays", code.path.split("/").last)
-      code.code shouldBe expectedCode
+      testResult(code, expectedCode)
     }
   }
-  
+
   test("maps schema should produce expected output") {
     val code = generateCode("input/maps/maps.avsc")
-    
+
     code.foreach { code =>
       val expectedCode = loadTestCode("maps", code.path.split("/").last)
-      code.code shouldBe expectedCode
+      testResult(code, expectedCode)
     }
   }
-  
+
   test("namespaces schema should produce expected output") {
     val code = generateCode("input/namespaces/namespaces.avsc")
-    
+
     code.foreach { code =>
       if (code.path.contains("explicit")) {
         val expectedCode = loadTestCode("namespaces/explicit", code.path.split("/").last)
         withClue("For path: " + code.path) {
-          code.code shouldBe expectedCode
+          testResult(code, expectedCode)
         }
       } else {
         val expectedCode = loadTestCode("namespaces", code.path.split("/").last)
         withClue("For path: " + code.path) {
-          code.code shouldBe expectedCode
+          testResult(code, expectedCode)
         }
       }
     }
   }
-  
+
   test("unions schema should produce expected output") {
     val code = generateCode("input/unions/unions.avsc")
-    
+
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)
-      code.code shouldBe expectedCode
-    }
-  }
-  
-  test("reserved schema should produce expected output") {
-    val code = generateCode("input/reserved/reserved.avsc")
-    
-    code.foreach { code =>
-      val expectedCode = loadTestCode("reserved", code.path.split("/").last)
-      code.code shouldBe expectedCode
+      testResult(code, expectedCode)
     }
   }
 
-  def generateCode(path: String): List[GeneratedCode] = {
+  test("union simple schema should produce expected output") {
+    val code = generateCode("input/unions/us.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("unions", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("optionals schema should produce expected output") {
+    val code = generateCode("input/unions/optionals.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("unions", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("reserved schema should produce expected output") {
+    val code = generateCode("input/reserved/reserved.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("reserved", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  private def generateCode(path: String): List[GeneratedCode] = {
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
     val file = new File(resourcePath)
     val schemas = new FileInputParser().getSchemas(file)
@@ -83,11 +100,20 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
 
     for {
       schema <- schemas
-      generatedCode <- CodeGenerator.generateCode(schema, schemaStore, ScalaVersion.Scala_2_13)
+      generatedCode <- CodeGenerator.generateCode(schema, schemaStore, ScalaVersion.Scala_3)
     } yield generatedCode
   }
-  
-  def loadTestCode(test: String, name: String): String = {
-    Using(Source.fromFile(s"avro2s/src/test/scala/avro2s/test/$test/$name"))(_.getLines.mkString("\n")).get
+
+  private def loadTestCode(test: String, name: String): String = {
+    Using(Source.fromFile(s"avro2s/src/test/scala-3/avro2s/test/$test/$name")) {
+      _.getLines.map(_.replaceAll("\\s*$", "")).mkString("\n")
+    }.get
+  }
+
+  private def testResult(gc: GeneratedCode, expected: String): Unit = {
+    val generated = gc.code.replaceAll("\\s*$", "")
+    if (generated != expected) println(s"${gc.path}\n$generated\n\n")
+    generated.length shouldBe expected.length
+    generated shouldBe expected
   }
 }

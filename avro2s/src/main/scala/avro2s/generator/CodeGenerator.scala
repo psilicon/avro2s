@@ -10,35 +10,35 @@ import org.apache.avro.Schema
 import java.io.File
 
 object CodeGenerator {
-  
+
   def generateCode(
-    inputDirectory: String,
-    outputDirectory: String,
-    targetScalaVersion: ScalaVersion
-  ): List[File] = {
+                    inputDirectory: String,
+                    outputDirectory: String,
+                    targetScalaVersion: ScalaVersion
+                  ): List[File] = {
     val unsortedFiles = FileHelper.findAvscFiles(inputDirectory)
     val sortedFiles = AvscFileSorter.sortSchemaFiles(unsortedFiles)
     val schemas = FileHelper.getSchemasFromFiles(sortedFiles)
     val generatedCode = generateCode(schemas, targetScalaVersion)
-    
+
     CodeWriter.writeToDirectory(outputDirectory)(generatedCode)
   }
-  
+
   def generateCode(
-    schemas: List[Schema],
-    targetScalaVersion: ScalaVersion
-  ): List[GeneratedCode] = {
+                    schemas: List[Schema],
+                    targetScalaVersion: ScalaVersion
+                  ): List[GeneratedCode] = {
     val schemaStore = new SchemaStore
     schemas.flatMap { schema =>
       generateCode(schema, schemaStore, targetScalaVersion)
     }
   }
-  
+
   def generateCode(
-    schema: Schema,
-    schemaStore: SchemaStore,
-    targetScalaVersion: ScalaVersion): List[GeneratedCode] = {
-    
+                    schema: Schema,
+                    schemaStore: SchemaStore,
+                    targetScalaVersion: ScalaVersion): List[GeneratedCode] = {
+
     val topNS: Option[String] = SchemaInspector.getNamespace(schema)
     val flattenedSchemas: List[Schema] = NestedSchemaExtractor.getNestedSchemas(schema, schemaStore)
 
@@ -46,7 +46,8 @@ object CodeGenerator {
       schemaStore.accept(schema)
       val ns = SchemaInspector.getNamespace(schema) orElse topNS
       SpecificGenerator.compile(schema, ns, targetScalaVersion)
-    })
+    }).map(gc => gc.copy(code = trimTrailingSpaces(gc.code)))
   }
 
+  private def trimTrailingSpaces(s: String): String = s.split("\n").map(_.replaceAll("\\s*$", "")).mkString("\n")
 }

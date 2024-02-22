@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "UnionSimple",
+  "namespace": "avro2s.test.unions",
+  "fields": [
+    {
+      "name": "moo",
+      "type": [
+        "string",
+        "long",
+        "boolean",
+        {
+          "type": "map",
+          "values": [
+            "double",
+            "int"
+          ]
+        },
+        "null"
+      ]
+    }
+  ]
+}

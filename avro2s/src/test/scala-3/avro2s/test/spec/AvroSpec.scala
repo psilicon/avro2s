@@ -5,13 +5,12 @@ package avro2s.test.spec
 import org.apache.avro.AvroRuntimeException
 
 import scala.annotation.switch
-import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
-case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String :+: Int :+: CNil, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
+case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String | Int, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, false, 0, 0, 0, 0, null, null, null, null, null, null, null, null)
-  
+
   override def getSchema: org.apache.avro.Schema = AvroSpec.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _null.asInstanceOf[AnyRef]
@@ -47,15 +46,15 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         case Some(x) => x.asInstanceOf[AnyRef]
       }
       case 12 => _union_other match {
-        case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case x: String => x.asInstanceOf[AnyRef]
+        case x: Int => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 13 => _fixed.asInstanceOf[AnyRef]
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._null = value.asInstanceOf[scala.Null]
@@ -98,8 +97,8 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         case x => this._union_nullable = Some(x.toString.asInstanceOf[String])
       }
       case 12 => value match {
-        case x: org.apache.avro.util.Utf8 => this._union_other = Coproduct[String :+: Int :+: CNil](x.toString)
-        case x: Int => this._union_other = Coproduct[String :+: Int :+: CNil](x)
+        case x: org.apache.avro.util.Utf8 => this._union_other = x.toString
+        case x: Int => this._union_other = x
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 13 => this._fixed = value.asInstanceOf[avro2s.test.spec.md5]
