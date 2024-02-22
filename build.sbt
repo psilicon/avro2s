@@ -1,7 +1,7 @@
 ThisBuild / version := "0.4.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.12"
-ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.12")
+ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.12", "3.4.0")
 
 ThisBuild / organization := "io.psilicon"
 ThisBuild / organizationName := "psilicon"
@@ -59,13 +59,20 @@ lazy val avro2s = (project in file("avro2s"))
       "org.apache.avro" % "avro-compiler" % versions.avro,
       "io.circe" %% "circe-core" % "0.14.6",
       "io.circe" %% "circe-parser" % "0.14.6",
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.4",
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.8.1",
       // Test
       "org.scalatest" %% "scalatest" % "3.2.16" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.36" % Test,
       "ch.qos.logback" % "logback-classic" % "1.2.10" % Test,
-      "com.chuusai" %% "shapeless" % "2.3.10" % Test
-    )
+    ) ++ (
+      if (scalaVersion.value.startsWith("2")) {
+        Seq(
+          "com.chuusai" %% "shapeless" % "2.3.10" % Test
+        )
+      } else {
+        Seq()
+      }
+    ),
   )
 
 lazy val versions = new {
