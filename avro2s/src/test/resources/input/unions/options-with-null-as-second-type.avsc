@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "Optionals",
+  "name": "OptionsWithNullAsSecondType",
   "namespace": "avro2s.test.unions",
   "fields": [
     {
@@ -13,7 +13,11 @@
     },
     {
       "name": "_array_of_options",
-      "type": {"type": "array", "items": ["null", "string"]}
+      "type": {"type": "array", "items": ["string", "null"]}
+    },
+    {
+      "name": "_map_of_options",
+        "type": {"type": "map", "values": ["string", "null"]}
     }
   ]
 }

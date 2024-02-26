@@ -1,7 +1,7 @@
 package avro2s.generator
 
 import avro2s.serialization.SerializationHelpers._
-import avro2s.test.unions.{Optionals, Unions, UnionOfPrimitives}
+import avro2s.test.unions.{OptionsWithNullAsSecondType, Unions, UnionOfPrimitives}
 import avro2s.test.arrays.{Arrays, Record => ArrayRecord}
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
@@ -11,12 +11,6 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 class SerializationTest extends AnyFunSuite with Matchers {
-  test("optionals can be serialised and deserialized") {
-    val v = Optionals(Some("foo"), Some(List(true)), List(Some("moo"), None, Some("bar")))
-    val got = deserialize[Optionals](serialize(v), v.getSchema)
-    got shouldBe v
-  }
-
   test("unions can be serialized and deserialized") {
     val unions = Unions(
       _union_of_map_of_union = null,
@@ -228,5 +222,16 @@ class SerializationTest extends AnyFunSuite with Matchers {
     )
 
     deserialize[avro2s.test.reserved.ReservedScala3](serialize(reserved), reserved.getSchema) shouldBe reserved
+  }
+  
+  test("options with null as second type can be serialized and deserialized") {
+    val optionsWithNullAsSecondType = avro2s.test.unions.OptionsWithNullAsSecondType(
+      _simple = Some("a"),
+      _optional_array = Some(List(true, false, true)),
+      _array_of_options = List(Some("a"), None),
+      _map_of_options = Map("a" -> Some("b"), "c" -> None)
+    )
+
+    deserialize[avro2s.test.unions.OptionsWithNullAsSecondType](serialize(optionsWithNullAsSecondType), optionsWithNullAsSecondType.getSchema) shouldBe optionsWithNullAsSecondType
   }
 }

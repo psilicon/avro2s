@@ -240,4 +240,15 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
     deserialize[avro2s.test.reserved.Reserved](serialize(reserved), reserved.getSchema) shouldBe reserved
   }
+  
+  test("options with null as second type can be serialized and deserialized") {
+    val optionsWithNullAsSecondType = avro2s.test.unions.OptionsWithNullAsSecondType(
+      _simple = Some("a"),
+      _optional_array = Some(List(true, false, true)),
+      _array_of_options = List(Some("a"), None),
+      _map_of_options = Map("a" -> Some("b"), "c" -> None)
+    )
+
+    deserialize[avro2s.test.unions.OptionsWithNullAsSecondType](serialize(optionsWithNullAsSecondType), optionsWithNullAsSecondType.getSchema) shouldBe optionsWithNullAsSecondType
+  }
 }

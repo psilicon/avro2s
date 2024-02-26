@@ -13,7 +13,7 @@ class FileHelperTest extends AnyFunSuite with Matchers {
       "avro2s/src/test/resources/input/reserved/reserved-scala-2.avsc",
       "avro2s/src/test/resources/input/spec/spec.avsc",
       "avro2s/src/test/resources/input/unions/unions.avsc",
-      "avro2s/src/test/resources/input/unions/optionals.avsc",
+      "avro2s/src/test/resources/input/unions/options-with-null-as-second-type.avsc",
       "avro2s/src/test/resources/input/unions/primitives.avsc",
       "avro2s/src/test/resources/input/maps/maps.avsc"
     )

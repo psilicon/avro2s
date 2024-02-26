@@ -44,7 +44,7 @@ private[avro2s] object RecordInspector {
         case Some(schema) =>
           schema.getType match {
             case UNION =>
-              (schema.getTypes.size() != 2 || schema.getTypes.asScala.head.getType != NULL) || containsNonOptionUnion(schema.getTypes.asScala.toList ++ schemas.tail)
+              (schema.getTypes.size() != 2 || !schema.getTypes.asScala.map(_.getType).contains(NULL)) || containsNonOptionUnion(schema.getTypes.asScala.toList ++ schemas.tail)
             case ARRAY =>
               containsNonOptionUnion(schema.getElementType +: schemas.tail)
             case MAP =>

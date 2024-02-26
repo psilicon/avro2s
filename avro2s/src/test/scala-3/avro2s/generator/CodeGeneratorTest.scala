@@ -74,8 +74,8 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     }
   }
 
-  test("optionals schema should produce expected output") {
-    val code = generateCode("input/unions/optionals.avsc")
+  test("options with null as second type schema should produce expected output") {
+    val code = generateCode("input/unions/options-with-null-as-second-type.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)
