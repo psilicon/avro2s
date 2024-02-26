@@ -1,5 +1,12 @@
 package avro2s.filesorter
 
+/*
+ * This code is from the avrohugger project - https://github.com/julianpeeters/avrohugger
+ * Modifications:
+ *  - package name
+ *  - minor changes
+ */
+
 import TypeComparator.strContainsType
 
 import java.io.File

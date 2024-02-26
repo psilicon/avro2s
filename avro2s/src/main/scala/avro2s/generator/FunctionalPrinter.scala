@@ -1,7 +1,9 @@
 package avro2s.generator
 
-/**
+/*
  * This code is from the scalapb project - https://github.com/scalapb/ScalaPB.
+ * Modifications:
+ *  - package name
  */
 
 import FunctionalPrinter.PrinterEndo
