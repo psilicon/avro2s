@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "UnionOfPrimitives",
+  "namespace": "avro2s.test.unions",
+  "fields": [
+    {
+      "name": "_primitives",
+      "type": [
+        "long",
+        "boolean",
+        "int"
+      ]
+    }
+  ]
+}

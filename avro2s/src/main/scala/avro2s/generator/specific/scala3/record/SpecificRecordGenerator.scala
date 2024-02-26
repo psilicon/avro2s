@@ -77,14 +77,19 @@ private[avro2s] object SpecificRecordGenerator {
   }
 
   private def toThis(fields: List[Schema.Field]): String = {
-    s"def this() = this(${
-      fields.map { f =>
-        f.schema().getType match {
-          case INT | LONG | FLOAT | DOUBLE => "0"
-          case BOOLEAN => "false"
-          case _ => "null"
+    def defaultForType(schema: Schema): String = schema.getType match {
+      case INT | LONG | FLOAT | DOUBLE => "0"
+      case BOOLEAN => "false"
+      case UNION =>
+        val types = schema.getTypes.asScala.toList
+        if (types.forall(t => Set(INT, LONG, FLOAT, DOUBLE, BOOLEAN).contains(t.getType))) {
+          defaultForType(types.head)
+        } else {
+          "null"
         }
-      }.mkString(", ")
-    })"
+      case _ => "null"
+    }
+
+    s"def this() = this(${fields.map(f => defaultForType(f.schema())).mkString(", ")})"
   }
 }
