@@ -5,7 +5,7 @@ Avro2s (Avro to Scala) is an avro schema to scala case class converter. It gener
 Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters/avrohugger). The motivations for the rewrite include:
  - Enhanced support for Union types
  - Improved maintainability by removing the use of and dependency on [treehugger](https://github.com/eed3si9n/treehugger), which is no longer actively maintained
- - Laying the groundwork for Scala 3 support (Scala 3 support is yet to implemented)
+ - Ease of implementing Scala 3 code generation
 
 #### Features:
  - Supports Scala 3
