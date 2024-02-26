@@ -40,6 +40,7 @@ private[avro2s] object TypeHelpers {
       case Nil => throw SchemaError("Empty schemas")
       case _ :: Nil => throw SchemaError("Union with only one type")
       case head :: next :: Nil if head.getType == NULL => OptionRepresentation(next)
+      case head :: next :: Nil if next.getType == NULL => OptionRepresentation(head)
       case list => CoproductRepresentation(list)
     }
   }

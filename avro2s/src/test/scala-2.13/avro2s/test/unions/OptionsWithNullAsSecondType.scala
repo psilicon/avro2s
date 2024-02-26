@@ -2,14 +2,12 @@
 
 package avro2s.test.unions
 
-import org.apache.avro.AvroRuntimeException
-
 import scala.annotation.switch
 
-case class Optionals(var _simple: Option[String], var _optional_array: Option[List[Boolean]], var _array_of_options: List[Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, null, null)
+case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optional_array: Option[List[Boolean]], var _array_of_options: List[Option[String]], var _map_of_options: Map[String, Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
+  def this() = this(null, null, null, null)
 
-  override def getSchema: org.apache.avro.Schema = Optionals.SCHEMA$
+  override def getSchema: org.apache.avro.Schema = OptionsWithNullAsSecondType.SCHEMA$
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -34,6 +32,20 @@ case class Optionals(var _simple: Option[String], var _optional_array: Option[Li
             }
           }.toBuffer).asJava
         }
+      case 3 => {
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        _map_of_options.foreach { kvp =>
+          val key = kvp._1
+          val value = {
+            kvp._2 match {
+              case None => null
+              case Some(x) => x.asInstanceOf[AnyRef]
+            }
+          }
+          map.put(key, value)
+        }
+        map
+      }.asInstanceOf[AnyRef]
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
@@ -66,10 +78,26 @@ case class Optionals(var _simple: Option[String], var _optional_array: Option[Li
             }).toList
           }
       }
+      case 3 => this._map_of_options = {
+        value match {
+          case map: java.util.Map[_,_] => {
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                value match {
+                  case null => None
+                  case x => Some(x.toString.asInstanceOf[String])
+                }
+              })
+            }
+          }
+        }
+      }
     }
   }
 }
 
-object Optionals {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Optionals","namespace":"avro2s.test.unions","fields":[{"name":"_simple","type":["string","null"]},{"name":"_optional_array","type":[{"type":"array","items":"boolean"},"null"]},{"name":"_array_of_options","type":{"type":"array","items":["null","string"]}}]}""")
+object OptionsWithNullAsSecondType {
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"OptionsWithNullAsSecondType","namespace":"avro2s.test.unions","fields":[{"name":"_simple","type":["string","null"]},{"name":"_optional_array","type":[{"type":"array","items":"boolean"},"null"]},{"name":"_array_of_options","type":{"type":"array","items":["string","null"]}},{"name":"_map_of_options","type":{"type":"map","values":["string","null"]}}]}""")
 }

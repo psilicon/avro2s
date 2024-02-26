@@ -73,6 +73,15 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
       testResult(code, expectedCode)
     }
   }
+  
+  test("options with null as second type should produce expected output") {
+    val code = generateCode("input/unions/options-with-null-as-second-type.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("unions", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
 
   def generateCode(path: String): List[GeneratedCode] = {
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
