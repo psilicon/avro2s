@@ -65,8 +65,8 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     }
   }
 
-  test("union simple schema should produce expected output") {
-    val code = generateCode("input/unions/us.avsc")
+  test("union with primitives schema should produce expected output") {
+    val code = generateCode("input/unions/primitives.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)

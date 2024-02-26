@@ -1,22 +1,14 @@
 package avro2s.generator
 
 import avro2s.serialization.SerializationHelpers._
-import avro2s.test.unions.{Optionals, UnionSimple, Unions}
+import avro2s.test.unions.{Optionals, Unions, UnionOfPrimitives}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 class SerializationTest extends AnyFunSuite with Matchers {
-  test("unions can be serialised and deserialised") {
-    List("moo", 100L, false, null, Map("foo" -> 2.0, "bar" -> 4)).foreach { value =>
-      val us = UnionSimple(value)
-      deserialize[UnionSimple](serialize(us), us.getSchema) shouldBe us
-    }
-  }
-
   test("optionals can be serialised and deserialized") {
     val v = Optionals(Some("foo"), Some(List(true)), List(Some("moo"), None, Some("bar")))
     val got = deserialize[Optionals](serialize(v), v.getSchema)
-//    println(got)
     got shouldBe v
   }
 
@@ -58,5 +50,12 @@ class SerializationTest extends AnyFunSuite with Matchers {
     )
 
     deserialize[Unions](serialize(unions), unions.getSchema) shouldBe unions
+  }
+
+  test("unions with primitives can be serialized and deserialized") {
+    List(100L, false, 1).foreach { value =>
+      val primitives = UnionOfPrimitives(value)
+      deserialize[UnionOfPrimitives](serialize(primitives), primitives.getSchema) shouldBe primitives
+    }
   }
 }
