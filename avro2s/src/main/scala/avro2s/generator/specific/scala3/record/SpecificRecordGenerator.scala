@@ -1,6 +1,6 @@
 package avro2s.generator.specific.scala3.record
 
-import avro2s.generator.specific.scala2.FieldOps._
+import avro2s.generator.specific.scala3.FieldOps._
 import avro2s.generator.specific.scala3.record.TypeHelpers._
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 import avro2s.schema.RecordInspector

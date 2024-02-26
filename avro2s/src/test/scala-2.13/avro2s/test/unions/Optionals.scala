@@ -5,8 +5,9 @@ package avro2s.test.unions
 import org.apache.avro.AvroRuntimeException
 
 import scala.annotation.switch
+import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
-case class Optionals(var _simple: Option[String], var _optional_array: Option[List[Boolean]], var _array_of_options: List[Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
+case class Optionals(var _simple: String :+: scala.Null :+: CNil, var _optional_array: List[Boolean] :+: scala.Null :+: CNil, var _array_of_options: List[Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, null, null)
 
   override def getSchema: org.apache.avro.Schema = Optionals.SCHEMA$
@@ -14,16 +15,18 @@ case class Optionals(var _simple: Option[String], var _optional_array: Option[Li
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _simple match {
-        case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Inl(x) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 1 => _optional_array match {
-        case None => null
-        case Some(x) =>
+        case Inl(x) =>
         scala.jdk.CollectionConverters.BufferHasAsJava({
           x.map { x =>x.asInstanceOf[AnyRef]
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 2 => _array_of_options match {
         case array =>
@@ -41,12 +44,12 @@ case class Optionals(var _simple: Option[String], var _optional_array: Option[Li
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => value match {
-        case null => this._simple = None
-        case x => this._simple = Some(x.toString.asInstanceOf[String])
+        case x: org.apache.avro.util.Utf8 => this._simple = Coproduct[String :+: scala.Null :+: CNil](x.toString)
+        case x @ null => this._simple = Coproduct[String :+: scala.Null :+: CNil](x)
+        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 1 => value match {
-        case null => this._optional_array = None
-        case x: java.util.List[_] => this._optional_array = Some({
+        case x: java.util.List[_] => this._optional_array = Coproduct[List[Boolean] :+: scala.Null :+: CNil]({
           x match {
             case array: java.util.List[_] =>
               scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
@@ -54,6 +57,8 @@ case class Optionals(var _simple: Option[String], var _optional_array: Option[Li
               }).toList
             }
         }.toList)
+        case x @ null => this._optional_array = Coproduct[List[Boolean] :+: scala.Null :+: CNil](x)
+        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 2 => this._array_of_options = {
         value match {

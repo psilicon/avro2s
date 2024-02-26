@@ -4,11 +4,11 @@ package avro2s.test.reserved
 
 import scala.annotation.switch
 
-case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`: Int, var `class`: Long, var `def`: Float, var `do`: Double, var `else`: Array[Byte], var `extends`: String, var `false`: scala.Null, var `final`: Boolean, var `finally`: Int, var `for`: Long, var `forSome`: Float, var `if`: Double, var `implicit`: Array[Byte], var `import`: String, var `lazy`: scala.Null, var `macro`: Boolean, var `match`: Int, var `new`: Long, var `null`: Float, var `object`: Double, var `override`: Array[Byte], var `package`: String, var `private`: scala.Null, var `protected`: Boolean, var `return`: Int, var `sealed`: Long, var `super`: Float, var `this`: Double, var `throw`: Array[Byte], var `trait`: String, var `try`: scala.Null, var `true`: Boolean, var `type`: Int, var `val`: Long, var `var`: Float, var `while`: Double, var `with`: Array[Byte], var `yield`: String) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null)
-  
-  override def getSchema: org.apache.avro.Schema = Reserved.SCHEMA$
-  
+case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `catch`: Int, var `class`: Long, var `def`: Float, var `do`: Double, var `else`: Array[Byte], var `extends`: String, var `false`: scala.Null, var `final`: Boolean, var `finally`: Int, var `for`: Long, var `forSome`: Float, var `if`: Double, var `implicit`: Array[Byte], var `import`: String, var `lazy`: scala.Null, var `macro`: Boolean, var `match`: Int, var `new`: Long, var `null`: Float, var `object`: Double, var `override`: Array[Byte], var `package`: String, var `private`: scala.Null, var `protected`: Boolean, var `return`: Int, var `sealed`: Long, var `super`: Float, var `this`: Double, var `throw`: Array[Byte], var `trait`: String, var `try`: scala.Null, var `true`: Boolean, var `type`: Int, var `val`: Long, var `var`: Float, var `while`: Double, var `with`: Array[Byte], var `yield`: String, var `enum`: scala.Null, var `export`: Boolean, var `given`: Int, var `then`: Long) extends org.apache.avro.specific.SpecificRecordBase {
+  def this() = this(null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0)
+
+  override def getSchema: org.apache.avro.Schema = ReservedScala3.SCHEMA$
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => `abstract`.asInstanceOf[AnyRef]
@@ -51,10 +51,14 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 37 => `while`.asInstanceOf[AnyRef]
       case 38 => java.nio.ByteBuffer.wrap(`with`).asInstanceOf[AnyRef]
       case 39 => `yield`.asInstanceOf[AnyRef]
+      case 40 => `enum`.asInstanceOf[AnyRef]
+      case 41 => `export`.asInstanceOf[AnyRef]
+      case 42 => `given`.asInstanceOf[AnyRef]
+      case 43 => `then`.asInstanceOf[AnyRef]
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this.`abstract` = value.asInstanceOf[scala.Null]
@@ -122,10 +126,14 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
           array
         }
       case 39 => this.`yield` = value.toString.asInstanceOf[String]
+      case 40 => this.`enum` = value.asInstanceOf[scala.Null]
+      case 41 => this.`export` = value.asInstanceOf[Boolean]
+      case 42 => this.`given` = value.asInstanceOf[Int]
+      case 43 => this.`then` = value.asInstanceOf[Long]
     }
   }
 }
 
-object Reserved {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Reserved","namespace":"avro2s.test.reserved","fields":[{"name":"abstract","type":"null"},{"name":"case","type":"boolean"},{"name":"catch","type":"int"},{"name":"class","type":"long"},{"name":"def","type":"float"},{"name":"do","type":"double"},{"name":"else","type":"bytes"},{"name":"extends","type":"string"},{"name":"false","type":"null"},{"name":"final","type":"boolean"},{"name":"finally","type":"int"},{"name":"for","type":"long"},{"name":"forSome","type":"float"},{"name":"if","type":"double"},{"name":"implicit","type":"bytes"},{"name":"import","type":"string"},{"name":"lazy","type":"null"},{"name":"macro","type":"boolean"},{"name":"match","type":"int"},{"name":"new","type":"long"},{"name":"null","type":"float"},{"name":"object","type":"double"},{"name":"override","type":"bytes"},{"name":"package","type":"string"},{"name":"private","type":"null"},{"name":"protected","type":"boolean"},{"name":"return","type":"int"},{"name":"sealed","type":"long"},{"name":"super","type":"float"},{"name":"this","type":"double"},{"name":"throw","type":"bytes"},{"name":"trait","type":"string"},{"name":"try","type":"null"},{"name":"true","type":"boolean"},{"name":"type","type":"int"},{"name":"val","type":"long"},{"name":"var","type":"float"},{"name":"while","type":"double"},{"name":"with","type":"bytes"},{"name":"yield","type":"string"}]}""")
+object ReservedScala3 {
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"ReservedScala3","namespace":"avro2s.test.reserved","fields":[{"name":"abstract","type":"null"},{"name":"case","type":"boolean"},{"name":"catch","type":"int"},{"name":"class","type":"long"},{"name":"def","type":"float"},{"name":"do","type":"double"},{"name":"else","type":"bytes"},{"name":"extends","type":"string"},{"name":"false","type":"null"},{"name":"final","type":"boolean"},{"name":"finally","type":"int"},{"name":"for","type":"long"},{"name":"forSome","type":"float"},{"name":"if","type":"double"},{"name":"implicit","type":"bytes"},{"name":"import","type":"string"},{"name":"lazy","type":"null"},{"name":"macro","type":"boolean"},{"name":"match","type":"int"},{"name":"new","type":"long"},{"name":"null","type":"float"},{"name":"object","type":"double"},{"name":"override","type":"bytes"},{"name":"package","type":"string"},{"name":"private","type":"null"},{"name":"protected","type":"boolean"},{"name":"return","type":"int"},{"name":"sealed","type":"long"},{"name":"super","type":"float"},{"name":"this","type":"double"},{"name":"throw","type":"bytes"},{"name":"trait","type":"string"},{"name":"try","type":"null"},{"name":"true","type":"boolean"},{"name":"type","type":"int"},{"name":"val","type":"long"},{"name":"var","type":"float"},{"name":"while","type":"double"},{"name":"with","type":"bytes"},{"name":"yield","type":"string"},{"name":"enum","type":"null"},{"name":"export","type":"boolean"},{"name":"given","type":"int"},{"name":"then","type":"long"}]}""")
 }

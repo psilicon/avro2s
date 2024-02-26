@@ -1,7 +1,7 @@
 package avro2s.generator.specific.scala3.record
 
 import avro2s.generator.FunctionalPrinter
-import avro2s.generator.specific.scala2.FieldOps._
+import avro2s.generator.specific.scala3.FieldOps._
 import avro2s.generator.specific.scala3.record.TypeHelpers.UnionRepresentation.{OptionRepresentation, TypeUnionRepresentation}
 import avro2s.generator.specific.scala3.record.TypeHelpers.{UnionRepresentation, schemaToScalaType, schemas, unionSchemasToType}
 import org.apache.avro.Schema

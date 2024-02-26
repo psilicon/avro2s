@@ -9,7 +9,8 @@ class FileHelperTest extends AnyFunSuite with Matchers {
     val expectedFiles = List(
       "avro2s/src/test/resources/input/arrays/arrays.avsc",
       "avro2s/src/test/resources/input/namespaces/namespaces.avsc",
-      "avro2s/src/test/resources/input/reserved/reserved.avsc",
+      "avro2s/src/test/resources/input/reserved/reserved-scala-3.avsc",
+      "avro2s/src/test/resources/input/reserved/reserved-scala-2.avsc",
       "avro2s/src/test/resources/input/spec/spec.avsc",
       "avro2s/src/test/resources/input/unions/unions.avsc",
       "avro2s/src/test/resources/input/unions/optionals.avsc",

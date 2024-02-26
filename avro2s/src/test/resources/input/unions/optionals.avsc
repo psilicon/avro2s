@@ -4,15 +4,15 @@
   "namespace": "avro2s.test.unions",
   "fields": [
     {
-      "name": "simple",
+      "name": "_simple",
       "type": ["string", "null"]
     },
     {
-      "name": "optionalArray",
+      "name": "_optional_array",
       "type": [{"type": "array", "items": "boolean"}, "null"]
     },
     {
-      "name": "arrayOfOptions",
+      "name": "_array_of_options",
       "type": {"type": "array", "items": ["null", "string"]}
     }
   ]

@@ -84,7 +84,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("reserved schema should produce expected output") {
-    val code = generateCode("input/reserved/reserved.avsc")
+    val code = generateCode("input/reserved/reserved-scala-3.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("reserved", code.path.split("/").last)
@@ -105,15 +105,12 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   private def loadTestCode(test: String, name: String): String = {
-    Using(Source.fromFile(s"avro2s/src/test/scala-3/avro2s/test/$test/$name")) {
-      _.getLines.map(_.replaceAll("\\s*$", "")).mkString("\n")
-    }.get
+    Using(Source.fromFile(s"avro2s/src/test/scala-3/avro2s/test/$test/$name"))(_.getLines.mkString("\n")).get
   }
 
   private def testResult(gc: GeneratedCode, expected: String): Unit = {
-    val generated = gc.code.replaceAll("\\s*$", "")
-    if (generated != expected) println(s"${gc.path}\n$generated\n\n")
-    generated.length shouldBe expected.length
+    val generated = gc.code
+    if (generated != expected) println(s"${gc.path}\n>$generated<\n\n")
     generated shouldBe expected
   }
 }
