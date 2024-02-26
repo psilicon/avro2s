@@ -32,7 +32,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
                     case x: Boolean => x.asInstanceOf[AnyRef]
                     case x: Double => x.asInstanceOf[AnyRef]
                     case null => null.asInstanceOf[AnyRef]
-                    case _ => throw new AvroRuntimeException("Invalid value")
                   }
                 }
                 map.put(key, value)
@@ -43,7 +42,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           }
           map
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 1 => _union_of_map_of_option match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -63,7 +61,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           }
           map
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 2 => _union_of_array_of_option match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -77,7 +74,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 3 => _union_of_array_of_union match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -91,11 +87,9 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           case x: Boolean => x.asInstanceOf[AnyRef]
           case x: Double => x.asInstanceOf[AnyRef]
           case null => null.asInstanceOf[AnyRef]
-          case _ => throw new AvroRuntimeException("Invalid value")
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 4 => _union_of_array_of_array match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -111,13 +105,11 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           case x: Boolean => x.asInstanceOf[AnyRef]
           case x: Double => x.asInstanceOf[AnyRef]
           case null => null.asInstanceOf[AnyRef]
-          case _ => throw new AvroRuntimeException("Invalid value")
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 5 => _union_of_records match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -126,7 +118,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
         case x: avro2s.test.unions.Record1 => x.asInstanceOf[AnyRef]
         case x: avro2s.test.unions.Record2 => x.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 6 => _union_of_enum match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -134,7 +125,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
         case x: Boolean => x.asInstanceOf[AnyRef]
         case x: avro2s.test.unions.Enum1 => x.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 7 => _union_of_fixed match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -142,44 +132,36 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
         case x: Boolean => x.asInstanceOf[AnyRef]
         case x: avro2s.test.unions.Fixed1 => x.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 8 => _union_of_string match {
         case x: String => x.asInstanceOf[AnyRef]
         case x: Long => x.asInstanceOf[AnyRef]
         case null => null.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 9 => _union_of_int match {
         case x: Int => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 10 => _union_of_long match {
         case x: Long => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 11 => _union_of_float match {
         case x: Float => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 12 => _union_of_double match {
         case x: Double => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 13 => _union_of_boolean match {
         case x: Boolean => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 14 => _union_of_bytes match {
         case x: Array[Byte] =>
         java.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 15 => _optional_record match {
         case None => null
@@ -323,7 +305,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
                 case x: Boolean => x.asInstanceOf[AnyRef]
                 case x: Double => x.asInstanceOf[AnyRef]
                 case null => null.asInstanceOf[AnyRef]
-                case _ => throw new AvroRuntimeException("Invalid value")
               }
             }
             map.put(key, value)
@@ -340,7 +321,6 @@ case class Unions(var _union_of_map_of_union: String | Long | Boolean | Map[Stri
           case x: Boolean => x.asInstanceOf[AnyRef]
           case x: Double => x.asInstanceOf[AnyRef]
           case null => null.asInstanceOf[AnyRef]
-          case _ => throw new AvroRuntimeException("Invalid value")
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
       }

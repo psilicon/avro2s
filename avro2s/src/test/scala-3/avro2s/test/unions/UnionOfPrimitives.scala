@@ -17,7 +17,6 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
         case x: Long => x.asInstanceOf[AnyRef]
         case x: Boolean => x.asInstanceOf[AnyRef]
         case x: Int => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }

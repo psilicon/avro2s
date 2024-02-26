@@ -180,7 +180,7 @@ private[avro2s] object GetCaseGenerator {
           types.map {
             case t if t.getType != NULL => s"case x: ${schemaToScalaType(t)} => ${x(t)}"
             case _ => s"case null => null.asInstanceOf[AnyRef]"
-          } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
+          }
         }.mkString("\n"))
       case OptionRepresentation(schema) =>
         printer.add(
