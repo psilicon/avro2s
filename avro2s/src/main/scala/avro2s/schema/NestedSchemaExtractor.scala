@@ -1,5 +1,13 @@
 package avro2s.schema
 
+/*
+ * This code is from the avrohugger project - https://github.com/julianpeeters/avrohugger
+ * Modifications:
+ *  - package name
+ *  - comment removal
+ *  - other minor changes
+ */
+
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 

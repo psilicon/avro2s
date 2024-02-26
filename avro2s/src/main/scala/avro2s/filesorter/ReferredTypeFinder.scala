@@ -1,5 +1,12 @@
 package avro2s.filesorter
 
+/*
+ * This code is from the avrohugger project - https://github.com/julianpeeters/avrohugger
+ * Modifications:
+ *  - package name
+ *  - reimplemented
+ */
+
 import io.circe._
 
 private[avro2s] object ReferredTypeFinder {

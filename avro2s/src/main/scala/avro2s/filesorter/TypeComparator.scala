@@ -1,5 +1,13 @@
 package avro2s.filesorter
 
+/*
+ * This code is from the avrohugger project - https://github.com/julianpeeters/avrohugger
+ * Modifications:
+ *  - package name
+ *  - use of circe for json parsing
+ *  - uses reimplementation of ReferredTypeFinder
+ */
+
 import io.circe.parser._
 
 private[avro2s] object TypeComparator {
@@ -7,6 +15,7 @@ private[avro2s] object TypeComparator {
     def isMatch(regex: String): Boolean = {
       regex.r.findFirstIn(str).isDefined
     }
+
     val types = ReferredTypeFinder.findReferredTypes(parse(str).getOrElse(throw new Exception("Failed to parse json")))
     val namespace = name.split("\\.") match {
       case x if x.length == 1 => ""
@@ -21,7 +30,7 @@ private[avro2s] object TypeComparator {
       .filter(x => x != candName)
       .filter(x => if (isSameNamespace) x != simpleCandidateName else true)
 
-    def isReferred(name:String): Boolean = {
+    def isReferred(name: String): Boolean = {
       withoutSelf.contains(name)
     }
 

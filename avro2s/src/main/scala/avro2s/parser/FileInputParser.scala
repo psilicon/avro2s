@@ -1,5 +1,13 @@
 package avro2s.parser
 
+/*
+ * This code is from the avrohugger project - https://github.com/julianpeeters/avrohugger
+ * Modifications:
+ *  - package name
+ *  - significant reimplementation/simplification
+ *  - removal of support for non .avsc file types
+ */
+
 import org.apache.avro.{Schema, SchemaParseException}
 import org.apache.avro.Schema.Parser
 import org.apache.avro.Schema.Type.{ENUM, FIXED, RECORD, UNION}
