@@ -37,7 +37,6 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       case 4 => _union_of_records match {
         case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
-        case _ => throw new AvroRuntimeException("Invalid value")
       }
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }

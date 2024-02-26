@@ -47,7 +47,6 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
             array.map {
               case x: String => x.asInstanceOf[AnyRef]
               case x: Int => x.asInstanceOf[AnyRef]
-              case _ => throw new AvroRuntimeException("Invalid value")
             }
           }.toBuffer).asJava
         }
