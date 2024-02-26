@@ -9,9 +9,9 @@ import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
 case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_union: Map[String, String :+: Int :+: CNil], var _map_of_union_of_map_of_union: Map[String, String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil], var _map_of_arrays: Map[String, List[String]], var _map_of_arrays_of_maps: Map[String, List[Map[String, Boolean]]], var _map_of_map_of_union: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]], var _map_of_map_of_arrays: Map[String, Map[String, List[String]]], var _map_of_fixed: Map[String, avro2s.test.maps.Fixed], var _map_of_enum: Map[String, avro2s.test.maps.Enum], var _map_of_record: Map[String, avro2s.test.maps.Record], var _map_of_bytes: Map[String, Array[Byte]], var _map_of_string: Map[String, String], var _map_of_int: Map[String, Int], var _map_of_long: Map[String, Long], var _map_of_float: Map[String, Float], var _map_of_double: Map[String, Double], var _map_of_boolean: Map[String, Boolean], var _map_of_null: Map[String, scala.Null]) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
-  
+
   override def getSchema: org.apache.avro.Schema = Maps.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {
@@ -57,7 +57,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
-              case Inr(Inr(Inr(Inl(x)))) => 
+              case Inr(Inr(Inr(Inl(x)))) =>
                 val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
                 x.foreach { kvp =>
                   val key = kvp._1
@@ -301,7 +301,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._map_of_maps = {

@@ -6,9 +6,9 @@ import scala.annotation.switch
 
 case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var _record_with_namespace_inherited_from_indirect_non_top_level_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, null)
-  
+
   override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedFromDirectParent.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
@@ -16,7 +16,7 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._string = value.toString.asInstanceOf[String]

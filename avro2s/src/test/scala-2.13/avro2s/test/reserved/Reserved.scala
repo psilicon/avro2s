@@ -6,9 +6,9 @@ import scala.annotation.switch
 
 case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`: Int, var `class`: Long, var `def`: Float, var `do`: Double, var `else`: Array[Byte], var `extends`: String, var `false`: scala.Null, var `final`: Boolean, var `finally`: Int, var `for`: Long, var `forSome`: Float, var `if`: Double, var `implicit`: Array[Byte], var `import`: String, var `lazy`: scala.Null, var `macro`: Boolean, var `match`: Int, var `new`: Long, var `null`: Float, var `object`: Double, var `override`: Array[Byte], var `package`: String, var `private`: scala.Null, var `protected`: Boolean, var `return`: Int, var `sealed`: Long, var `super`: Float, var `this`: Double, var `throw`: Array[Byte], var `trait`: String, var `try`: scala.Null, var `true`: Boolean, var `type`: Int, var `val`: Long, var `var`: Float, var `while`: Double, var `with`: Array[Byte], var `yield`: String) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null)
-  
+
   override def getSchema: org.apache.avro.Schema = Reserved.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => `abstract`.asInstanceOf[AnyRef]
@@ -54,7 +54,7 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this.`abstract` = value.asInstanceOf[scala.Null]

@@ -6,16 +6,16 @@ import scala.annotation.switch
 
 case class RecordWithNamespaceInheritedFromIndirectParent(var _string: String) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null)
-  
+
   override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedFromIndirectParent.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._string = value.toString.asInstanceOf[String]

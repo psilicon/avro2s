@@ -9,9 +9,9 @@ import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
 case class RecordWithExplicitNamespace(var _string: String, var _record_with_namespace_inherited_from_direct_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent, var _array_of_records: List[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray], var _map_of_records: Map[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap], var _union_of_records: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion :+: String :+: CNil) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, null, null, null, null)
-  
+
   override def getSchema: org.apache.avro.Schema = RecordWithExplicitNamespace.SCHEMA$
-  
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
@@ -43,7 +43,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       case _ => new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  
+
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._string = value.toString.asInstanceOf[String]
