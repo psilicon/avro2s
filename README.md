@@ -8,6 +8,9 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
  - Laying the groundwork for Scala 3 support (Scala 3 support is yet to implemented).
 
 #### Features:
+ - Supports Scala 3.
+   - Union types are supported without the need for shapeless.
+   - Currently, Enums are still generated as Java enums.
  - Supports Scala 2.13.
  - Compatibility with all Avro types.
 
@@ -16,7 +19,7 @@ Add avro2s to your `build.sbt`:
 ```scala
 libraryDependencies += "io.psilicon" % "avro2s_2.13" % "0.3.0"
 ```
-If you are using Union types, other than unions representing nullable (`["null", T]`), you will need to add shapeless to your `build.sbt`:
+For Scala 2.13 generation. If you are using Union types, other than unions representing nullable (`["null", T]`), you will need to add shapeless to your `build.sbt`:
 ```scala
 libraryDependencies += "com.chuusai" % "shapeless_2.13" % "2.3.10"
 ```
@@ -38,7 +41,7 @@ object Demo extends App {
 #### Roadmap:
  - Logical Types.
  - SBT plugin.
- - Scala 3 support.
+ - Scala 3 Enum support.
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.
