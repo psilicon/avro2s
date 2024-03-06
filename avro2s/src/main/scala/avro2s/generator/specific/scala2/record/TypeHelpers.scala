@@ -1,14 +1,14 @@
 package avro2s.generator.specific.scala2.record
 
 import avro2s.error.Error.SchemaError
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
 import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-private[avro2s] object TypeHelpers {
-
+private[avro2s] class TypeHelpers(ltc: LogicalTypeConverter) {
   import UnionRepresentation._
 
   def toStringConverter(x: String, schema: Schema): String = {
@@ -45,17 +45,19 @@ private[avro2s] object TypeHelpers {
     }
   }
 
-  def schemaToScalaType(schema: Schema): String = {
+  def schemaToScalaType(schema: Schema, useLogical: Boolean): String = {
     schema.getType match {
-      case UNION => unionSchemasToType(schemas(schema)).toString
+      case UNION => unionSchemasToType(schemas(schema)).asString(typeHelpers = this)
       case RECORD => schema.getFullName
       case ENUM => schema.getFullName
-      case FIXED => schema.getFullName
-      case ARRAY => s"List[${schemaToScalaType(schema.getElementType)}]"
+      case FIXED => ltc.getType(schema, schema.getFullName)
+      case ARRAY => s"List[${schemaToScalaType(schema.getElementType, useLogical)}]"
       case MAP =>
-        val valueType = schemaToScalaType(schema.getValueType)
+        val valueType = schemaToScalaType(schema.getValueType, useLogical)
         s"Map[String, $valueType]"
-      case other => simpleTypeToScala(other)
+      case other =>
+        if (useLogical) ltc.getType(schema, simpleTypeToScala(other))
+        else simpleTypeToScala(other)
     }
   }
 
@@ -86,19 +88,18 @@ private[avro2s] object TypeHelpers {
       case other => throw SchemaError(s"Unsupported type: $other")
     }
   }
+}
 
-
+object UnionRepresentation {
   sealed trait UnionRepresentation {
-    def toString: String
+    def asString(typeHelpers: TypeHelpers): String
+  }
+  
+  final case class CoproductRepresentation(types: List[Schema]) extends UnionRepresentation {
+    override def asString(typeHelpers: TypeHelpers): String = types.map(t => typeHelpers.schemaToScalaType(t, true)).mkString(" :+: ") + " :+: CNil"
   }
 
-  object UnionRepresentation {
-    final case class CoproductRepresentation(types: List[Schema]) extends UnionRepresentation {
-      override def toString: String = types.map(schemaToScalaType).mkString(" :+: ") + " :+: CNil"
-    }
-
-    final case class OptionRepresentation(`type`: Schema) extends UnionRepresentation {
-      override def toString: String = s"Option[${schemaToScalaType(`type`)}]"
-    }
+  final case class OptionRepresentation(`type`: Schema) extends UnionRepresentation {
+    override def asString(typeHelpers: TypeHelpers): String = s"Option[${typeHelpers.schemaToScalaType(`type`, true)}]"
   }
 }

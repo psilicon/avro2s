@@ -64,11 +64,8 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 4 => this.`def` = value.asInstanceOf[Float]
       case 5 => this.`do` = value.asInstanceOf[Double]
       case 6 => this.`else` = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 7 => this.`extends` = value.toString.asInstanceOf[String]
       case 8 => this.`false` = value.asInstanceOf[scala.Null]
       case 9 => this.`final` = value.asInstanceOf[Boolean]
@@ -77,11 +74,8 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 12 => this.`forSome` = value.asInstanceOf[Float]
       case 13 => this.`if` = value.asInstanceOf[Double]
       case 14 => this.`implicit` = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 15 => this.`import` = value.toString.asInstanceOf[String]
       case 16 => this.`lazy` = value.asInstanceOf[scala.Null]
       case 17 => this.`macro` = value.asInstanceOf[Boolean]
@@ -90,11 +84,8 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 20 => this.`null` = value.asInstanceOf[Float]
       case 21 => this.`object` = value.asInstanceOf[Double]
       case 22 => this.`override` = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 23 => this.`package` = value.toString.asInstanceOf[String]
       case 24 => this.`private` = value.asInstanceOf[scala.Null]
       case 25 => this.`protected` = value.asInstanceOf[Boolean]
@@ -103,11 +94,8 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 28 => this.`super` = value.asInstanceOf[Float]
       case 29 => this.`this` = value.asInstanceOf[Double]
       case 30 => this.`throw` = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 31 => this.`trait` = value.toString.asInstanceOf[String]
       case 32 => this.`try` = value.asInstanceOf[scala.Null]
       case 33 => this.`true` = value.asInstanceOf[Boolean]
@@ -116,11 +104,8 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 36 => this.`var` = value.asInstanceOf[Float]
       case 37 => this.`while` = value.asInstanceOf[Double]
       case 38 => this.`with` = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 39 => this.`yield` = value.toString.asInstanceOf[String]
     }
   }

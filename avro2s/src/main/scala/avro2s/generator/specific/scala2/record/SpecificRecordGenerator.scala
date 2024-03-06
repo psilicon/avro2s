@@ -1,7 +1,8 @@
 package avro2s.generator.specific.scala2.record
 
+import avro2s.generator.logical.LogicalTypes
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala2.FieldOps._
-import avro2s.generator.specific.scala2.record.TypeHelpers._
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 import avro2s.schema.RecordInspector
 import org.apache.avro.Schema
@@ -12,6 +13,11 @@ import scala.jdk.CollectionConverters._
 
 private[avro2s] object SpecificRecordGenerator {
   private val dollar = "$"
+  private val ltc = LogicalTypeConverter(LogicalTypes.logicalTypeMap)
+  private val getCaseGenerator = new GetCaseGenerator(ltc)
+  private val putCaseGenerator = new PutCaseGenerator(ltc)
+  private val typeHelpers = new TypeHelpers(LogicalTypeConverter(LogicalTypes.logicalTypeMap))
+  import typeHelpers._
 
   def schemaToScala2Record(schema: Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
@@ -41,7 +47,7 @@ private[avro2s] object SpecificRecordGenerator {
       .add("(field$: @switch) match {")
       .indent
       .print(fields) { (printer, field) =>
-        GetCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+        getCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
       .add("case _ => new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
@@ -54,7 +60,7 @@ private[avro2s] object SpecificRecordGenerator {
       .add("(field$: @switch) match {")
       .indent
       .print(fields) { (printer, field) =>
-        PutCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+        putCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
       .outdent
       .add("}")
@@ -66,6 +72,7 @@ private[avro2s] object SpecificRecordGenerator {
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .when(RecordInspector.containsLogicalType(schema, classOf[org.apache.avro.LogicalTypes.Decimal]))(_.add(s"val decimalConversion = new org.apache.avro.Conversions.DecimalConversion"))
       .outdent
       .add("}")
 
@@ -74,7 +81,7 @@ private[avro2s] object SpecificRecordGenerator {
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
     fields.map { field =>
-      s"var ${field.safeName}: ${schemaToScalaType(field.schema)}"
+      s"var ${field.safeName}: ${schemaToScalaType(field.schema, true)}"
     }.mkString(", ")
   }
 
@@ -82,6 +89,7 @@ private[avro2s] object SpecificRecordGenerator {
     s"def this() = this(${
       fields.map { f =>
         f.schema().getType match {
+          case _ if ltc.logicalTypeInUse(f.schema()) => "null"
           case INT | LONG | FLOAT | DOUBLE => "0"
           case BOOLEAN => "false"
           case _ => "null"

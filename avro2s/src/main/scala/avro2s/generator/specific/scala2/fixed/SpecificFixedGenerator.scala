@@ -10,6 +10,7 @@ private[avro2s] object SpecificFixedGenerator {
     val printer = new FunctionalPrinter()
     val ns = Option(schema.getNamespace).orElse(namespace)
     val nsString = ns.getOrElse("")
+    val nsPrefix = if (nsString.nonEmpty) nsString + "." else ""
 
     val code = printer
       .add("/** GENERATED CODE */")
@@ -21,13 +22,13 @@ private[avro2s] object SpecificFixedGenerator {
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
       .add("override def readExternal(in: java.io.ObjectInput): Unit = {")
       .indent
-      .add(s"$nsString.$name.READER$$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))")
+      .add(s"$nsPrefix$name.READER$$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))")
       .add("()")
       .outdent
       .add("}")
       .add("override def writeExternal(out: java.io.ObjectOutput): Unit = {")
       .indent
-      .add(s"$nsString.$name.WRITER$$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))")
+      .add(s"$nsPrefix$name.WRITER$$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))")
       .outdent
       .add("}")
       .outdent
@@ -40,7 +41,7 @@ private[avro2s] object SpecificFixedGenerator {
       .add(s"val WRITER$$ = new org.apache.avro.specific.SpecificDatumWriter[$name]($name.SCHEMA$$)")
       .add(s"def apply(data: Array[Byte]): $name = {")
       .indent
-      .add(s"val fixed = new $nsString.$name()")
+      .add(s"val fixed = new $nsPrefix$name()")
       .add(s"fixed.bytes(data)")
       .add(s"fixed")
       .outdent

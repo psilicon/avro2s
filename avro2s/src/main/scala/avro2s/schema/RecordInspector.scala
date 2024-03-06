@@ -1,7 +1,7 @@
 package avro2s.schema
 
 import avro2s.error.Error.SchemaError
-import org.apache.avro.Schema
+import org.apache.avro.{LogicalType, Schema}
 
 import scala.annotation.tailrec
 import scala.collection.compat._
@@ -33,6 +33,36 @@ private[avro2s] object RecordInspector {
     }
 
     containsType(schema.getFields.asScala.toList.map(_.schema()), schemaType)
+  }
+
+  def containsLogicalType(schema: Schema, logicalType: Class[_ <: LogicalType]): Boolean = {
+    if (schema.getType != RECORD) throw new SchemaError(s"Schema must be of type RECORD, but was ${schema.getType}")
+
+    @tailrec
+    def containsLogicalType(schemas: List[Schema], logicalType: Class[_ <: LogicalType]): Boolean = {
+      schemas.headOption match {
+        case Some(schema) =>
+          schema.getLogicalType match {
+            case lt if logicalType.isInstance(lt) => true
+            case _ =>
+              schema.getType match {
+                case UNION =>
+                  containsLogicalType(schema.getTypes.asScala.toList ++ schemas.tail, logicalType)
+                case ARRAY =>
+                  containsLogicalType(schema.getElementType :: schemas.tail, logicalType)
+                case MAP =>
+                  containsLogicalType(schema.getValueType :: schemas.tail, logicalType)
+                case RECORD =>
+                  containsLogicalType(schema.getFields.asScala.toList.map(_.schema()) ++ schemas.tail, logicalType)
+                case _ =>
+                  containsLogicalType(schemas.tail, logicalType)
+              }
+          }
+        case None => false
+      }
+    }
+
+    containsLogicalType(List(schema), logicalType)
   }
 
   def containsNonOptionUnion(schema: Schema): Boolean = {

@@ -10,6 +10,8 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import shapeless.{:+:, CNil, Coproduct}
 
+import java.util.UUID
+
 class SerializationTest extends AnyFunSuite with Matchers {
 
   import avro2s.serialization.SerializationHelpers._
@@ -258,5 +260,22 @@ class SerializationTest extends AnyFunSuite with Matchers {
     )
 
     deserialize[avro2s.test.unions.OptionsWithNullAsSecondType](serialize(optionsWithNullAsSecondType), optionsWithNullAsSecondType.getSchema) shouldBe optionsWithNullAsSecondType
+  }
+  
+  test("logical types can be serialized and deserialized") {
+    val logicalTypes = avro2s.test.logical.LogicalTypes(
+      _decimal_bytes = BigDecimal("12.34"),
+      _decimal_fixed = BigDecimal("14.23"),
+      _uuid = UUID.randomUUID(),
+      _date = java.time.LocalDate.now(),
+      _time_millis = java.time.LocalTime.now(),
+      _time_micros = java.time.LocalTime.now(),
+      _timestamp_millis = java.time.Instant.now(),
+      _timestamp_micros = java.time.Instant.now(),
+      _local_timestamp_millis = java.time.LocalDateTime.now(),
+      _local_timestamp_micros = java.time.LocalDateTime.now()
+    )
+
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes
   }
 }

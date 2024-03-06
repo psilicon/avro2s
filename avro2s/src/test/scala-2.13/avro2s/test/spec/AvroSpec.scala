@@ -65,11 +65,8 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 4 => this._float = value.asInstanceOf[Float]
       case 5 => this._double = value.asInstanceOf[Double]
       case 6 => this._bytes = value match {
-        case buffer: java.nio.ByteBuffer =>
-          val array = Array.ofDim[Byte](buffer.remaining())
-          buffer.get(array)
-          array
-        }
+        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
       case 7 => this._string = value.toString.asInstanceOf[String]
       case 8 => this._enum = value.asInstanceOf[avro2s.test.spec.Suit]
       case 9 => this._array = {

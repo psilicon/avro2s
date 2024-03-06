@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "ComplexLogicalTypes",
+  "fields": [
+    
+    // map
+    // map of unions
+    // array
+    // array of unions
+  ]
+}

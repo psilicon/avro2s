@@ -1,9 +1,9 @@
 package avro2s.generator.specific.scala2.record
 
 import avro2s.generator.FunctionalPrinter
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala2.FieldOps._
-import avro2s.generator.specific.scala2.record.TypeHelpers.UnionRepresentation.{CoproductRepresentation, OptionRepresentation}
-import avro2s.generator.specific.scala2.record.TypeHelpers.{UnionRepresentation, schemaToScalaType, schemas, simpleTypeToScalaReceiveType, toStringConverter, typeCast, unionSchemasToType}
+import avro2s.generator.specific.scala2.record.UnionRepresentation.{CoproductRepresentation, OptionRepresentation, UnionRepresentation}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type
 import org.apache.avro.Schema.Type.{ARRAY, BYTES, ENUM, FIXED, MAP, RECORD, UNION}
@@ -12,7 +12,10 @@ import org.apache.avro.Schema.Type.{ARRAY, BYTES, ENUM, FIXED, MAP, RECORD, UNIO
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
  */
-private[avro2s] object PutCaseGenerator {
+private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
+  private val typeHelpers = new TypeHelpers(ltc)
+  import typeHelpers._
+  
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
       case UNION =>
@@ -26,21 +29,22 @@ private[avro2s] object PutCaseGenerator {
         printer
           .add(s"case $index => this.${field.safeName} = value match {")
           .indent
-          .add("case buffer: java.nio.ByteBuffer =>")
-          .indent
-          .add("val array = Array.ofDim[Byte](buffer.remaining())")
-          .add("buffer.get(array)")
-          .add("array")
+          .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(field.schema(), "buffer", "val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array")}")
           .outdent
           .add("}")
-          .outdent
       case MAP =>
         printMapCase(printer, index, field)
       case ARRAY =>
         printArrayCase(printer, index, field)
-      case _ =>
+      case FIXED =>
+        val fallback = s"${toStringConverter("value", field.schema())}.asInstanceOf[${schemaToScalaType(field.schema, false)}]"
+        val value = s"${toStringConverter("value", field.schema())}"
         printer
-          .add(s"case $index => this.${field.safeName} = ${toStringConverter("value", field.schema())}.asInstanceOf[${schemaToScalaType(field.schema)}]")
+          .add(s"case $index => this.${field.safeName} = ${ltc.toTypeWithFallback(field.schema(), value, fallback)}")
+      case _ =>
+        val value = s"${toStringConverter("value", field.schema())}.asInstanceOf[${schemaToScalaType(field.schema, false)}]"
+        printer
+          .add(s"case $index => this.${field.safeName} = ${ltc.toType(field.schema(), value)}")
     }
   }
 
@@ -183,7 +187,7 @@ private[avro2s] object PutCaseGenerator {
                 .result()
             case ARRAY =>
               newPrinter
-                .add(s"case x: java.util.List[_] => this.$fieldName = Coproduct[$union]({")
+                .add(s"case x: java.util.List[_] => this.$fieldName = Coproduct[${union.asString(typeHelpers)}]({")
                 .indent
                 .call(printArrayValueInner(_, t, Some("x")))
                 .outdent
@@ -191,18 +195,18 @@ private[avro2s] object PutCaseGenerator {
                 .result()
             case BYTES =>
               newPrinter
-                .add(s"case x: java.nio.ByteBuffer => this.$fieldName = Coproduct[$union](x.array())")
+                .add(s"case x: java.nio.ByteBuffer => this.$fieldName = Coproduct[${union.asString(typeHelpers)}](x.array())")
                 .result()
             case RECORD | ENUM | FIXED =>
               newPrinter
-                .add(s"case x: ${t.getFullName} => this.$fieldName = Coproduct[$union](x)")
+                .add(s"case x: ${t.getFullName} => this.$fieldName = Coproduct[${union.asString(typeHelpers)}](x)")
                 .result()
             case _ =>
               val typeName = simpleTypeToScalaReceiveType(t.getType)
               val x = if (t.getType == Type.STRING) "x.toString" else "x"
               val `case` = if (t.getType == Type.NULL) "x @ null" else s"x: $typeName"
               newPrinter
-                .add(s"case ${`case`} => this.$fieldName = Coproduct[$union]($x)")
+                .add(s"case ${`case`} => this.$fieldName = Coproduct[${union.asString(typeHelpers)}]($x)")
                 .result()
           }
         } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
@@ -228,7 +232,7 @@ private[avro2s] object PutCaseGenerator {
                   .add(s"case x: ${schema.getFullName} => this.$fieldName = Some(x)")
               case _ =>
                 printer
-                  .add(s"case x => this.$fieldName = Some(${toStringConverter("x", schema)}.asInstanceOf[${schemaToScalaType(schema)}])")
+                  .add(s"case x => this.$fieldName = Some(${toStringConverter("x", schema)}.asInstanceOf[${schemaToScalaType(schema, false)}])")
             }
           }
     }
@@ -238,27 +242,27 @@ private[avro2s] object PutCaseGenerator {
     union match {
       case CoproductRepresentation(types) => printer.add({
         types.map { t =>
-          if (t.getType == RECORD) s"case x: ${t.getFullName} => Coproduct[$union](x)"
+          if (t.getType == RECORD) s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)"
           else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
           else {
             val typeName = simpleTypeToScalaReceiveType(t.getType)
             val x = if (t.getType == Type.STRING) "x.toString" else "x"
             val `case` = if (t.getType == Type.NULL) "x @ null" else s"x: $typeName"
-            s"case ${`case`} => Coproduct[$union]($x)"
+            s"case ${`case`} => Coproduct[${union.asString(typeHelpers)}]($x)"
           }
         } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
       }.mkString("\n"))
       case OptionRepresentation(schema) =>
         printer.add(
           s"""case null => None
-             |case x => Some(${toStringConverter("x", schema)}.asInstanceOf[${schemaToScalaType(schema)}])""".stripMargin
+             |case x => Some(${toStringConverter("x", schema)}.asInstanceOf[${schemaToScalaType(schema, false)}])""".stripMargin
         )
     }
   }
 
   private def printUnionMapPatternMatch(functionalPrinter: FunctionalPrinter, fieldName: String, schema: Schema, union: UnionRepresentation): FunctionalPrinter = {
     functionalPrinter
-      .add(s"case map: java.util.Map[_,_] => this.$fieldName = Coproduct[$union]({")
+      .add(s"case map: java.util.Map[_,_] => this.$fieldName = Coproduct[${union.asString(typeHelpers)}]({")
       .indent
       .add("scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>")
       .indent
@@ -296,7 +300,7 @@ private[avro2s] object PutCaseGenerator {
 
   private def printUnionMapValue(functionalPrinter: FunctionalPrinter, schema: Schema, union: UnionRepresentation): FunctionalPrinter = {
     functionalPrinter
-      .add(s"case map: java.util.Map[_,_] => Coproduct[$union]({")
+      .add(s"case map: java.util.Map[_,_] => Coproduct[${union.asString(typeHelpers)}]({")
       .indent
       .add("scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>")
       .indent

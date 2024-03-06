@@ -15,7 +15,9 @@ class FileHelperTest extends AnyFunSuite with Matchers {
       "avro2s/src/test/resources/input/unions/unions.avsc",
       "avro2s/src/test/resources/input/unions/options-with-null-as-second-type.avsc",
       "avro2s/src/test/resources/input/unions/primitives.avsc",
-      "avro2s/src/test/resources/input/maps/maps.avsc"
+      "avro2s/src/test/resources/input/maps/maps.avsc",
+      "avro2s/src/test/resources/input/logical/logical.avsc",
+      "avro2s/src/test/resources/input/logical/logical-complex.avsc",
     )
 
     FileHelper.findAvscFiles(directory).map(_.getPath) should contain theSameElementsAs expectedFiles
