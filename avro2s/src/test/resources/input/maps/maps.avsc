@@ -146,6 +146,18 @@
       }
     },
     {
+      "name": "_map_of_union_of_record",
+      "type": {
+        "type": "map",
+        "values": [
+          "avro2s.test.maps.Record",
+          "int",
+          "null"
+        ],
+        "default": {}
+      }
+    },
+    {
       "name": "_map_of_bytes",
       "type": {
         "type": "map",

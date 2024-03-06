@@ -238,7 +238,8 @@ private[avro2s] object PutCaseGenerator {
     union match {
       case TypeUnionRepresentation(types) => printer.add({
         types.map { t =>
-          if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
+          if (t.getType == RECORD) s"case x: ${t.getFullName} => x"
+          else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
           else {
             t.getType match {
               case Type.STRING => "case x: org.apache.avro.util.Utf8 => x.toString"
