@@ -238,7 +238,8 @@ private[avro2s] object PutCaseGenerator {
     union match {
       case CoproductRepresentation(types) => printer.add({
         types.map { t =>
-          if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
+          if (t.getType == RECORD) s"case x: ${t.getFullName} => Coproduct[$union](x)"
+          else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
           else {
             val typeName = simpleTypeToScalaReceiveType(t.getType)
             val x = if (t.getType == Type.STRING) "x.toString" else "x"

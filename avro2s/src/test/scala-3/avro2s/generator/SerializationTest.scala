@@ -2,7 +2,7 @@ package avro2s.generator
 
 import avro2s.serialization.SerializationHelpers._
 import avro2s.test.unions.{OptionsWithNullAsSecondType, Unions, UnionOfPrimitives}
-import avro2s.test.arrays.{Arrays, Record => ArrayRecord}
+import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2}
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
 import avro2s.test.namespaces.explicit.{RecordWithExplicitNamespace, RecordWithNamespaceInheritedFromDirectParent, RecordWithNamespaceInheritedFromIndirectNonTopLevelParent, RecordWithNamespaceInheritedViaArray, RecordWithNamespaceInheritedViaMap, RecordWithNamespaceInheritedViaUnion}
@@ -137,6 +137,11 @@ class SerializationTest extends AnyFunSuite with Matchers {
         "a" -> MapRecord(a = "b"),
         "b" -> MapRecord(a = "c"),
       ),
+      _map_of_union_of_record = Map(
+        "a" -> MapRecord(a = "b"),
+        "b" -> 1,
+        "c" -> null,
+      ),
       _map_of_bytes = Map(
         "a" -> Array[Byte](0x6f, 0x6e),
         "b" -> Array[Byte](0x6f, 0x6e),
@@ -159,6 +164,7 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _array_of_maps = List(Map("a" -> "b", "c" -> "d"), Map("e" -> "f", "g" -> "h")),
       _array_of_unions = List("a", 1),
       _array_of_records = List(ArrayRecord(_string = "a", _int = 1), ArrayRecord(_string = "b", _int = 2)),
+      _array_of_union_of_records = List(ArrayRecord1(_string = "a", _int = 1), ArrayRecord2(_string = "b", _int = 2), 4),
       _array_of_enums = List(avro2s.test.arrays.Enum.A, avro2s.test.arrays.Enum.B),
       _array_of_fixed = List(avro2s.test.arrays.Fixed(Array[Byte](0x6f, 0x6e))),
       _array_of_bytes = List(Array[Byte](0x6f, 0x6e)),

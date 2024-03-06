@@ -1,6 +1,6 @@
 package avro2s.generator
 
-import avro2s.test.arrays.{Arrays, Record => ArrayRecord}
+import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2}
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
 import avro2s.test.namespaces.explicit.{RecordWithExplicitNamespace, RecordWithNamespaceInheritedFromDirectParent, RecordWithNamespaceInheritedFromIndirectNonTopLevelParent, RecordWithNamespaceInheritedViaArray, RecordWithNamespaceInheritedViaMap, RecordWithNamespaceInheritedViaUnion}
@@ -16,11 +16,13 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
   test("arrays can be serialized and deserialized") {
     type Union1 = String :+: Int :+: CNil
+    type Union2 = ArrayRecord1 :+: ArrayRecord2 :+: Int :+: CNil
 
     val arrays = Arrays(
       _array_of_arrays = List(List("a", "b", "c"), List("d", "e", "f")),
       _array_of_maps = List(Map("a" -> "b", "c" -> "d"), Map("e" -> "f", "g" -> "h")),
       _array_of_unions = List(Coproduct[Union1]("a"), Coproduct[Union1](1)),
+      _array_of_union_of_records = List(Coproduct[Union2](ArrayRecord2(_string = "a", _int = 1)), Coproduct[Union2](ArrayRecord1(_string = "b", _int = 2)), Coproduct[Union2](3)),
       _array_of_records = List(ArrayRecord(_string = "a", _int = 1), ArrayRecord(_string = "b", _int = 2)),
       _array_of_enums = List(avro2s.test.arrays.Enum.A, avro2s.test.arrays.Enum.B),
       _array_of_fixed = List(avro2s.test.arrays.Fixed(Array[Byte](0x6f, 0x6e))),
@@ -40,6 +42,7 @@ class SerializationTest extends AnyFunSuite with Matchers {
     type Union1 = String :+: Int :+: CNil
     type Union2 = String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil
     type Union3 = String :+: Long :+: Boolean :+: Map[String, Map[String, Union2]] :+: scala.Null :+: CNil
+    type Union4 = MapRecord :+: Int :+: scala.Null :+: CNil
 
     val maps = Maps(
       _map_of_maps = Map("a" -> Map("b" -> "c", "d" -> "e"), "f" -> Map("g" -> "h", "i" -> "j")),
@@ -74,6 +77,11 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _map_of_record = Map(
         "a" -> MapRecord(a = "b"),
         "b" -> MapRecord(a = "c"),
+      ),
+      _map_of_union_of_record = Map(
+        "a" -> Coproduct[Union4](MapRecord(a = "b")),
+        "b" -> Coproduct[Union4](1),
+        "c" -> Coproduct[Union4](null),
       ),
       _map_of_bytes = Map(
         "a" -> Array[Byte](0x6f, 0x6e),

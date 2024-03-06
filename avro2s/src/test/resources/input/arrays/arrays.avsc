@@ -61,6 +61,46 @@
       }
     },
     {
+      "name": "_array_of_union_of_records",
+      "type": {
+        "type": "array",
+        "items": [
+          {
+            "type": "record",
+            "name": "Record1",
+            "namespace": "avro2s.test.arrays",
+            "fields": [
+              {
+                "name": "_string",
+                "type": "string"
+              },
+              {
+                "name": "_int",
+                "type": "int"
+              }
+            ]
+          },
+          {
+            "type": "record",
+            "name": "Record2",
+            "namespace": "avro2s.test.arrays",
+            "fields": [
+              {
+                "name": "_string",
+                "type": "string"
+              },
+              {
+                "name": "_int",
+                "type": "int"
+              }
+            ]
+          },
+          "int"
+        ],
+        "default": []
+      }
+    },
+    {
       "name": "_array_of_enums",
       "type": {
         "type": "array",
