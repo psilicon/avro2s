@@ -1,4 +1,4 @@
-ThisBuild / version := "0.7.0"
+ThisBuild / version := "0.8.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.12"
 ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.12", "3.4.0")
