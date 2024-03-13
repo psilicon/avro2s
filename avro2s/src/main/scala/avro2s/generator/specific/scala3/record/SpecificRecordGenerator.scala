@@ -80,13 +80,15 @@ private[avro2s] object SpecificRecordGenerator {
     def defaultForType(schema: Schema): String = schema.getType match {
       case INT | LONG | FLOAT | DOUBLE => "0"
       case BOOLEAN => "false"
+      case STRING => "\"\""
+      case BYTES => "Array[Byte]()"
+      case RECORD | FIXED => s"new ${schema.getFullName}()"
+      case ARRAY => "List.empty"
+      case MAP => "Map.empty"
       case UNION =>
         val types = schema.getTypes.asScala.toList
-        if (types.forall(t => Set(INT, LONG, FLOAT, DOUBLE, BOOLEAN).contains(t.getType))) {
-          defaultForType(types.head)
-        } else {
-          "null"
-        }
+        if (!types.exists(_.getType == NULL) || types.length > 2) defaultForType(types.head)
+        else "None"
       case _ => "null"
     }
 

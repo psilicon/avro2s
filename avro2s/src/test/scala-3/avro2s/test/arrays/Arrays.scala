@@ -7,7 +7,7 @@ import org.apache.avro.AvroRuntimeException
 import scala.annotation.switch
 
 case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: List[Map[String, String]], var _array_of_unions: List[String | Int], var _array_of_records: List[avro2s.test.arrays.Record], var _array_of_union_of_records: List[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int], var _array_of_enums: List[avro2s.test.arrays.Enum], var _array_of_fixed: List[avro2s.test.arrays.Fixed], var _array_of_bytes: List[Array[Byte]], var _array_of_strings: List[String], var _array_of_ints: List[Int], var _array_of_longs: List[Long], var _array_of_floats: List[Float], var _array_of_doubles: List[Double], var _array_of_booleans: List[Boolean]) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
+  def this() = this(List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty, List.empty)
 
   override def getSchema: org.apache.avro.Schema = Arrays.SCHEMA$
 

@@ -5,7 +5,7 @@ package avro2s.test.arrays
 import scala.annotation.switch
 
 case class Record2(var _string: String, var _int: Int) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, 0)
+  def this() = this("", 0)
 
   override def getSchema: org.apache.avro.Schema = Record2.SCHEMA$
 

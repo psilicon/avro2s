@@ -5,7 +5,7 @@ package avro2s.test.namespaces.explicit
 import scala.annotation.switch
 
 case class RecordWithNamespaceInheritedViaUnion(var _string: String) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null)
+  def this() = this("")
 
   override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedViaUnion.SCHEMA$
 

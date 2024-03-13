@@ -7,7 +7,6 @@ import avro2s.schema.RecordInspector
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
-import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 private[avro2s] object SpecificRecordGenerator {
@@ -79,13 +78,23 @@ private[avro2s] object SpecificRecordGenerator {
   }
 
   private def toThis(fields: List[Schema.Field]): String = {
+    def defaultForSchema(schema: Schema): String = schema.getType match {
+      case INT | LONG | FLOAT | DOUBLE => "0"
+      case BOOLEAN => "false"
+      case STRING => "\"\""
+      case BYTES => "Array[Byte]()"
+      case RECORD | FIXED => s"new ${schema.getFullName}()"
+      case ARRAY => "List.empty"
+      case MAP => "Map.empty"
+      case UNION if !schema.getTypes.asScala.toList.exists(_.getType == NULL) || schema.getTypes.size() > 2 =>
+        s"Inl(${defaultForSchema(schema.getTypes.asScala.toList.head)})"
+      case UNION => "None"
+      case _ => "null"
+    }
+    
     s"def this() = this(${
       fields.map { f =>
-        f.schema().getType match {
-          case INT | LONG | FLOAT | DOUBLE => "0"
-          case BOOLEAN => "false"
-          case _ => "null"
-        }
+        defaultForSchema(f.schema())
       }.mkString(", ")
     })"
   }

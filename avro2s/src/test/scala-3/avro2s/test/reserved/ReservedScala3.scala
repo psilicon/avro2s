@@ -5,7 +5,7 @@ package avro2s.test.reserved
 import scala.annotation.switch
 
 case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `catch`: Int, var `class`: Long, var `def`: Float, var `do`: Double, var `else`: Array[Byte], var `extends`: String, var `false`: scala.Null, var `final`: Boolean, var `finally`: Int, var `for`: Long, var `forSome`: Float, var `if`: Double, var `implicit`: Array[Byte], var `import`: String, var `lazy`: scala.Null, var `macro`: Boolean, var `match`: Int, var `new`: Long, var `null`: Float, var `object`: Double, var `override`: Array[Byte], var `package`: String, var `private`: scala.Null, var `protected`: Boolean, var `return`: Int, var `sealed`: Long, var `super`: Float, var `this`: Double, var `throw`: Array[Byte], var `trait`: String, var `try`: scala.Null, var `true`: Boolean, var `type`: Int, var `val`: Long, var `var`: Float, var `while`: Double, var `with`: Array[Byte], var `yield`: String, var `enum`: scala.Null, var `export`: Boolean, var `given`: Int, var `then`: Long) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0, 0, 0, null, null, null, false, 0, 0)
+  def this() = this(null, false, 0, 0, 0, 0, Array[Byte](), "", null, false, 0, 0, 0, 0, Array[Byte](), "", null, false, 0, 0, 0, 0, Array[Byte](), "", null, false, 0, 0, 0, 0, Array[Byte](), "", null, false, 0, 0, 0, 0, Array[Byte](), "", null, false, 0, 0)
 
   override def getSchema: org.apache.avro.Schema = ReservedScala3.SCHEMA$
 

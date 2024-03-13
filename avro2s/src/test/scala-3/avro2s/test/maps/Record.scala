@@ -5,7 +5,7 @@ package avro2s.test.maps
 import scala.annotation.switch
 
 case class Record(var a: String) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null)
+  def this() = this("")
 
   override def getSchema: org.apache.avro.Schema = Record.SCHEMA$
 

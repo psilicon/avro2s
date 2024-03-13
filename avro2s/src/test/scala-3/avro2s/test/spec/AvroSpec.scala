@@ -7,7 +7,7 @@ import org.apache.avro.AvroRuntimeException
 import scala.annotation.switch
 
 case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String | Int, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, false, 0, 0, 0, 0, null, null, null, null, null, null, null, null)
+  def this() = this(null, false, 0, 0, 0, 0, Array[Byte](), "", null, List.empty, Map.empty, None, "", new avro2s.test.spec.md5())
 
   override def getSchema: org.apache.avro.Schema = AvroSpec.SCHEMA$
 

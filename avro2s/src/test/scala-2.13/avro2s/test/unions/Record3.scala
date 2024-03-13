@@ -5,7 +5,7 @@ package avro2s.test.unions
 import scala.annotation.switch
 
 case class Record3(var field3: String) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null)
+  def this() = this("")
 
   override def getSchema: org.apache.avro.Schema = Record3.SCHEMA$
 
