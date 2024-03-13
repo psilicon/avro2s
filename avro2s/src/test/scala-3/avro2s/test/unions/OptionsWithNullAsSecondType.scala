@@ -5,7 +5,7 @@ package avro2s.test.unions
 import scala.annotation.switch
 
 case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optional_array: Option[List[Boolean]], var _array_of_options: List[Option[String]], var _map_of_options: Map[String, Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, null, null, null)
+  def this() = this(None, None, List.empty, Map.empty)
 
   override def getSchema: org.apache.avro.Schema = OptionsWithNullAsSecondType.SCHEMA$
 

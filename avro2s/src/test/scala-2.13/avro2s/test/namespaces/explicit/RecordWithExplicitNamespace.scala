@@ -8,7 +8,7 @@ import scala.annotation.switch
 import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
 case class RecordWithExplicitNamespace(var _string: String, var _record_with_namespace_inherited_from_direct_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent, var _array_of_records: List[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray], var _map_of_records: Map[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap], var _union_of_records: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion :+: String :+: CNil) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, null, null, null, null)
+  def this() = this("", new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent(), List.empty, Map.empty, Inl(new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion()))
 
   override def getSchema: org.apache.avro.Schema = RecordWithExplicitNamespace.SCHEMA$
 

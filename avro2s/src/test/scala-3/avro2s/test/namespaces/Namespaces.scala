@@ -5,7 +5,7 @@ package avro2s.test.namespaces
 import scala.annotation.switch
 
 case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespaces.explicit.RecordWithExplicitNamespace, var _record_with_inherited_namespace: avro2s.test.namespaces.RecordWithInheritedNamespace) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, null)
+  def this() = this(new avro2s.test.namespaces.explicit.RecordWithExplicitNamespace(), new avro2s.test.namespaces.RecordWithInheritedNamespace())
 
   override def getSchema: org.apache.avro.Schema = Namespaces.SCHEMA$
 
