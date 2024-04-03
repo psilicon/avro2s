@@ -10,6 +10,9 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import shapeless.{:+:, CNil, Coproduct}
 
+import java.time.{Instant, LocalDate}
+import java.util.UUID
+
 class SerializationTest extends AnyFunSuite with Matchers {
 
   import avro2s.serialization.SerializationHelpers._
@@ -258,5 +261,63 @@ class SerializationTest extends AnyFunSuite with Matchers {
     )
 
     deserialize[avro2s.test.unions.OptionsWithNullAsSecondType](serialize(optionsWithNullAsSecondType), optionsWithNullAsSecondType.getSchema) shouldBe optionsWithNullAsSecondType
+  }
+  
+  test("logical types can be serialized and deserialized") {
+    val logicalTypes = avro2s.test.logical.LogicalTypes(
+      _decimal_bytes = BigDecimal("12.34"),
+      _decimal_fixed = BigDecimal("14.23"),
+      _uuid = UUID.randomUUID(),
+      _date = java.time.LocalDate.now(),
+      _time_millis = java.time.LocalTime.now(),
+      _time_micros = java.time.LocalTime.now(),
+      _timestamp_millis = java.time.Instant.now(),
+      _timestamp_micros = java.time.Instant.now(),
+      _local_timestamp_millis = java.time.LocalDateTime.now(),
+      _local_timestamp_micros = java.time.LocalDateTime.now()
+    )
+
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes
+  }
+  
+  test("logical complex types can be serialized and deserialized") {
+    val logicalComplexTypes = avro2s.test.logical.ComplexLogicalTypes(
+      _map = Map("a" -> UUID.randomUUID, "c" -> UUID.randomUUID),
+      _array = List(LocalDate.now),
+      _union = Coproduct[Int :+: Instant :+: CNil](Instant.now),
+      _option = Some(UUID.randomUUID),
+      _map_union = Map("a" -> Coproduct[Int :+: Instant :+: CNil](Instant.now), "c" -> Coproduct[Int :+: Instant :+: CNil](1)),
+      _map_array = Map("a" -> List(LocalDate.now, LocalDate.now)),
+      _union_map = Coproduct[Int :+: Map[String, UUID] :+: CNil](Map("a" -> UUID.randomUUID)),
+      _union_array = Coproduct[Int :+: List[LocalDate] :+: CNil](List(LocalDate.now)),
+      _array_map = List(Map("a" -> UUID.randomUUID), Map("e" -> UUID.randomUUID)),
+      _array_union = List(Coproduct[Int :+: Instant :+: CNil](Instant.now), Coproduct[Int :+: Instant :+: CNil](1)),
+      _option_fixed = Some(BigDecimal("12.34")),
+      _option_bytes = Some(BigDecimal("14.23")),
+      _map_union_fixed = Map("a" -> Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("12.34"))),
+      _map_union_bytes = Map("a" -> Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("14.23"))),
+      _map_array_fixed = Map("a" -> List(BigDecimal("12.34"), BigDecimal("14.23"))),
+      _union_map_fixed = Coproduct[Int :+: Map[String, BigDecimal] :+: CNil](Map("a" -> BigDecimal("12.34"))),
+      _union_map_bytes = Coproduct[Int :+: Map[String, BigDecimal] :+: CNil](Map("a" -> BigDecimal("14.23"))),
+      _union_array_fixed = Coproduct[Int :+: List[BigDecimal] :+: CNil](List(BigDecimal("12.34"), BigDecimal("14.23"))),
+      _union_array_bytes = Coproduct[Int :+: List[BigDecimal] :+: CNil](List(BigDecimal("12.34"), BigDecimal("14.23"))),
+      _array_map_fixed = List(Map("a" -> BigDecimal("12.34")), Map("e" -> BigDecimal("14.23"))),
+      _array_map_bytes = List(Map("a" -> BigDecimal("12.34")), Map("e" -> BigDecimal("14.23"))),
+      _array_union_fixed = List(Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("12.34")), Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("14.23"))),
+      _array_union_bytes = List(Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("12.34")), Coproduct[Int :+: BigDecimal :+: CNil](BigDecimal("14.23"))),
+      _map_option_fixed = Map("a" -> Some(BigDecimal("12.34")), "e" -> Some(BigDecimal("14.23"))),
+      _map_option_bytes = Map("a" -> Some(BigDecimal("12.34")), "e" -> Some(BigDecimal("14.23"))),
+      _array_option_fixed = List(Some(BigDecimal("12.34")), Some(BigDecimal("14.23"))),
+      _array_option_bytes = List(Some(BigDecimal("12.34")), Some(BigDecimal("14.23"))),
+      _map_fixed = Map("a" -> BigDecimal("12.34"), "e" -> BigDecimal("14.23")),
+      _array_fixed = List(BigDecimal("12.34"), BigDecimal("14.23")),
+      _union_fixed = Coproduct[BigDecimal :+: java.time.Instant :+: CNil](BigDecimal("12.34")),
+      _map_bytes = Map("a" -> BigDecimal("12.34"), "e" -> BigDecimal("14.23")),
+      _union_bytes = Coproduct[BigDecimal :+: java.time.Instant :+: CNil](BigDecimal("12.34")),
+      _array_bytes = List(BigDecimal("12.34"), BigDecimal("14.23")),
+    )
+
+    val serialized = serialize(logicalComplexTypes)
+    deserialize[avro2s.test.logical.ComplexLogicalTypes](serialized, logicalComplexTypes.getSchema) shouldBe logicalComplexTypes
   }
 }
