@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "Conversions",
+  "fields": [
+    {
+      "name": "_uuid",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "_string",
+      "type": "string"
+    },
+    {
+      "name": "_map_of_uuid",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "string",
+          "logicalType": "uuid"
+        }
+      }
+    }
+  ]
+}

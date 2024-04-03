@@ -6,34 +6,6 @@ import org.apache.avro.Schema.Type._
 
 private[avro2s] object LogicalTypes {
   case class LogicalTypeConverter(logicalTypeMap: Map[LogicalTypeKey, LogicalType]) {
-    def toType(schema: Schema, value: String): String = toTypeWithFallback(schema, value, value)
-    
-    def toTypeWithFallback(schema: Schema, value: String, fallback: String): String = {
-      Option(schema.getLogicalType).map { logicalType =>
-        val schemaType = schema.getType
-        val logicalTypeName = logicalType.getName
-        val key = LogicalTypeKey(schemaType, logicalTypeName)
-        logicalTypeMap.get(key) match {
-          case Some(lt) if lt.validate(schema) => s"{${lt.toType(value, schema)}}"
-          case _ => fallback
-        }
-      }.getOrElse(fallback)
-    }
-
-    def fromType(schema: Schema, value: String): String = fromTypeWithFallback(schema, value, value)
-    
-    def fromTypeWithFallback(schema: Schema, value: String, fallback: String): String = {
-      Option(schema.getLogicalType).map { logicalType =>
-        val schemaType = schema.getType
-        val logicalTypeName = logicalType.getName
-        val key = LogicalTypeKey(schemaType, logicalTypeName)
-        logicalTypeMap.get(key) match {
-          case Some(lt) if lt.validate(schema) => s"{${lt.fromType(value, schema)}}"
-          case _ => fallback
-        }
-      }.getOrElse(fallback)
-    }
-
     def getType(schema: Schema, default: String): String = {
       Option(schema.getLogicalType).map { logicalType =>
         val schemaType = schema.getType
@@ -203,13 +175,6 @@ private[avro2s] object LogicalTypes {
   private val supportedLogicalTypes: List[LogicalType] = List(
     Decimal,
     UUID,
-    Date,
-    TimeMillisecondPrecision,
-    TimeMicrosecondPrecision,
-    TimestampMillisecondPrecision,
-    TimestampMicrosecondPrecision,
-    LocalTimestampMillisecondPrecision,
-    LocalTimestampMicrosecondPrecision
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)

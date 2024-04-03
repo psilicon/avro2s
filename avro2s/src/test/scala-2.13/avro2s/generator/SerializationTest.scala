@@ -320,4 +320,12 @@ class SerializationTest extends AnyFunSuite with Matchers {
     val serialized = serialize(logicalComplexTypes)
     deserialize[avro2s.test.logical.ComplexLogicalTypes](serialized, logicalComplexTypes.getSchema) shouldBe logicalComplexTypes
   }
+  
+  test("logical conversions can be serialized and deserialized") {
+    val uuid = UUID.fromString("c556bd6c-48e4-4cf0-8b32-d1fecccea072")
+    val logicalConversions = avro2s.test.logical.Conversions(uuid, "hello", Map("uuid" -> UUID.randomUUID()))
+//    val logicalConversions = avro2s.test.logical.Conversions(uuid, "hello")
+
+    deserialize[avro2s.test.logical.Conversions](serialize(logicalConversions), logicalConversions.getSchema) shouldBe logicalConversions
+  }
 }

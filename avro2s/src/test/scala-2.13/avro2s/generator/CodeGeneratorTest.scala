@@ -100,6 +100,15 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
       testResult(code, expectedCode)
     }
   }
+  
+  test("logical conversions should produce expected output") {
+    val code = generateCode("input/logical/conversions.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
 
   def generateCode(path: String): List[GeneratedCode] = {
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
