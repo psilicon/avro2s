@@ -1,16 +1,22 @@
 package avro2s.generator.specific.scala2.record
 
+import avro2s.generator.logical.LogicalTypes
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala2.FieldOps._
-import avro2s.generator.specific.scala2.record.TypeHelpers._
-import avro2s.generator.{FunctionalPrinter, GeneratedCode}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
 import avro2s.schema.RecordInspector
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
 import scala.jdk.CollectionConverters._
 
-private[avro2s] object SpecificRecordGenerator {
+private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) {
   private val dollar = "$"
+  private val ltc = LogicalTypeConverter(if (generatorConfig.logicalTypesEnabled) LogicalTypes.logicalTypeMap else Map.empty)
+  private val getCaseGenerator = new GetCaseGenerator(ltc)
+  private val putCaseGenerator = new PutCaseGenerator(ltc)
+  private val typeHelpers = new TypeHelpers(ltc)
+  import typeHelpers._
 
   def schemaToScala2Record(schema: Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
@@ -40,7 +46,7 @@ private[avro2s] object SpecificRecordGenerator {
       .add("(field$: @switch) match {")
       .indent
       .print(fields) { (printer, field) =>
-        GetCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+        getCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
       .add("case _ => new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
@@ -53,7 +59,7 @@ private[avro2s] object SpecificRecordGenerator {
       .add("(field$: @switch) match {")
       .indent
       .print(fields) { (printer, field) =>
-        PutCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+        putCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
       .outdent
       .add("}")
@@ -73,7 +79,7 @@ private[avro2s] object SpecificRecordGenerator {
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
     fields.map { field =>
-      s"var ${field.safeName}: ${schemaToScalaType(field.schema)}"
+      s"var ${field.safeName}: ${schemaToScalaType(field.schema, true)}"
     }.mkString(", ")
   }
 
@@ -87,14 +93,21 @@ private[avro2s] object SpecificRecordGenerator {
       case ARRAY => "List.empty"
       case MAP => "Map.empty"
       case UNION if !schema.getTypes.asScala.toList.exists(_.getType == NULL) || schema.getTypes.size() > 2 =>
-        s"Inl(${defaultForSchema(schema.getTypes.asScala.toList.head)})"
+        val s = schema.getTypes.asScala.toList.head
+        s"Inl(${logical(s).getOrElse(defaultForSchema(s))})"
       case UNION => "None"
       case _ => "null"
     }
     
+    def logical(schema: Schema): Option[String] = {
+      if (ltc.logicalTypeInUse(schema)) {
+        Some(ltc.getDefault(schema))
+      } else None
+    }
+    
     s"def this() = this(${
       fields.map { f =>
-        defaultForSchema(f.schema())
+        logical(f.schema()).getOrElse(defaultForSchema(f.schema()))
       }.mkString(", ")
     })"
   }

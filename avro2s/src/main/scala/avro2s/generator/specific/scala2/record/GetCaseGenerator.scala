@@ -1,9 +1,9 @@
 package avro2s.generator.specific.scala2.record
 
 import avro2s.generator.FunctionalPrinter
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala2.FieldOps._
-import avro2s.generator.specific.scala2.record.TypeHelpers.UnionRepresentation.{CoproductRepresentation, OptionRepresentation}
-import avro2s.generator.specific.scala2.record.TypeHelpers.{UnionRepresentation, schemas, toStringConverter, unionSchemasToType}
+import avro2s.generator.specific.scala2.record.UnionRepresentation.{CoproductRepresentation, OptionRepresentation, UnionRepresentation}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
@@ -11,7 +11,10 @@ import org.apache.avro.Schema.Type._
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
  */
-private[avro2s] object GetCaseGenerator {
+private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
+  val typeHelpers = new TypeHelpers(ltc)
+  import typeHelpers._
+  
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
       case UNION =>
@@ -23,12 +26,12 @@ private[avro2s] object GetCaseGenerator {
           .add("}")
       case BYTES =>
         printer
-          .add(s"case $index => java.nio.ByteBuffer.wrap(${field.safeName}).asInstanceOf[AnyRef]")
+          .add(s"case $index => ${ltc.fromTypeWithFallback(field.schema(), field.safeName, s"java.nio.ByteBuffer.wrap(${field.safeName})")}.asInstanceOf[AnyRef]")
       case MAP => printMapCase(printer, index, field)
       case ARRAY => printArrayCase(printer, index, field)
       case _ =>
         printer
-          .add(s"case $index => ${field.safeName}.asInstanceOf[AnyRef]")
+          .add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")
     }
   }
 
@@ -85,7 +88,7 @@ private[avro2s] object GetCaseGenerator {
           .indent
           .add(s"$value.map { bytes =>")
           .indent
-          .add("java.nio.ByteBuffer.wrap(bytes)")
+          .add(ltc.fromTypeWithFallback(schema.getElementType, "bytes", "java.nio.ByteBuffer.wrap(bytes)"))
           .outdent
           .add("}")
           .outdent
@@ -96,7 +99,7 @@ private[avro2s] object GetCaseGenerator {
           .indent
           .add(s"$value.map { x =>")
           .indent
-          .add("x.asInstanceOf[AnyRef]")
+          .add(s"${ltc.fromType(schema.getElementType, "x")}.asInstanceOf[AnyRef]")
           .outdent
           .add("}")
           .outdent
@@ -155,10 +158,10 @@ private[avro2s] object GetCaseGenerator {
           .call(printArrayValue(_, schema, Some("kvp._2")))
       case BYTES =>
         printer
-          .add(s"java.nio.ByteBuffer.wrap($value)")
+          .add(ltc.fromTypeWithFallback(schema, value, s"java.nio.ByteBuffer.wrap($value)"))
       case _ =>
         printer
-          .add(value)
+          .add(ltc.fromType(schema, value))
     }
   }
 
@@ -176,8 +179,8 @@ private[avro2s] object GetCaseGenerator {
         case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), unionSchemasToType(schemas(schema))).result()}"
         case ARRAY if schema.getElementType.isUnion => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map {${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
         case ARRAY => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map { x =>${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
-        case BYTES => s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]"
-        case _ => "x.asInstanceOf[AnyRef]"
+        case BYTES => ltc.fromTypeWithFallback(schema, "x", s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]")
+        case _ => s"${ltc.fromType(schema, "x")}.asInstanceOf[AnyRef]"
       }
     }
 

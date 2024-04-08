@@ -92,7 +92,45 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     }
   }
 
-  private def generateCode(path: String): List[GeneratedCode] = {
+  test("logical types should produce expected output") {
+    val code = generateCode("input/logical/logical.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("logical types disabled should produce expected output") {
+    val code = generateCode("input/logical/logical-disabled.avsc", logicalTypesEnabled = false)
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("logical complex types should produce expected output") {
+    val code = generateCode("input/logical/logical-complex.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("logical complex types disabled should produce expected output") {
+    val code = generateCode("input/logical/logical-complex-disabled.avsc", logicalTypesEnabled = false)
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  def generateCode(path: String, logicalTypesEnabled: Boolean = true): List[GeneratedCode] = {
+    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled)
+
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
     val file = new File(resourcePath)
     val schemas = new FileInputParser().getSchemas(file)
@@ -100,7 +138,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
 
     for {
       schema <- schemas
-      generatedCode <- CodeGenerator.generateCode(schema, schemaStore, ScalaVersion.Scala_3)
+      generatedCode <- CodeGenerator.generateCode(schema, schemaStore, generatorConfig)
     } yield generatedCode
   }
 
