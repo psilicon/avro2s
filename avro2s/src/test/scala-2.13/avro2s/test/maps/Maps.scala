@@ -574,11 +574,8 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               val value = kvp._2
               (key, {
                 value match {
-                  case buffer: java.nio.ByteBuffer =>
-                    val array = Array.ofDim[Byte](buffer.remaining())
-                    buffer.get(array)
-                    array
-                  }
+                  case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+                }
               })
             }
           }

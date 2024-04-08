@@ -1,0 +1,449 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "ComplexLogicalTypesDisabled",
+  "fields": [
+    {
+      "name": "_map",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "string",
+          "logicalType": "uuid"
+        }
+      }
+    },
+//    {
+//      "name": "_map_fixed",
+//      "type": {
+//        "type": "map",
+//        "values": {
+//          "type": "fixed",
+//          "name": "FixedDecimal",
+//          "size": 2,
+//          "logicalType": "decimal",
+//          "precision": 4,
+//          "scale": 2
+//        }
+//      }
+//    },
+//    {
+//      "name": "_map_bytes",
+//      "type": {
+//        "type": "map",
+//        "values": {
+//          "type": "bytes",
+//          "logicalType": "decimal",
+//          "precision": 4,
+//          "scale": 2
+//        }
+//      }
+//    },
+    {
+      "name": "_array",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "int",
+          "logicalType": "date"
+        }
+      }
+    },
+//    {
+//      "name": "_array_fixed",
+//      "type": {
+//        "type": "array",
+//        "items": {
+//          "type": "avro2s.test.logical.FixedDecimal"
+//        }
+//      }
+//    },
+//    {
+//      "name": "_array_bytes",
+//      "type": {
+//        "type": "array",
+//        "items": {
+//          "type": "bytes",
+//          "logicalType": "decimal",
+//          "precision": 4,
+//          "scale": 2
+//        }
+//      }
+//    },
+    {
+      "name": "_union",
+      "type": [
+        "int",
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ]
+    },
+//    {
+//      "name": "_union_fixed",
+//      "type": [
+//        {
+//          "type": "avro2s.test.logical.FixedDecimal"
+//        },
+//        {
+//          "type": "long",
+//          "logicalType": "timestamp-millis"
+//        }
+//      ]
+//    },
+//    {
+//      "name": "_union_bytes",
+//      "type": [
+//        {
+//          "type": "bytes",
+//          "logicalType": "decimal",
+//          "precision": 4,
+//          "scale": 2
+//        },
+//        {
+//          "type": "long",
+//          "logicalType": "timestamp-millis"
+//        }
+//      ]
+//    },
+    {
+      "name": "_option",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "logicalType": "uuid"
+        }
+      ]
+    },
+//    {
+//      "name": "_option_fixed",
+//      "type": [
+//        "null",
+//        {
+//          "type": "avro2s.test.logical.FixedDecimal"
+//        }
+//      ]
+//    },
+//    {
+//      "name": "_option_bytes",
+//      "type": [
+//        "null",
+//        {
+//          "type": "bytes",
+//          "logicalType": "decimal",
+//          "precision": 4,
+//          "scale": 2
+//        }
+//      ]
+//    },
+    {
+      "name": "_map_union",
+      "type": {
+        "type": "map",
+        "values": [
+          "int",
+          {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+          }
+        ]
+      }
+    },
+//    {
+//      "name": "_map_union_fixed",
+//      "type": {
+//        "type": "map",
+//        "values": [
+//          "int",
+//          {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        ]
+//      }
+//    },
+//    {
+//      "name": "_map_union_bytes",
+//      "type": {
+//        "type": "map",
+//        "values": [
+//          "int",
+//          {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        ]
+//      }
+//    },
+    {
+      "name": "_map_array",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      }
+    },
+//    {
+//      "name": "_map_array_fixed",
+//      "type": {
+//        "type": "map",
+//        "values": {
+//          "type": "array",
+//          "items": {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        }
+//      }
+//    },
+//    {
+//      "name": "_map_array_bytes",
+//      "type": {
+//        "type": "map",
+//        "values": {
+//          "type": "array",
+//          "items": {
+//              "type": "bytes",
+//              "logicalType": "decimal",
+//              "precision": 4,
+//              "scale": 2
+//          }
+//        }
+//      }
+//    },
+    {
+      "name": "_union_map",
+      "type": [
+        "int",
+        {
+          "type": "map",
+          "values": {
+            "type": "string",
+            "logicalType": "uuid"
+          }
+        }
+      ]
+    },
+//    {
+//      "name": "_union_map_fixed",
+//      "type": [
+//        "int",
+//        {
+//          "type": "map",
+//          "values": {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        }
+//      ]
+//    },
+//    {
+//      "name": "_union_map_bytes",
+//      "type": [
+//        "int",
+//        {
+//          "type": "map",
+//          "values": {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        }
+//      ]
+//    },
+    {
+      "name": "_union_array",
+      "type": [
+        "int",
+        {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ]
+    },
+//    {
+//      "name": "_union_array_fixed",
+//      "type": [
+//        "int",
+//        {
+//          "type": "array",
+//          "items": {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        }
+//      ]
+//    },
+//    {
+//      "name": "_union_array_bytes",
+//      "type": [
+//        "int",
+//        {
+//          "type": "array",
+//          "items": {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        }
+//      ]
+//    },
+    {
+      "name": "_array_map",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": {
+            "type": "string",
+            "logicalType": "uuid"
+          }
+        }
+      }
+    },
+//    {
+//      "name": "_array_map_fixed",
+//      "type": {
+//        "type": "array",
+//        "items": {
+//          "type": "map",
+//          "values": {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        }
+//      }
+//    },
+//    {
+//      "name": "_array_map_bytes",
+//      "type": {
+//        "type": "array",
+//        "items": {
+//          "type": "map",
+//          "values": {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        }
+//      }
+//    },
+    {
+      "name": "_array_union",
+      "type": {
+        "type": "array",
+        "items": [
+          "int",
+          {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+          }
+        ]
+      }
+    },
+//    {
+//      "name": "_array_union_fixed",
+//      "type": {
+//        "type": "array",
+//        "items": [
+//          "int",
+//          {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        ]
+//      }
+//    },
+//    {
+//      "name": "_array_union_bytes",
+//      "type": {
+//        "type": "array",
+//        "items": [
+//          "int",
+//          {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        ]
+//      }
+//    },
+//    {
+//      "name": "_map_option_fixed",
+//      "type": {
+//        "type": "map",
+//        "values": [
+//          "null",
+//          {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        ]
+//      }
+//    },
+//    {
+//      "name": "_map_option_bytes",
+//      "type": {
+//        "type": "map",
+//        "values": [
+//          "null",
+//          {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        ]
+//      }
+//    },
+    {
+      "name": "_array_option",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          {
+            "type": "string",
+            "logicalType": "uuid"
+          }
+        ]
+      }
+    }
+//    {
+//      "name": "_array_option_fixed",
+//      "type": {
+//        "type": "array",
+//        "items": [
+//          "null",
+//          {
+//            "type": "avro2s.test.logical.FixedDecimal"
+//          }
+//        ]
+//      }
+//    },
+//    {
+//      "name": "_array_option_bytes",
+//      "type": {
+//        "type": "array",
+//        "items": [
+//          "null",
+//          {
+//            "type": "bytes",
+//            "logicalType": "decimal",
+//            "precision": 4,
+//            "scale": 2
+//          }
+//        ]
+//      }
+//    }
+  ]
+}

@@ -10,34 +10,35 @@ import org.apache.avro.Schema
 import java.io.File
 
 object CodeGenerator {
-
   def generateCode(
     inputDirectory: String,
     outputDirectory: String,
-    targetScalaVersion: ScalaVersion
+    generatorConfig: GeneratorConfig
   ): List[File] = {
     val unsortedFiles = FileHelper.findAvscFiles(inputDirectory)
     val sortedFiles = AvscFileSorter.sortSchemaFiles(unsortedFiles)
     val schemas = FileHelper.getSchemasFromFiles(sortedFiles)
-    val generatedCode = generateCode(schemas, targetScalaVersion)
+    val generatedCode = generateCode(schemas, generatorConfig)
 
     CodeWriter.writeToDirectory(outputDirectory)(generatedCode)
   }
 
   def generateCode(
     schemas: List[Schema],
-    targetScalaVersion: ScalaVersion
+    generatorConfig: GeneratorConfig
   ): List[GeneratedCode] = {
     val schemaStore = new SchemaStore
     schemas.flatMap { schema =>
-      generateCode(schema, schemaStore, targetScalaVersion)
+      generateCode(schema, schemaStore, generatorConfig)
     }
   }
 
   def generateCode(
     schema: Schema,
     schemaStore: SchemaStore,
-    targetScalaVersion: ScalaVersion): List[GeneratedCode] = {
+    generatorConfig: GeneratorConfig): List[GeneratedCode] = {
+    
+    val generator = new SpecificGenerator(generatorConfig)
 
     val topNS: Option[String] = SchemaInspector.getNamespace(schema)
     val flattenedSchemas: List[Schema] = NestedSchemaExtractor.getNestedSchemas(schema, schemaStore)
@@ -45,7 +46,7 @@ object CodeGenerator {
     flattenedSchemas.reverse.distinct.map(schema => {
       schemaStore.accept(schema)
       val ns = SchemaInspector.getNamespace(schema) orElse topNS
-      SpecificGenerator.compile(schema, ns, targetScalaVersion)
+      generator.compile(schema, ns)
     }).map(gc => gc.copy(code = trimTrailingSpaces(gc.code)))
   }
 

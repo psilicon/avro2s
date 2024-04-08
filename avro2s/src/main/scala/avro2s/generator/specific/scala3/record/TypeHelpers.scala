@@ -1,13 +1,13 @@
 package avro2s.generator.specific.scala3.record
 
 import avro2s.error.Error.SchemaError
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
 import scala.jdk.CollectionConverters._
 
-private[avro2s] object TypeHelpers {
-
+private[avro2s] class TypeHelpers(ltc: LogicalTypeConverter) {
   import UnionRepresentation._
 
   def toStringConverter(x: String, schema: Schema): String = {
@@ -44,17 +44,19 @@ private[avro2s] object TypeHelpers {
     }
   }
 
-  def schemaToScalaType(schema: Schema): String = {
+  def schemaToScalaType(schema: Schema, useLogical: Boolean): String = {
     schema.getType match {
-      case UNION => unionSchemasToType(schemas(schema)).toString
+      case UNION => unionSchemasToType(schemas(schema)).asString(typeHelpers = this)
       case RECORD => schema.getFullName
       case ENUM => schema.getFullName
-      case FIXED => schema.getFullName
-      case ARRAY => s"List[${schemaToScalaType(schema.getElementType)}]"
+      case FIXED => ltc.getType(schema, schema.getFullName)
+      case ARRAY => s"List[${schemaToScalaType(schema.getElementType, useLogical)}]"
       case MAP =>
-        val valueType = schemaToScalaType(schema.getValueType)
+        val valueType = schemaToScalaType(schema.getValueType, useLogical)
         s"Map[String, $valueType]"
-      case other => simpleTypeToScala(other)
+      case other => 
+        if (useLogical) ltc.getType(schema, simpleTypeToScala(other))
+        else simpleTypeToScala(other)
     }
   }
 
@@ -88,16 +90,16 @@ private[avro2s] object TypeHelpers {
 
 
   sealed trait UnionRepresentation {
-    def toString: String
+    def asString(typeHelpers: TypeHelpers): String
   }
 
   object UnionRepresentation {
     final case class TypeUnionRepresentation(types: List[Schema]) extends UnionRepresentation {
-      override def toString: String = types.map(schemaToScalaType).mkString(" | ")
+      override def asString(typeHelpers: TypeHelpers): String = types.map(typeHelpers.schemaToScalaType(_, useLogical = true)).mkString(" | ")
     }
 
     final case class OptionRepresentation(`type`: Schema) extends UnionRepresentation {
-      override def toString: String = s"Option[${schemaToScalaType(`type`)}]"
+      override def asString(typeHelpers: TypeHelpers): String = s"Option[${typeHelpers.schemaToScalaType(`type`, useLogical = true)}]"
     }
   }
 }

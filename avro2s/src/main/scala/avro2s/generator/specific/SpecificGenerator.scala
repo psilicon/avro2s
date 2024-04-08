@@ -1,23 +1,24 @@
 package avro2s.generator.specific
 
-import avro2s.error.Error.{NotImplementedError, SchemaError}
-import avro2s.generator.GeneratedCode
+import avro2s.error.Error.SchemaError
 import avro2s.generator.javagenerator.JavaGenericEnumGenerator.schemaToJavaEnum
 import avro2s.generator.specific.scala2.fixed.SpecificFixedGenerator.schemaToScala2Fixed
-import avro2s.generator.specific.scala2.record.SpecificRecordGenerator.schemaToScala2Record
-import avro2s.generator.specific.scala3.record.SpecificRecordGenerator.schemaToScala3Record
+import avro2s.generator.{GeneratedCode, GeneratorConfig}
 import avro2s.language.ScalaVersion
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type.{ENUM, FIXED, RECORD}
 
-private[avro2s] object SpecificGenerator {
+private[avro2s] class SpecificGenerator(generatorConfig: GeneratorConfig) {
+  private val scala2SpecificGenerator = new scala2.record.SpecificRecordGenerator(generatorConfig)
+  private val scala3SpecificGenerator = new scala3.record.SpecificRecordGenerator(generatorConfig)
+  import scala2SpecificGenerator._
+  import scala3SpecificGenerator._
 
   def compile(
     schema: Schema,
-    namespace: Option[String],
-    targetScalaVersion: ScalaVersion): GeneratedCode = {
+    namespace: Option[String]): GeneratedCode = {
 
-    targetScalaVersion match {
+    generatorConfig.targetScalaVersion match {
       case ScalaVersion.Scala_2_13 => compileScala2(schema, namespace)
       case ScalaVersion.Scala_3 => compileScala3(schema, namespace)
     }
