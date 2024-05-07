@@ -395,7 +395,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
             (key, {
               value match {
                 case null => None
-                case x: org.apache.avro.util.Utf8 => Some(x.toString.asInstanceOf[String])
+                case x: org.apache.avro.util.Utf8 => Some(x.toString)
               }
             })
           }
@@ -413,7 +413,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                 value match {
                   case null => None
-                  case x: org.apache.avro.util.Utf8 => Some(x.toString.asInstanceOf[String])
+                  case x: org.apache.avro.util.Utf8 => Some(x.toString)
                 }
               }).toList
             }
@@ -545,27 +545,27 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 18 => value match {
         case null => this._optional_string = None
-        case x: org.apache.avro.util.Utf8 => this._optional_string = Some(x.toString.asInstanceOf[String])
+        case x: org.apache.avro.util.Utf8 => this._optional_string = Some(x.toString)
       }
       case 19 => value match {
         case null => this._optional_int = None
-        case x: Int => this._optional_int = Some(x.asInstanceOf[Int])
+        case x: Int => this._optional_int = Some(x)
       }
       case 20 => value match {
         case null => this._optional_long = None
-        case x: Long => this._optional_long = Some(x.asInstanceOf[Long])
+        case x: Long => this._optional_long = Some(x)
       }
       case 21 => value match {
         case null => this._optional_float = None
-        case x: Float => this._optional_float = Some(x.asInstanceOf[Float])
+        case x: Float => this._optional_float = Some(x)
       }
       case 22 => value match {
         case null => this._optional_double = None
-        case x: Double => this._optional_double = Some(x.asInstanceOf[Double])
+        case x: Double => this._optional_double = Some(x)
       }
       case 23 => value match {
         case null => this._optional_boolean = None
-        case x: Boolean => this._optional_boolean = Some(x.asInstanceOf[Boolean])
+        case x: Boolean => this._optional_boolean = Some(x)
       }
       case 24 => value match {
         case null => this._optional_bytes = None

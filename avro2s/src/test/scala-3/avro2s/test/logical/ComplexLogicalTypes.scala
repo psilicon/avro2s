@@ -238,11 +238,11 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
       }
       case 4 => value match {
         case null => this._option = None
-        case x: org.apache.avro.util.Utf8 => this._option = Some({java.util.UUID.fromString(x.toString)}.asInstanceOf[java.util.UUID])
+        case x: org.apache.avro.util.Utf8 => this._option = Some({java.util.UUID.fromString(x.toString)})
       }
       case 5 => value match {
         case null => this._option_alt = None
-        case x: Int => this._option_alt = Some({java.time.LocalDate.ofEpochDay(x)}.asInstanceOf[java.time.LocalDate])
+        case x: Int => this._option_alt = Some({java.time.LocalDate.ofEpochDay(x)})
       }
       case 6 => this._map_union = {
         value match {
@@ -270,7 +270,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               (key, {
                 value match {
                   case null => None
-                  case x: Long => Some({java.time.Instant.ofEpochMilli(x)}.asInstanceOf[java.time.Instant])
+                  case x: Long => Some({java.time.Instant.ofEpochMilli(x)})
                 }
               })
             }
@@ -387,7 +387,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)}.asInstanceOf[java.util.UUID])
+                case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
               }
             }).toList
           }
@@ -398,7 +398,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: Int => Some({java.time.LocalDate.ofEpochDay(x)}.asInstanceOf[java.time.LocalDate])
+                case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
               }
             }).toList
           }

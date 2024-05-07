@@ -233,7 +233,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
                 val x = toStringConverter("x", schema)
                 val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
                 printer
-                  .add(s"case $xCase => this.$fieldName = Some(${ltc.toType(schema, x)}.asInstanceOf[${schemaToScalaType(schema, true)}])")
+                  .add(s"case $xCase => this.$fieldName = Some(${ltc.toType(schema, x)})")
             }
           }
     }
@@ -264,7 +264,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
         printer.add(
           s"""case null => None
-             |case $xCase => Some(${ltc.toTypeWithFallback(schema, x, fallback)}.asInstanceOf[${schemaToScalaType(schema, true)}])""".stripMargin
+             |case $xCase => Some(${ltc.toTypeWithFallback(schema, x, fallback)})""".stripMargin
         )
     }
   }
