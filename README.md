@@ -34,7 +34,7 @@ object Demo extends App {
   CodeGenerator.generateCode(
     "input_directory",
     "output_directory",
-    ScalaVersion.Scala_2_13
+    GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled = true)
   )
 }  
 ```

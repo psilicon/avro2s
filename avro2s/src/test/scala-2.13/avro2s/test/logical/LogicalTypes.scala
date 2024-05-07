@@ -12,8 +12,8 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {_uuid.toString}.asInstanceOf[AnyRef]
-      case 1 => {_date.toEpochDay}.asInstanceOf[AnyRef]
-      case 2 => {_time_millis.toNanoOfDay / 1000000L}.asInstanceOf[AnyRef]
+      case 1 => {_date.toEpochDay.toInt}.asInstanceOf[AnyRef]
+      case 2 => {(_time_millis.toNanoOfDay / 1000000L).toInt}.asInstanceOf[AnyRef]
       case 3 => {_time_micros.toNanoOfDay / 1000L}.asInstanceOf[AnyRef]
       case 4 => {_timestamp_millis.toEpochMilli}.asInstanceOf[AnyRef]
       case 5 => {(_timestamp_micros.getEpochSecond * 1000000L) + (_timestamp_micros.getNano / 1000L)}.asInstanceOf[AnyRef]

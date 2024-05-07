@@ -13,32 +13,16 @@
         }
       }
     },
-//    {
-//      "name": "_map_fixed",
-//      "type": {
-//        "type": "map",
-//        "values": {
-//          "type": "fixed",
-//          "name": "FixedDecimal",
-//          "size": 2,
-//          "logicalType": "decimal",
-//          "precision": 4,
-//          "scale": 2
-//        }
-//      }
-//    },
-//    {
-//      "name": "_map_bytes",
-//      "type": {
-//        "type": "map",
-//        "values": {
-//          "type": "bytes",
-//          "logicalType": "decimal",
-//          "precision": 4,
-//          "scale": 2
-//        }
-//      }
-//    },
+    {
+      "name": "_map_alt",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "int",
+          "logicalType": "date"
+        }
+      }
+    },
     {
       "name": "_array",
       "type": {
@@ -49,27 +33,6 @@
         }
       }
     },
-//    {
-//      "name": "_array_fixed",
-//      "type": {
-//        "type": "array",
-//        "items": {
-//          "type": "avro2s.test.logical.FixedDecimal"
-//        }
-//      }
-//    },
-//    {
-//      "name": "_array_bytes",
-//      "type": {
-//        "type": "array",
-//        "items": {
-//          "type": "bytes",
-//          "logicalType": "decimal",
-//          "precision": 4,
-//          "scale": 2
-//        }
-//      }
-//    },
     {
       "name": "_union",
       "type": [
@@ -80,33 +43,6 @@
         }
       ]
     },
-//    {
-//      "name": "_union_fixed",
-//      "type": [
-//        {
-//          "type": "avro2s.test.logical.FixedDecimal"
-//        },
-//        {
-//          "type": "long",
-//          "logicalType": "timestamp-millis"
-//        }
-//      ]
-//    },
-//    {
-//      "name": "_union_bytes",
-//      "type": [
-//        {
-//          "type": "bytes",
-//          "logicalType": "decimal",
-//          "precision": 4,
-//          "scale": 2
-//        },
-//        {
-//          "type": "long",
-//          "logicalType": "timestamp-millis"
-//        }
-//      ]
-//    },
     {
       "name": "_option",
       "type": [
@@ -117,27 +53,16 @@
         }
       ]
     },
-//    {
-//      "name": "_option_fixed",
-//      "type": [
-//        "null",
-//        {
-//          "type": "avro2s.test.logical.FixedDecimal"
-//        }
-//      ]
-//    },
-//    {
-//      "name": "_option_bytes",
-//      "type": [
-//        "null",
-//        {
-//          "type": "bytes",
-//          "logicalType": "decimal",
-//          "precision": 4,
-//          "scale": 2
-//        }
-//      ]
-//    },
+    {
+      "name": "_option_alt",
+      "type": [
+        "null",
+        {
+          "type": "int",
+          "logicalType": "date"
+        }
+      ]
+    },
     {
       "name": "_map_union",
       "type": {
@@ -151,33 +76,19 @@
         ]
       }
     },
-//    {
-//      "name": "_map_union_fixed",
-//      "type": {
-//        "type": "map",
-//        "values": [
-//          "int",
-//          {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        ]
-//      }
-//    },
-//    {
-//      "name": "_map_union_bytes",
-//      "type": {
-//        "type": "map",
-//        "values": [
-//          "int",
-//          {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        ]
-//      }
-//    },
+    {
+      "name": "_map_option",
+      "type": {
+        "type": "map",
+        "values": [
+          "null",
+          {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+          }
+        ]
+      }
+    },
     {
       "name": "_map_array",
       "type": {
@@ -191,33 +102,6 @@
         }
       }
     },
-//    {
-//      "name": "_map_array_fixed",
-//      "type": {
-//        "type": "map",
-//        "values": {
-//          "type": "array",
-//          "items": {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        }
-//      }
-//    },
-//    {
-//      "name": "_map_array_bytes",
-//      "type": {
-//        "type": "map",
-//        "values": {
-//          "type": "array",
-//          "items": {
-//              "type": "bytes",
-//              "logicalType": "decimal",
-//              "precision": 4,
-//              "scale": 2
-//          }
-//        }
-//      }
-//    },
     {
       "name": "_union_map",
       "type": [
@@ -231,33 +115,19 @@
         }
       ]
     },
-//    {
-//      "name": "_union_map_fixed",
-//      "type": [
-//        "int",
-//        {
-//          "type": "map",
-//          "values": {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        }
-//      ]
-//    },
-//    {
-//      "name": "_union_map_bytes",
-//      "type": [
-//        "int",
-//        {
-//          "type": "map",
-//          "values": {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        }
-//      ]
-//    },
+    {
+      "name": "_union_map_alt",
+      "type": [
+        "int",
+        {
+          "type": "map",
+          "values": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ]
+    },
     {
       "name": "_union_array",
       "type": [
@@ -271,33 +141,6 @@
         }
       ]
     },
-//    {
-//      "name": "_union_array_fixed",
-//      "type": [
-//        "int",
-//        {
-//          "type": "array",
-//          "items": {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        }
-//      ]
-//    },
-//    {
-//      "name": "_union_array_bytes",
-//      "type": [
-//        "int",
-//        {
-//          "type": "array",
-//          "items": {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        }
-//      ]
-//    },
     {
       "name": "_array_map",
       "type": {
@@ -311,33 +154,19 @@
         }
       }
     },
-//    {
-//      "name": "_array_map_fixed",
-//      "type": {
-//        "type": "array",
-//        "items": {
-//          "type": "map",
-//          "values": {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        }
-//      }
-//    },
-//    {
-//      "name": "_array_map_bytes",
-//      "type": {
-//        "type": "array",
-//        "items": {
-//          "type": "map",
-//          "values": {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        }
-//      }
-//    },
+    {
+      "name": "_array_map_alt",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      }
+    },
     {
       "name": "_array_union",
       "type": {
@@ -351,60 +180,6 @@
         ]
       }
     },
-//    {
-//      "name": "_array_union_fixed",
-//      "type": {
-//        "type": "array",
-//        "items": [
-//          "int",
-//          {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        ]
-//      }
-//    },
-//    {
-//      "name": "_array_union_bytes",
-//      "type": {
-//        "type": "array",
-//        "items": [
-//          "int",
-//          {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        ]
-//      }
-//    },
-//    {
-//      "name": "_map_option_fixed",
-//      "type": {
-//        "type": "map",
-//        "values": [
-//          "null",
-//          {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        ]
-//      }
-//    },
-//    {
-//      "name": "_map_option_bytes",
-//      "type": {
-//        "type": "map",
-//        "values": [
-//          "null",
-//          {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        ]
-//      }
-//    },
     {
       "name": "_array_option",
       "type": {
@@ -417,33 +192,19 @@
           }
         ]
       }
+    },
+    {
+      "name": "_array_option_alt",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          {
+            "type": "int",
+            "logicalType": "date"
+          }
+        ]
+      }
     }
-//    {
-//      "name": "_array_option_fixed",
-//      "type": {
-//        "type": "array",
-//        "items": [
-//          "null",
-//          {
-//            "type": "avro2s.test.logical.FixedDecimal"
-//          }
-//        ]
-//      }
-//    },
-//    {
-//      "name": "_array_option_bytes",
-//      "type": {
-//        "type": "array",
-//        "items": [
-//          "null",
-//          {
-//            "type": "bytes",
-//            "logicalType": "decimal",
-//            "precision": 4,
-//            "scale": 2
-//          }
-//        ]
-//      }
-//    }
   ]
 }

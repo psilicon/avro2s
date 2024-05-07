@@ -32,7 +32,7 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
     
     start.get(2) shouldBe 0
-    end.get(2) shouldBe 86399999L
+    end.get(2) shouldBe 86399999
   }
   
   test("time-micros should work at the edges") {
@@ -77,24 +77,29 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endOfFormatRange = java.time.Instant.ofEpochMilli(253402300799999L)
     val postFormatRange = java.time.Instant.ofEpochMilli(253402300800000L)
     val upperBound = java.time.Instant.ofEpochMilli(Long.MaxValue)
+    val startOfEra = java.time.Instant.ofEpochMilli(-62135596800000L)
     startOfEpoch.toString shouldBe "1970-01-01T00:00:00Z"
     endOfFormatRange.toString shouldBe "9999-12-31T23:59:59.999Z"
     postFormatRange.toString shouldBe "+10000-01-01T00:00:00Z"
     upperBound.toString shouldBe "+292278994-08-17T07:12:55.807Z"
+    startOfEra.toString shouldBe "0001-01-01T00:00:00Z"
     
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
     val upper = logicalTypes(upperBound)
+    val era = logicalTypes(startOfEra)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
     
     start.get(4) shouldBe 0L
     end.get(4) shouldBe 253402300799999L
     post.get(4) shouldBe 253402300800000L
     upper.get(4) shouldBe Long.MaxValue
+    era.get(4) shouldBe -62135596800000L
   }
   
   test("timestamp-micros should work at the edges") {
@@ -113,24 +118,29 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endOfFormatRange = java.time.Instant.ofEpochSecond(253402300799L, 999999000)
     val postFormatRange = java.time.Instant.ofEpochSecond(253402300800L, 0)
     val upperBound = java.time.Instant.ofEpochSecond(9223372036854L, 775807000)
+    val startOfEra = java.time.Instant.ofEpochSecond(-62135596800L, 0)
     startOfEpoch.toString shouldBe "1970-01-01T00:00:00Z"
     endOfFormatRange.toString shouldBe "9999-12-31T23:59:59.999999Z"
     postFormatRange.toString shouldBe "+10000-01-01T00:00:00Z"
     upperBound.toString shouldBe "+294247-01-10T04:00:54.775807Z"
+    startOfEra.toString shouldBe "0001-01-01T00:00:00Z"
     
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
     val upper = logicalTypes(upperBound)
+    val era = logicalTypes(startOfEra)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
     
     start.get(5) shouldBe 0L
     end.get(5) shouldBe 253402300799999999L
     post.get(5) shouldBe 253402300800000000L
     upper.get(5) shouldBe Long.MaxValue
+    era.get(5) shouldBe -62135596800000000L
   }
   
   test("local-timestamp-millis should work at the edges") {
@@ -149,24 +159,29 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endOfFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(253402300799999L), java.time.ZoneId.of("UTC"))
     val postFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(253402300800000L), java.time.ZoneId.of("UTC"))
     val upperBound = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(Long.MaxValue), java.time.ZoneId.of("UTC"))
+    val startOfEra = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(-62135596800000L), java.time.ZoneId.of("UTC"))
     startOfEpoch.toString shouldBe "1970-01-01T00:00"
     endOfFormatRange.toString shouldBe "9999-12-31T23:59:59.999"
     postFormatRange.toString shouldBe "+10000-01-01T00:00"
     upperBound.toString shouldBe "+292278994-08-17T07:12:55.807"
+    startOfEra.toString shouldBe "0001-01-01T00:00"
     
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
     val upper = logicalTypes(upperBound)
+    val era = logicalTypes(startOfEra)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
     
     start.get(6) shouldBe 0L
     end.get(6) shouldBe 253402300799999L
     post.get(6) shouldBe 253402300800000L
     upper.get(6) shouldBe Long.MaxValue
+    era.get(6) shouldBe -62135596800000L
   }
   
   test("local-timestamp-micros should work at the edges") {
@@ -185,24 +200,29 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endOfFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(253402300799L, 999999000), java.time.ZoneId.of("UTC"))
     val postFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(253402300800L, 0), java.time.ZoneId.of("UTC"))
     val upperBound = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(9223372036854L, 775807000), java.time.ZoneId.of("UTC"))
+    val startOfEra = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(-62135596800L, 0), java.time.ZoneId.of("UTC"))
     startOfEpoch.toString shouldBe "1970-01-01T00:00"
     endOfFormatRange.toString shouldBe "9999-12-31T23:59:59.999999"
     postFormatRange.toString shouldBe "+10000-01-01T00:00"
     upperBound.toString shouldBe "+294247-01-10T04:00:54.775807"
+    startOfEra.toString shouldBe "0001-01-01T00:00"
     
     
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
     val upper = logicalTypes(upperBound)
+    val era = logicalTypes(startOfEra)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
     
     start.get(7) shouldBe 0L
     end.get(7) shouldBe 253402300799999999L
     post.get(7) shouldBe 253402300800000000L
     upper.get(7) shouldBe Long.MaxValue
+    era.get(7) shouldBe -62135596800000000L
   }
 }

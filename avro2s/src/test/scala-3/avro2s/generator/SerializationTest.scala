@@ -278,16 +278,22 @@ class SerializationTest extends AnyFunSuite with Matchers {
   test("logical complex types can be serialized and deserialized") {
     val logicalComplexTypes = avro2s.test.logical.ComplexLogicalTypes(
       _map = Map("a" -> UUID.randomUUID, "c" -> UUID.randomUUID),
+      _map_alt = Map("a" -> LocalDate.now, "c" -> LocalDate.now),
       _array = List(LocalDate.now),
       _union = Instant.now,
       _option = Some(UUID.randomUUID),
+      _option_alt = Some(LocalDate.now),
       _map_union = Map("a" -> Instant.now, "c" -> 1),
+      _map_option = Map("a" -> Some(Instant.now), "c" -> None),
       _map_array = Map("a" -> List(LocalDate.now, LocalDate.now)),
       _union_map = Map("a" -> UUID.randomUUID),
+      _union_map_alt = Map("a" -> LocalDate.now),
       _union_array = List(LocalDate.now),
       _array_map = List(Map("a" -> UUID.randomUUID), Map("e" -> UUID.randomUUID)),
+      _array_map_alt = List(Map("a" -> LocalDate.now), Map("e" -> LocalDate.now)),
       _array_union = List(Instant.now, 1),
-      _array_option = List(Some(UUID.randomUUID), None)
+      _array_option = List(Some(UUID.randomUUID), None),
+      _array_option_alt = List(Some(LocalDate.now), None)
     )
 
     val serialized = serialize(logicalComplexTypes)
