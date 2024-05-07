@@ -90,7 +90,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       }
       case 11 => value match {
         case null => this._union_nullable = None
-        case x: org.apache.avro.util.Utf8 => this._union_nullable = Some(x.toString.asInstanceOf[String])
+        case x: org.apache.avro.util.Utf8 => this._union_nullable = Some(x.toString)
       }
       case 12 => value match {
         case x: org.apache.avro.util.Utf8 => this._union_other = x.toString
