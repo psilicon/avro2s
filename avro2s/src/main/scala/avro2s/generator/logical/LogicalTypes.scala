@@ -89,7 +89,7 @@ private[avro2s] object LogicalTypes {
   case object Date extends LogicalType("date", Set(INT)) {
     override def toType(value: String, schema: Schema): String = s"java.time.LocalDate.ofEpochDay($value)"
 
-    override def fromType(value: String, schema: Schema): String = s"$value.toEpochDay"
+    override def fromType(value: String, schema: Schema): String = s"$value.toEpochDay.toInt"
 
     override def getType(schema: Schema): String = "java.time.LocalDate"
 
@@ -99,7 +99,7 @@ private[avro2s] object LogicalTypes {
   case object TimeMillisecondPrecision extends LogicalType("time-millis", Set(INT)) {
     override def toType(value: String, schema: Schema): String = s"java.time.LocalTime.ofNanoOfDay($value * 1000000L)"
 
-    override def fromType(value: String, schema: Schema): String = s"$value.toNanoOfDay / 1000000L"
+    override def fromType(value: String, schema: Schema): String = s"($value.toNanoOfDay / 1000000L).toInt"
 
     override def getType(schema: Schema): String = "java.time.LocalTime"
 

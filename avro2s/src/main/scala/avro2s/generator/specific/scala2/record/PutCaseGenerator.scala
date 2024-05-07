@@ -8,6 +8,8 @@ import org.apache.avro.Schema
 import org.apache.avro.Schema.Type
 import org.apache.avro.Schema.Type.{ARRAY, BYTES, ENUM, FIXED, MAP, RECORD, STRING, UNION}
 
+import scala.util.Try
+
 /**
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
@@ -229,8 +231,9 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
                   .add(s"case x: ${schema.getFullName} => this.$fieldName = Some(${ltc.toType(schema, "x")})")
               case _ =>
                 val x = toStringConverter("x", schema)
+                val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
                 printer
-                  .add(s"case x => this.$fieldName = Some(${ltc.toType(schema, x)}.asInstanceOf[${schemaToScalaType(schema, true)}])")
+                  .add(s"case $xCase => this.$fieldName = Some(${ltc.toType(schema, x)}.asInstanceOf[${schemaToScalaType(schema, true)}])")
             }
           }
     }
@@ -258,9 +261,10 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           case STRING => "x.toString"
           case _ => "x"
         }
+        val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
         printer.add(
           s"""case null => None
-             |case x => Some(${ltc.toTypeWithFallback(schema, x, fallback)}.asInstanceOf[${schemaToScalaType(schema, true)}])""".stripMargin
+             |case $xCase => Some(${ltc.toTypeWithFallback(schema, x, fallback)}.asInstanceOf[${schemaToScalaType(schema, true)}])""".stripMargin
         )
     }
   }

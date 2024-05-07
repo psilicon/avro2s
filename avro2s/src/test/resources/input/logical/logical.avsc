@@ -3,26 +3,6 @@
   "namespace": "avro2s.test.logical",
   "name": "LogicalTypes",
   "fields": [
-//    {
-//      "name": "_decimal_bytes",
-//      "type": {
-//        "type": "bytes",
-//        "logicalType": "decimal",
-//        "precision": 4,
-//        "scale": 2
-//      }
-//    },
-//    {
-//      "name": "_decimal_fixed",
-//      "type": {
-//        "type": "fixed",
-//        "size": 2,
-//        "logicalType": "decimal",
-//        "precision": 4,
-//        "scale": 2,
-//        "name": "DecimalFixed"
-//      }
-//    },
     {
       "name": "_uuid",
       "type": {

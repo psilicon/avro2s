@@ -164,7 +164,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       }
       case 3 => value match {
         case null => this._option = None
-        case x => this._option = Some(x.toString.asInstanceOf[String])
+        case x: org.apache.avro.util.Utf8 => this._option = Some(x.toString.asInstanceOf[String])
       }
       case 4 => this._map_union = {
         value match {
@@ -262,7 +262,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x => Some(x.toString.asInstanceOf[String])
+                case x: org.apache.avro.util.Utf8 => Some(x.toString.asInstanceOf[String])
               }
             }).toList
           }
