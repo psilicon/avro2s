@@ -127,6 +127,15 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
       testResult(code, expectedCode)
     }
   }
+  
+  test("complex options schema should produce expected output") {
+    val code = generateCode("input/unions/complex-options.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("unions", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
 
   def generateCode(path: String, logicalTypesEnabled: Boolean = true): List[GeneratedCode] = {
     val generatorConfig = GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled)
