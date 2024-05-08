@@ -212,6 +212,20 @@
         "type": "map",
         "values": "null"
       }
+    },
+    {
+      "name": "_map_of_union_of_array",
+      "type": {
+        "type": "map",
+        "values": [
+          {
+            "type": "array",
+            "items": "string"
+          },
+          "int",
+          "null"
+        ]
+      }
     }
   ]
 }

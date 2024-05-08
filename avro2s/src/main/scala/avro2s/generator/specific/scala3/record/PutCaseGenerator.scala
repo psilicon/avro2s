@@ -243,8 +243,16 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
     union match {
       case TypeUnionRepresentation(types) => printer.add({
         types.map { t =>
-          if (t.getType == RECORD) s"case x: ${t.getFullName} => x"
-          else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t, union).result()
+          if (t.getType == RECORD || t.getType == ENUM) s"case x: ${t.getFullName} => x"
+          else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t).result()
+          else if (t.getType == ARRAY)
+            new FunctionalPrinter()
+              .add(s"case x: java.util.List[_] => {")
+              .indent
+              .call(printArrayValueInner(_, t, Some("x")))
+              .outdent
+              .add("}.toList")
+              .result()
           else {
             t.getType match {
               case Type.STRING => s"case x: org.apache.avro.util.Utf8 => ${ltc.toType(t, "x.toString")}"
@@ -255,12 +263,31 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
       }.mkString("\n"))
       case OptionRepresentation(schema) =>
-        val x = toStringConverter("x", schema)
-        val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
-        printer.add(
-          s"""case null => None
-             |case $xCase => Some(${ltc.toType(schema, x)})""".stripMargin
-        )
+        val nullCasePrinter = printer.add("case null => None")
+        schema.getType match {
+          case MAP => printOptionMapValue(nullCasePrinter, schema)
+          case ARRAY =>
+            nullCasePrinter
+              .add("case x: java.util.List[_] => Some({")
+              .indent
+              .call(printArrayValueInner(_, schema, Some("x")))
+              .outdent
+              .add("}.toList)")
+          case BYTES =>
+            nullCasePrinter
+              .add(s"case x: java.nio.ByteBuffer => Some(${ltc.toTypeWithFallback(schema, "x", "x.array()")})")
+          case RECORD | ENUM =>
+            nullCasePrinter
+              .add(s"case x: ${schema.getFullName} => Some(x)")
+          case FIXED =>
+            nullCasePrinter
+              .add(s"case x: ${schema.getFullName} => Some(${ltc.toType(schema, "x")})")
+          case _ =>
+            val x = toStringConverter("x", schema)
+            val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
+            nullCasePrinter
+              .add(s"case $xCase => Some(${ltc.toType(schema, x)})")
+        }
     }
   }
 
@@ -302,7 +329,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
       .add("})")
   }
 
-  private def printUnionMapValue(functionalPrinter: FunctionalPrinter, schema: Schema, union: UnionRepresentation): FunctionalPrinter = {
+  private def printUnionMapValue(functionalPrinter: FunctionalPrinter, schema: Schema): FunctionalPrinter = {
     functionalPrinter
       .add(s"case map: java.util.Map[_,_] =>")
       .indent
@@ -315,6 +342,25 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
       .call(printMapValueInner(_, schema.getValueType))
       .outdent
       .add("})")
+      .outdent
+      .add("}")
+  }
+  
+  private def printOptionMapValue(functionalPrinter: FunctionalPrinter, schema: Schema): FunctionalPrinter = {
+    functionalPrinter
+      .add(s"case map: java.util.Map[_,_] => Some{")
+      .indent
+      .add("scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>")
+      .indent
+      .add("val key = kvp._1.toString")
+      .add("val value = kvp._2")
+      .add(s"(key, {")
+      .indent
+      .call(printMapValueInner(_, schema.getValueType))
+      .outdent
+      .add("})")
+      .outdent
+      .add("}")
       .outdent
       .add("}")
   }

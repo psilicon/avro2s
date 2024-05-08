@@ -7,8 +7,8 @@ import org.apache.avro.AvroRuntimeException
 import scala.annotation.switch
 import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
-case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_union: Map[String, String :+: Int :+: CNil], var _map_of_union_of_map_of_union: Map[String, String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil], var _map_of_arrays: Map[String, List[String]], var _map_of_arrays_of_maps: Map[String, List[Map[String, Boolean]]], var _map_of_map_of_union: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]], var _map_of_map_of_arrays: Map[String, Map[String, List[String]]], var _map_of_fixed: Map[String, avro2s.test.maps.Fixed], var _map_of_enum: Map[String, avro2s.test.maps.Enum], var _map_of_record: Map[String, avro2s.test.maps.Record], var _map_of_union_of_record: Map[String, avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil], var _map_of_bytes: Map[String, Array[Byte]], var _map_of_string: Map[String, String], var _map_of_int: Map[String, Int], var _map_of_long: Map[String, Long], var _map_of_float: Map[String, Float], var _map_of_double: Map[String, Double], var _map_of_boolean: Map[String, Boolean], var _map_of_null: Map[String, scala.Null]) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty)
+case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_union: Map[String, String :+: Int :+: CNil], var _map_of_union_of_map_of_union: Map[String, String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil], var _map_of_arrays: Map[String, List[String]], var _map_of_arrays_of_maps: Map[String, List[Map[String, Boolean]]], var _map_of_map_of_union: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]], var _map_of_map_of_arrays: Map[String, Map[String, List[String]]], var _map_of_fixed: Map[String, avro2s.test.maps.Fixed], var _map_of_enum: Map[String, avro2s.test.maps.Enum], var _map_of_record: Map[String, avro2s.test.maps.Record], var _map_of_union_of_record: Map[String, avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil], var _map_of_bytes: Map[String, Array[Byte]], var _map_of_string: Map[String, String], var _map_of_int: Map[String, Int], var _map_of_long: Map[String, Long], var _map_of_float: Map[String, Float], var _map_of_double: Map[String, Double], var _map_of_boolean: Map[String, Boolean], var _map_of_null: Map[String, scala.Null], var _map_of_union_of_array: Map[String, List[String] :+: Int :+: scala.Null :+: CNil]) extends org.apache.avro.specific.SpecificRecordBase {
+  def this() = this(Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty)
 
   override def getSchema: org.apache.avro.Schema = Maps.SCHEMA$
 
@@ -309,6 +309,26 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
           val key = kvp._1
           val value = {
             kvp._2
+          }
+          map.put(key, value)
+        }
+        map
+      }.asInstanceOf[AnyRef]
+      case 19 => {
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        _map_of_union_of_array.foreach { kvp =>
+          val key = kvp._1
+          val value = {
+            kvp._2 match {
+              case Inl(x) =>
+              scala.jdk.CollectionConverters.BufferHasAsJava({
+                x.map { x =>x.asInstanceOf[AnyRef]
+                }
+              }.toBuffer).asJava.asInstanceOf[AnyRef]
+              case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+              case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
+              case _ => throw new AvroRuntimeException("Invalid value")
+            }
           }
           map.put(key, value)
         }
@@ -672,10 +692,35 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
           }
         }
       }
+      case 19 => this._map_of_union_of_array = {
+        value match {
+          case map: java.util.Map[_,_] => {
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                value match {
+                  case x: java.util.List[_] => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil]({
+                    x match {
+                      case array: java.util.List[_] =>
+                        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                          value.toString
+                        }).toList
+                      }
+                  }.toList)
+                  case x: Int => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
+                  case x @ null => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Invalid value")
+                }
+              })
+            }
+          }
+        }
+      }
     }
   }
 }
 
 object Maps {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Maps","namespace":"avro2s.test.maps","fields":[{"name":"_map_of_maps","type":{"type":"map","values":{"type":"map","values":"string","default":{}},"default":{}}},{"name":"_map_of_union","type":{"type":"map","values":["string","int"],"default":{}}},{"name":"_map_of_union_of_map_of_union","type":{"type":"map","values":["string","long","boolean",{"type":"map","values":{"type":"map","values":["string","long","boolean","double","null"]}},"null"]}},{"name":"_map_of_arrays","type":{"type":"map","values":{"type":"array","items":"string"}}},{"name":"_map_of_arrays_of_maps","type":{"type":"map","values":{"type":"array","items":{"type":"map","values":"boolean"}}}},{"name":"_map_of_map_of_union","type":{"type":"map","values":{"type":"map","values":["string","long","boolean","double","null"]}}},{"name":"_map_of_map_of_arrays","type":{"type":"map","values":{"type":"map","values":{"type":"array","items":"string"}}}},{"name":"_map_of_fixed","type":{"type":"map","values":{"type":"fixed","name":"Fixed","size":2}}},{"name":"_map_of_enum","type":{"type":"map","values":{"type":"enum","name":"Enum","symbols":["A","B","C"]}}},{"name":"_map_of_record","type":{"type":"map","values":{"type":"record","name":"Record","fields":[{"name":"a","type":"string"}]}}},{"name":"_map_of_union_of_record","type":{"type":"map","values":["Record","int","null"],"default":{}}},{"name":"_map_of_bytes","type":{"type":"map","values":"bytes"}},{"name":"_map_of_string","type":{"type":"map","values":"string"}},{"name":"_map_of_int","type":{"type":"map","values":"int"}},{"name":"_map_of_long","type":{"type":"map","values":"long"}},{"name":"_map_of_float","type":{"type":"map","values":"float"}},{"name":"_map_of_double","type":{"type":"map","values":"double"}},{"name":"_map_of_boolean","type":{"type":"map","values":"boolean"}},{"name":"_map_of_null","type":{"type":"map","values":"null"}}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Maps","namespace":"avro2s.test.maps","fields":[{"name":"_map_of_maps","type":{"type":"map","values":{"type":"map","values":"string","default":{}},"default":{}}},{"name":"_map_of_union","type":{"type":"map","values":["string","int"],"default":{}}},{"name":"_map_of_union_of_map_of_union","type":{"type":"map","values":["string","long","boolean",{"type":"map","values":{"type":"map","values":["string","long","boolean","double","null"]}},"null"]}},{"name":"_map_of_arrays","type":{"type":"map","values":{"type":"array","items":"string"}}},{"name":"_map_of_arrays_of_maps","type":{"type":"map","values":{"type":"array","items":{"type":"map","values":"boolean"}}}},{"name":"_map_of_map_of_union","type":{"type":"map","values":{"type":"map","values":["string","long","boolean","double","null"]}}},{"name":"_map_of_map_of_arrays","type":{"type":"map","values":{"type":"map","values":{"type":"array","items":"string"}}}},{"name":"_map_of_fixed","type":{"type":"map","values":{"type":"fixed","name":"Fixed","size":2}}},{"name":"_map_of_enum","type":{"type":"map","values":{"type":"enum","name":"Enum","symbols":["A","B","C"]}}},{"name":"_map_of_record","type":{"type":"map","values":{"type":"record","name":"Record","fields":[{"name":"a","type":"string"}]}}},{"name":"_map_of_union_of_record","type":{"type":"map","values":["Record","int","null"],"default":{}}},{"name":"_map_of_bytes","type":{"type":"map","values":"bytes"}},{"name":"_map_of_string","type":{"type":"map","values":"string"}},{"name":"_map_of_int","type":{"type":"map","values":"int"}},{"name":"_map_of_long","type":{"type":"map","values":"long"}},{"name":"_map_of_float","type":{"type":"map","values":"float"}},{"name":"_map_of_double","type":{"type":"map","values":"double"}},{"name":"_map_of_boolean","type":{"type":"map","values":"boolean"}},{"name":"_map_of_null","type":{"type":"map","values":"null"}},{"name":"_map_of_union_of_array","type":{"type":"map","values":[{"type":"array","items":"string"},"int","null"]}}]}""")
 }

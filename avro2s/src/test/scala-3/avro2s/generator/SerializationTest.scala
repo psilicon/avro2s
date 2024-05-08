@@ -156,6 +156,11 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _map_of_double = Map("a" -> 1.0, "b" -> 2.0),
       _map_of_boolean = Map("a" -> true, "b" -> false),
       _map_of_null = Map("a" -> null, "b" -> null),
+      _map_of_union_of_array = Map(
+        "a" -> List("b", "c", "d"),
+        "b" -> 1,
+        "c" -> null,
+      ),
     )
 
     deserialize[Maps](serialize(maps), maps.getSchema) shouldBe maps
@@ -317,5 +322,24 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
     val serialized = serialize(logicalComplexTypesDisabled)
     deserialize[avro2s.test.logical.ComplexLogicalTypesDisabled](serialized, logicalComplexTypesDisabled.getSchema) shouldBe logicalComplexTypesDisabled
+  }
+
+  test("complex options can be serialized and deserialized") {
+    val complexOptions = avro2s.test.unions.ComplexOptions(
+      _map_of_option_of_record = Map("a" -> Some(avro2s.test.unions.RecordForComplexOptions(field1 = "b")), "c" -> None),
+      _map_of_option_of_map = Map("a" -> Some(Map("b" -> "c", "d" -> "e")), "f" -> None),
+      _map_of_option_of_array = Map("a" -> Some(List("b", "c")), "d" -> None),
+      _array_of_option_of_record = List[Option[avro2s.test.unions.RecordForComplexOptions]](Some(avro2s.test.unions.RecordForComplexOptions(field1 = "a")), None),
+      _array_of_option_of_map = List[Option[Map[String, String]]](Some(Map("a" -> "b", "c" -> "d")), None),
+      _array_of_option_of_array = List[Option[List[String]]](Some(List("a", "b", "c")), Some(List("d", "e", "f")), None),
+      _array_of_map_of_option_of_record = List(Map("a" -> Some(avro2s.test.unions.RecordForComplexOptions(field1 = "b")), "c" -> None)),
+      _map_of_array_of_option_of_record = Map("a" -> List(Some(avro2s.test.unions.RecordForComplexOptions(field1 = "b")), None)),
+      _map_of_option_of_bytes = Map("a" -> Some(Array[Byte](0x6f, 0x6e)), "b" -> None),
+      _map_of_option_of_fixed = Map("a" -> Some(avro2s.test.unions.FixedForComplexOptions()), "b" -> None),
+      _map_of_option_of_enum = Map("a" -> Some(avro2s.test.unions.EnumForComplexOptions.A), "b" -> None),
+    )
+
+    val serialized = serialize(complexOptions)
+    deserialize[avro2s.test.unions.ComplexOptions](serialized, complexOptions.getSchema) shouldBe complexOptions
   }
 }
