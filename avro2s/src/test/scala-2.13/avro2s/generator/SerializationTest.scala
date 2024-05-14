@@ -130,11 +130,12 @@ class SerializationTest extends AnyFunSuite with Matchers {
   }
 
   test("unions can be serialized and deserialized") {
+    type Union0 = String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil
     type Union1 = String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil
     type Union2 = String :+: Long :+: Boolean :+: Map[String, Map[String, Union1]] :+: scala.Null :+: CNil
     type Union3 = String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil
     type Union4 = String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil
-    type Union5 = String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil] :+: scala.Null :+: CNil
+    type Union5 = String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil
     type Union6 = String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil
     type Union7 = String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil
     type Union8 = String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil
@@ -153,7 +154,7 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _union_of_map_of_union = Coproduct[Union2](Map("a" -> Map("b" -> Coproduct[Union1]("c"), "d" -> Coproduct[Union1](1L), "e" -> Coproduct[Union1](true), "f" -> Coproduct[Union1](1.0), "g" -> Coproduct[Union1](null)))),
       _union_of_map_of_option = Coproduct[Union3](Map("a" -> Some("b"), "c" -> None)),
       _union_of_array_of_option = Coproduct[Union4](List(Some("a"), None)),
-      _union_of_array_of_union = Coproduct[Union5](List(Coproduct[Union1]("a"), Coproduct[Union1](1L), Coproduct[Union1](true), Coproduct[Union1](1.0), Coproduct[Union1](null))),
+      _union_of_array_of_union = Coproduct[Union5](List(Coproduct[Union0]("a"), Coproduct[Union0](1L), Coproduct[Union0](true), Coproduct[Union0](1.0), Coproduct[Union0](null), Coproduct[Union0](Array[Byte](0x6f, 0x6e)))),
       _union_of_array_of_array = Coproduct[Union6](List(List(Coproduct[Union1]("a"), Coproduct[Union1](1L), Coproduct[Union1](true), Coproduct[Union1](1.0), Coproduct[Union1](null)), List(Coproduct[Union1]("b"), Coproduct[Union1](2L), Coproduct[Union1](false), Coproduct[Union1](2.0), Coproduct[Union1](null)))),
       _union_of_records = Coproduct[Union7](avro2s.test.unions.Record1(field1 = "a")),
       _union_of_enum = Coproduct[Union8](avro2s.test.unions.Enum1.sym2),

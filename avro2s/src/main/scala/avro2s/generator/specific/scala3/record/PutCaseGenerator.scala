@@ -245,6 +245,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         types.map { t =>
           if (t.getType == RECORD || t.getType == ENUM) s"case x: ${t.getFullName} => x"
           else if (t.getType == MAP) printUnionMapValue(new FunctionalPrinter(), t).result()
+          else if (t.getType == BYTES) s"case x: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(t, "x", "x.array()")}"
           else if (t.getType == ARRAY)
             new FunctionalPrinter()
               .add(s"case x: java.util.List[_] => {")

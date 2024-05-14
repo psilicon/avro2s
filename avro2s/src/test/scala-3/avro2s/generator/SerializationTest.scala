@@ -16,11 +16,11 @@ import java.util.UUID
 class SerializationTest extends AnyFunSuite with Matchers {
   test("unions can be serialized and deserialized") {
     val unions = Unions(
-      _union_of_map_of_union = null,
+      _union_of_map_of_union = Map("a" -> Map("b" -> "c", "d" -> 1L, "e" -> true, "f" -> 1.0, "g" -> null)),
       _union_of_map_of_option = Map("a" -> Some("b"), "c" -> None),
       _union_of_array_of_option = List(Some("a"), None),
-      _union_of_array_of_union = null,
-      _union_of_array_of_array = null,
+      _union_of_array_of_union = List("a", 1L, true, 1.0, null, Array[Byte](0x6f, 0x6e)),
+      _union_of_array_of_array = List(List("a", 1L, true, 1.0, null)),
       _union_of_records = avro2s.test.unions.Record1(field1 = "a"),
       _union_of_enum = avro2s.test.unions.Enum1.sym2,
       _union_of_fixed = 0x6f,
@@ -47,8 +47,8 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _optional_array_of_map = Option(List(Map("a" -> "b", "c" -> "d"), Map("e" -> "f", "g" -> "h"))),
       _optional_map_of_map = Option(Map("a" -> Map("b" -> "c", "d" -> "e"), "f" -> Map("g" -> "h", "i" -> "j"))),
       _optional_array_of_array = Option(List(List("a", "b", "c"), List("d", "e", "f"))),
-      _optional_map_of_union = Option(Map("a" -> null)),
-      _optional_array_of_union = Option(List(null)),
+      _optional_map_of_union = Option(Map("a" -> "b", "c" -> 1L, "d" -> true, "e" -> 1.0, "f" -> null)),
+      _optional_array_of_union = Option(List("a", 1L, true, 1.0, null)),
     )
 
     deserialize[Unions](serialize(unions), unions.getSchema) shouldBe unions
