@@ -12,7 +12,7 @@ import scala.util.Using
 
 class CodeGeneratorTest extends AnyFunSuite with Matchers {
   test("avro spec schema should produce expected output") {
-    val code = generateCode("input/spec/spec.avsc")
+    val code = generateCode("input/default/spec/spec.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("spec", code.path.split("/").last)
@@ -21,7 +21,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("arrays schema should produce expected output") {
-    val code = generateCode("input/arrays/arrays.avsc")
+    val code = generateCode("input/default/arrays/arrays.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("arrays", code.path.split("/").last)
@@ -30,7 +30,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("maps schema should produce expected output") {
-    val code = generateCode("input/maps/maps.avsc")
+    val code = generateCode("input/default/maps/maps.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("maps", code.path.split("/").last)
@@ -39,7 +39,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("namespaces schema should produce expected output") {
-    val code = generateCode("input/namespaces/namespaces.avsc")
+    val code = generateCode("input/default/namespaces/namespaces.avsc")
 
     code.foreach { code =>
       if (code.path.contains("explicit")) {
@@ -57,7 +57,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("unions schema should produce expected output") {
-    val code = generateCode("input/unions/unions.avsc")
+    val code = generateCode("input/default/unions/unions.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)
@@ -66,7 +66,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("reserved schema should produce expected output") {
-    val code = generateCode("input/reserved/reserved-scala-2.avsc")
+    val code = generateCode("input/scala-2.13/reserved/reserved-scala-2.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("reserved", code.path.split("/").last)
@@ -75,7 +75,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
   
   test("options with null as second type should produce expected output") {
-    val code = generateCode("input/unions/options-with-null-as-second-type.avsc")
+    val code = generateCode("input/default/unions/options-with-null-as-second-type.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)
@@ -84,7 +84,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
   
   test("logical types should produce expected output") {
-    val code = generateCode("input/logical/logical.avsc")
+    val code = generateCode("input/logical-enabled/logical/logical.avsc", logicalTypesEnabled = true)
 
     code.foreach { code =>
       val expectedCode = loadTestCode("logical", code.path.split("/").last)
@@ -93,7 +93,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
 
   test("logical types disabled should produce expected output") {
-    val code = generateCode("input/logical/logical-disabled.avsc", logicalTypesEnabled = false)
+    val code = generateCode("input/default/logical/logical-disabled.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("logical", code.path.split("/").last)
@@ -102,7 +102,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
   
   test("logical complex types should produce expected output") {
-    val code = generateCode("input/logical/logical-complex.avsc")
+    val code = generateCode("input/logical-enabled/logical/logical-complex.avsc", logicalTypesEnabled = true)
 
     code.foreach { code =>
       val expectedCode = loadTestCode("logical", code.path.split("/").last)
@@ -111,7 +111,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
   
   test("logical complex types disabled should produce expected output") {
-    val code = generateCode("input/logical/logical-complex-disabled.avsc", logicalTypesEnabled = false)
+    val code = generateCode("input/default/logical/logical-complex-disabled.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("logical", code.path.split("/").last)
@@ -120,7 +120,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
   }
   
   test("complex options should produce expected output") {
-    val code = generateCode("input/unions/complex-options.avsc")
+    val code = generateCode("input/default/unions/complex-options.avsc")
 
     code.foreach { code =>
       val expectedCode = loadTestCode("unions", code.path.split("/").last)
@@ -128,7 +128,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     }
   }
 
-  def generateCode(path: String, logicalTypesEnabled: Boolean = true): List[GeneratedCode] = {
+  def generateCode(path: String, logicalTypesEnabled: Boolean = false): List[GeneratedCode] = {
     val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled)
     
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
