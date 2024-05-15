@@ -215,7 +215,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
               (key, {
                 value match {
                   case null => None
-                  case map: java.util.Map[_,_] => Some({
+                  case map: java.util.Map[_,_] => Some{
                     scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                       val key = kvp._1.toString
                       val value = kvp._2
@@ -223,7 +223,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                         value.toString
                       })
                     }
-                  })
+                  }
                 }
               })
             }
@@ -270,7 +270,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case map: java.util.Map[_,_] => Some({
+                case map: java.util.Map[_,_] => Some{
                   scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                     val key = kvp._1.toString
                     val value = kvp._2
@@ -278,7 +278,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                       value.toString
                     })
                   }
-                })
+                }
               }
             }).toList
           }

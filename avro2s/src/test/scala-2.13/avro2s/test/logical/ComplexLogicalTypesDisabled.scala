@@ -157,14 +157,18 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             }).toList
           }
       }
-      case 2 => value match {
-        case x: Int => this._union = Coproduct[Int :+: Long :+: CNil](x)
-        case x: Long => this._union = Coproduct[Int :+: Long :+: CNil](x)
-        case _ => throw new AvroRuntimeException("Invalid value")
+      case 2 => this._union = {
+        value match {
+          case x: Int => Coproduct[Int :+: Long :+: CNil](x)
+          case x: Long => Coproduct[Int :+: Long :+: CNil](x)
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
-      case 3 => value match {
-        case null => this._option = None
-        case x: org.apache.avro.util.Utf8 => this._option = Some(x.toString)
+      case 3 => this._option = {
+        value match {
+          case null => None
+          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+        }
       }
       case 4 => this._map_union = {
         value match {
@@ -201,30 +205,34 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           }
         }
       }
-      case 6 => value match {
-        case x: Int => this._union_map = Coproduct[Int :+: Map[String, String] :+: CNil](x)
-        case map: java.util.Map[_,_] => this._union_map = Coproduct[Int :+: Map[String, String] :+: CNil]({
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
-              value.toString
-            })
-          }
-        })
-        case _ => throw new AvroRuntimeException("Invalid value")
-      }
-      case 7 => value match {
-        case x: Int => this._union_array = Coproduct[Int :+: List[Int] :+: CNil](x)
-        case x: java.util.List[_] => this._union_array = Coproduct[Int :+: List[Int] :+: CNil]({
-          x match {
-            case array: java.util.List[_] =>
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                value.asInstanceOf[Int]
-              }).toList
+      case 6 => this._union_map = {
+        value match {
+          case x: Int => Coproduct[Int :+: Map[String, String] :+: CNil](x)
+          case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, String] :+: CNil]{
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                value.toString
+              })
             }
-        }.toList)
-        case _ => throw new AvroRuntimeException("Invalid value")
+          }
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
+      }
+      case 7 => this._union_array = {
+        value match {
+          case x: Int => Coproduct[Int :+: List[Int] :+: CNil](x)
+          case x: java.util.List[_] => Coproduct[Int :+: List[Int] :+: CNil]({
+            x match {
+              case array: java.util.List[_] =>
+                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                  value.asInstanceOf[Int]
+                }).toList
+              }
+          }.toList)
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
       case 8 => this._array_map = {
         value match {

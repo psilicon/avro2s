@@ -121,8 +121,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .add(s"$valueName match {")
           .indent
           .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array")}")
-          .add("}")
           .outdent
+          .add("}")
       case _ =>
         printer
           .add(ltc.toType(schema, typeCast(valueName, schema)))
