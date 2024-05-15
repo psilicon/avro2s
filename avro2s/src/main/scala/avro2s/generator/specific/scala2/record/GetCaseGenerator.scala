@@ -13,26 +13,46 @@ import org.apache.avro.Schema.Type._
  */
 private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
   val typeHelpers = new TypeHelpers(ltc)
+
   import typeHelpers._
-  
+
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
-      case UNION =>
-        printer
-          .add(s"case $index => ${field.safeName} match {")
-          .indent
-          .call(printUnionPatternMatch(_, unionSchemasToType(schemas(field.schema()))))
-          .outdent
-          .add("}")
-      case BYTES =>
-        printer
-          .add(s"case $index => ${ltc.fromTypeWithFallback(field.schema(), field.safeName, s"java.nio.ByteBuffer.wrap(${field.safeName})")}.asInstanceOf[AnyRef]")
+      case UNION => printUnionCase(printer, index, field)
       case MAP => printMapCase(printer, index, field)
       case ARRAY => printArrayCase(printer, index, field)
-      case _ =>
-        printer
-          .add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")
+      case BYTES => printByteCase(printer, index, field)
+      case _ => printDefaultCase(printer, index, field)
     }
+  }
+
+  private def printUnionCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
+    printer
+      .add(s"case $index => ${field.safeName} match {")
+      .indent
+      .call(printUnionPatternMatch(_, unionSchemasToType(schemas(field.schema()))))
+      .outdent
+      .add("}")
+
+  private def printMapCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
+    printer
+      .add(s"case $index => {")
+      .indent
+      .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
+      .add(s"${field.safeName}.foreach { kvp =>")
+      .indent
+      .add("val key = kvp._1")
+      .add(s"val value = {")
+      .indent
+      .call(printMapValue(_, field.schema().getValueType))
+      .outdent
+      .add("}")
+      .add("map.put(key, value)")
+      .outdent
+      .add("}")
+      .add("map")
+      .outdent
+      .add("}.asInstanceOf[AnyRef]")
   }
 
   private def printArrayCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
@@ -45,6 +65,14 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       .outdent
       .add("}")
       .outdent
+
+  private def printByteCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
+    printer
+      .add(s"case $index => ${ltc.fromTypeWithFallback(field.schema(), field.safeName, s"java.nio.ByteBuffer.wrap(${field.safeName})")}.asInstanceOf[AnyRef]")
+
+  private def printDefaultCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
+    printer
+      .add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")
 
   private def printArrayValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
     val value = valueName.getOrElse("array")
@@ -105,27 +133,6 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
           .outdent
           .add("}.toBuffer).asJava")
     }
-  }
-
-  private def printMapCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
-    printer
-      .add(s"case $index => {")
-      .indent
-      .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
-      .add(s"${field.safeName}.foreach { kvp =>")
-      .indent
-      .add("val key = kvp._1")
-      .add(s"val value = {")
-      .indent
-      .call(printMapValue(_, field.schema().getValueType))
-      .outdent
-      .add("}")
-      .add("map.put(key, value)")
-      .outdent
-      .add("}")
-      .add("map")
-      .outdent
-      .add("}.asInstanceOf[AnyRef]")
   }
 
   private def printMapValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {

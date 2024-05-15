@@ -238,18 +238,24 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             }).toList
           }
       }
-      case 3 => value match {
-        case x: Int => this._union = Coproduct[Int :+: java.time.Instant :+: CNil](x)
-        case x: Long => this._union = Coproduct[Int :+: java.time.Instant :+: CNil]({java.time.Instant.ofEpochMilli(x)})
-        case _ => throw new AvroRuntimeException("Invalid value")
+      case 3 => this._union = {
+        value match {
+          case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
+          case x: Long => Coproduct[Int :+: java.time.Instant :+: CNil]({java.time.Instant.ofEpochMilli(x)})
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
-      case 4 => value match {
-        case null => this._option = None
-        case x: org.apache.avro.util.Utf8 => this._option = Some({java.util.UUID.fromString(x.toString)})
+      case 4 => this._option = {
+        value match {
+          case null => None
+          case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
+        }
       }
-      case 5 => value match {
-        case null => this._option_alt = None
-        case x: Int => this._option_alt = Some({java.time.LocalDate.ofEpochDay(x)})
+      case 5 => this._option_alt = {
+        value match {
+          case null => None
+          case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
+        }
       }
       case 6 => this._map_union = {
         value match {
@@ -302,43 +308,49 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           }
         }
       }
-      case 9 => value match {
-        case x: Int => this._union_map = Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil](x)
-        case map: java.util.Map[_,_] => this._union_map = Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil]({
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
-              {java.util.UUID.fromString(value.toString)}
-            })
-          }
-        })
-        case _ => throw new AvroRuntimeException("Invalid value")
-      }
-      case 10 => value match {
-        case x: Int => this._union_map_alt = Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil](x)
-        case map: java.util.Map[_,_] => this._union_map_alt = Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil]({
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
-              {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-            })
-          }
-        })
-        case _ => throw new AvroRuntimeException("Invalid value")
-      }
-      case 11 => value match {
-        case x: Int => this._union_array = Coproduct[Int :+: List[java.time.LocalDate] :+: CNil](x)
-        case x: java.util.List[_] => this._union_array = Coproduct[Int :+: List[java.time.LocalDate] :+: CNil]({
-          x match {
-            case array: java.util.List[_] =>
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-              }).toList
+      case 9 => this._union_map = {
+        value match {
+          case x: Int => Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil](x)
+          case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil]{
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                {java.util.UUID.fromString(value.toString)}
+              })
             }
-        }.toList)
-        case _ => throw new AvroRuntimeException("Invalid value")
+          }
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
+      }
+      case 10 => this._union_map_alt = {
+        value match {
+          case x: Int => Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil](x)
+          case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil]{
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+              })
+            }
+          }
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
+      }
+      case 11 => this._union_array = {
+        value match {
+          case x: Int => Coproduct[Int :+: List[java.time.LocalDate] :+: CNil](x)
+          case x: java.util.List[_] => Coproduct[Int :+: List[java.time.LocalDate] :+: CNil]({
+            x match {
+              case array: java.util.List[_] =>
+                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                  {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+                }).toList
+              }
+          }.toList)
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
       case 12 => this._array_map = {
         value match {

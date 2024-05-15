@@ -232,7 +232,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-                }
+              }
             }).toList
           }
       }

@@ -391,7 +391,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
                   case x: Long => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
                   case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-                  case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]({
+                  case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]{
                     scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                       val key = kvp._1.toString
                       val value = kvp._2
@@ -416,7 +416,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                         }
                       })
                     }
-                  })
+                  }
                   case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
                   case _ => throw new AvroRuntimeException("Invalid value")
                 }
