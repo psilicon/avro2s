@@ -384,7 +384,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   case x: org.apache.avro.util.Utf8 => x.toString
                   case x: Long => x
                   case x: Boolean => x
-                  case map: java.util.Map[_,_] =>
+                  case map: java.util.Map[_,_] => {
                     scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                       val key = kvp._1.toString
                       val value = kvp._2
@@ -409,6 +409,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                         }
                       })
                     }
+                  }
                   case null => null
                   case _ => throw new AvroRuntimeException("Invalid value")
                 }
@@ -587,7 +588,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               (key, {
                 value match {
                   case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-                  }
+                }
               })
             }
           }

@@ -62,9 +62,11 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 3 => this._long = value.asInstanceOf[Long]
       case 4 => this._float = value.asInstanceOf[Float]
       case 5 => this._double = value.asInstanceOf[Double]
-      case 6 => this._bytes = value match {
-        case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      case 6 => this._bytes = {
+        value match {
+          case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
         }
+      }
       case 7 => this._string = value.toString.asInstanceOf[String]
       case 8 => this._enum = value.asInstanceOf[avro2s.test.spec.Suit]
       case 9 => this._array = {
@@ -88,14 +90,18 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
           }
         }
       }
-      case 11 => value match {
-        case null => this._union_nullable = None
-        case x: org.apache.avro.util.Utf8 => this._union_nullable = Some(x.toString)
+      case 11 => this._union_nullable = {
+        value match {
+          case null => None
+          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+        }
       }
-      case 12 => value match {
-        case x: org.apache.avro.util.Utf8 => this._union_other = x.toString
-        case x: Int => this._union_other = x
-        case _ => throw new AvroRuntimeException("Invalid value")
+      case 12 => this._union_other = {
+        value match {
+          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: Int => x
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
       case 13 => this._fixed = value.asInstanceOf[avro2s.test.spec.md5]
     }

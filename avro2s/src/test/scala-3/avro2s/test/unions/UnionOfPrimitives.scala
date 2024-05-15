@@ -24,11 +24,13 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => value match {
-        case x: Long => this._primitives = x
-        case x: Boolean => this._primitives = x
-        case x: Int => this._primitives = x
-        case _ => throw new AvroRuntimeException("Invalid value")
+      case 0 => this._primitives = {
+        value match {
+          case x: Long => x
+          case x: Boolean => x
+          case x: Int => x
+          case _ => throw new AvroRuntimeException("Invalid value")
+        }
       }
     }
   }

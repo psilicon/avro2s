@@ -52,20 +52,24 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => value match {
-        case null => this._simple = None
-        case x: org.apache.avro.util.Utf8 => this._simple = Some(x.toString)
+      case 0 => this._simple = {
+        value match {
+          case null => None
+          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+        }
       }
-      case 1 => value match {
-        case null => this._optional_array = None
-        case x: java.util.List[_] => this._optional_array = Some({
-          x match {
-            case array: java.util.List[_] =>
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                value.asInstanceOf[Boolean]
-              }).toList
-            }
-        }.toList)
+      case 1 => this._optional_array = {
+        value match {
+          case null => None
+          case x: java.util.List[_] => Some({
+            x match {
+              case array: java.util.List[_] =>
+                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                  value.asInstanceOf[Boolean]
+                }).toList
+              }
+          }.toList)
+        }
       }
       case 2 => this._array_of_options = {
         value match {
