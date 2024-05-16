@@ -148,6 +148,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case x: Int => x
           case x: Long => x
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 3 => this._option = {
@@ -165,6 +166,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             value match {
               case x: Int => x
               case x: Long => x
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -193,6 +195,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
                 value.toString
               })
             }
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 7 => this._union_array = {
@@ -202,6 +205,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value.asInstanceOf[Int]
             }).toList
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 8 => this._array_map = {
@@ -223,6 +227,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           value match {
             case x: Int => x
             case x: Long => x
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }

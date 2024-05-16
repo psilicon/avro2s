@@ -40,10 +40,9 @@ object Demo extends App {
 ```
 
 #### Roadmap:
- - Logical Types
- - SBT plugin
- - Scala 3 Enum support
  - Scaladoc generation
+ - Scala 3 Enum support
+ - SBT plugin
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.

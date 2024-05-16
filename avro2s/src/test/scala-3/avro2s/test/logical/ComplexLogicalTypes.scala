@@ -225,6 +225,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case x: Int => x
           case x: Long => {java.time.Instant.ofEpochMilli(x)}
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 4 => this._option = {
@@ -248,6 +249,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             value match {
               case x: Int => x
               case x: Long => {java.time.Instant.ofEpochMilli(x)}
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -289,6 +291,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 {java.util.UUID.fromString(value.toString)}
               })
             }
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 10 => this._union_map_alt = {
@@ -302,6 +305,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
               })
             }
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 11 => this._union_array = {
@@ -311,6 +315,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
             }).toList
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._array_map = {
@@ -345,6 +350,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           value match {
             case x: Int => x
             case x: Long => {java.time.Instant.ofEpochMilli(x)}
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }

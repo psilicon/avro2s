@@ -172,6 +172,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
           value match {
             case x: org.apache.avro.util.Utf8 => x.toString
             case x: Int => x
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }
@@ -188,6 +189,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
             case x: avro2s.test.arrays.Record1 => x
             case x: avro2s.test.arrays.Record2 => x
             case x: Int => x
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }

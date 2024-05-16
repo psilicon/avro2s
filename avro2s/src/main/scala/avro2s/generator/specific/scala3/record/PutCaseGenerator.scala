@@ -138,7 +138,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
                 case _ => s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}"
               }
           }
-        }
+        } :+ "case _ => throw new org.apache.avro.AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
       }: _*)
       case union @ OptionRepresentation(schema) =>
         val nullCasePrinter = printer.add("case null => None")
