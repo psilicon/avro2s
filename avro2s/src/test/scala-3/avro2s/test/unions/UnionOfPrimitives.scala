@@ -27,6 +27,7 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
           case x: Long => x
           case x: Boolean => x
           case x: Int => x
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
     }

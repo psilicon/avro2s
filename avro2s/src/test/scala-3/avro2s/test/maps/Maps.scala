@@ -357,6 +357,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             value match {
               case x: org.apache.avro.util.Utf8 => x.toString
               case x: Int => x
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -387,12 +388,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                           case x: Boolean => Option(x)
                           case x: Double => Option(x)
                           case null => Option(null)
+                          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
                       })
                     }
                   })
                 })
               case null => Option(null)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -447,6 +450,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   case x: Boolean => Option(x)
                   case x: Double => Option(x)
                   case null => Option(null)
+                  case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -513,6 +517,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               case x: avro2s.test.maps.Record => Option(x)
               case x: Int => Option(x)
               case null => Option(null)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -611,6 +616,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                 }).toList)
               case x: Int => Option(x)
               case null => Option(null)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }

@@ -108,6 +108,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         value match {
           case x: org.apache.avro.util.Utf8 => x.toString
           case x: Int => x
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 13 => this._fixed = {
