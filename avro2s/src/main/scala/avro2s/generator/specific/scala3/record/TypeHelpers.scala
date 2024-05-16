@@ -46,7 +46,7 @@ private[avro2s] class TypeHelpers(ltc: LogicalTypeConverter) {
 
   def schemaToScalaType(schema: Schema, useLogical: Boolean): String = {
     schema.getType match {
-      case UNION => unionSchemasToType(schemas(schema)).asString(typeHelpers = this)
+      case UNION => unionSchemasToType(schemas(schema)).toString(typeHelpers = this)
       case RECORD => schema.getFullName
       case ENUM => schema.getFullName
       case FIXED => ltc.getType(schema, schema.getFullName)
@@ -88,18 +88,29 @@ private[avro2s] class TypeHelpers(ltc: LogicalTypeConverter) {
     }
   }
 
-
   sealed trait UnionRepresentation {
-    def asString(typeHelpers: TypeHelpers): String
+    def toString(typeHelpers: TypeHelpers): String
+
+    def toTypeString: String
+
+    def toConstructString(value: String): String
   }
 
   object UnionRepresentation {
     final case class TypeUnionRepresentation(types: List[Schema]) extends UnionRepresentation {
-      override def asString(typeHelpers: TypeHelpers): String = types.map(typeHelpers.schemaToScalaType(_, useLogical = true)).mkString(" | ")
+      lazy val noNulls: List[Schema] = types.filterNot(_.getType == NULL)
+      lazy val hasNull: Boolean = types.exists(_.getType == NULL)
+      def innerTypeStr(typeHelpers: TypeHelpers): String = noNulls.map(typeHelpers.schemaToScalaType(_, useLogical = true)).mkString(" | ")
+
+      override def toString(typeHelpers: TypeHelpers): String = if (hasNull) "Option[" + innerTypeStr(typeHelpers) + "]" else innerTypeStr(typeHelpers)
+      override def toTypeString: String = toString
+      override def toConstructString(value: String): String = if (hasNull) s"Option($value)" else s"$value"
     }
 
     final case class OptionRepresentation(`type`: Schema) extends UnionRepresentation {
-      override def asString(typeHelpers: TypeHelpers): String = s"Option[${typeHelpers.schemaToScalaType(`type`, useLogical = true)}]"
+      override def toString(typeHelpers: TypeHelpers): String = s"Option[${typeHelpers.schemaToScalaType(`type`, useLogical = true)}]"
+      override def toTypeString: String = toString
+      override def toConstructString(value: String): String = s"Some($value)"
     }
   }
 }

@@ -25,14 +25,30 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._uuid = {java.util.UUID.fromString(value.toString.asInstanceOf[String])}
-      case 1 => this._date = {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-      case 2 => this._time_millis = {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Int] * 1000000L)}
-      case 3 => this._time_micros = {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Long] * 1000L)}
-      case 4 => this._timestamp_millis = {java.time.Instant.ofEpochMilli(value.asInstanceOf[Long])}
-      case 5 => this._timestamp_micros = {java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L)}
-      case 6 => this._local_timestamp_millis = {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(value.asInstanceOf[Long]), java.time.ZoneId.of("UTC"))}
-      case 7 => this._local_timestamp_micros = {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))}
+      case 0 => this._uuid = {
+        {java.util.UUID.fromString(value.toString.asInstanceOf[String])}
+      }
+      case 1 => this._date = {
+        {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+      }
+      case 2 => this._time_millis = {
+        {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Int] * 1000000L)}
+      }
+      case 3 => this._time_micros = {
+        {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Long] * 1000L)}
+      }
+      case 4 => this._timestamp_millis = {
+        {java.time.Instant.ofEpochMilli(value.asInstanceOf[Long])}
+      }
+      case 5 => this._timestamp_micros = {
+        {java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L)}
+      }
+      case 6 => this._local_timestamp_millis = {
+        {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(value.asInstanceOf[Long]), java.time.ZoneId.of("UTC"))}
+      }
+      case 7 => this._local_timestamp_micros = {
+        {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))}
+      }
     }
   }
 }

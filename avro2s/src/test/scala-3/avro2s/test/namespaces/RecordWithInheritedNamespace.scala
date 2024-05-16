@@ -19,8 +19,12 @@ case class RecordWithInheritedNamespace(var _string: String, var _record_with_na
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._string = value.toString.asInstanceOf[String]
-      case 1 => this._record_with_namespace_inherited_from_indirect_parent = value.asInstanceOf[avro2s.test.namespaces.RecordWithNamespaceInheritedFromIndirectParent]
+      case 0 => this._string = {
+        value.toString.asInstanceOf[String]
+      }
+      case 1 => this._record_with_namespace_inherited_from_indirect_parent = {
+        value.asInstanceOf[avro2s.test.namespaces.RecordWithNamespaceInheritedFromIndirectParent]
+      }
     }
   }
 }

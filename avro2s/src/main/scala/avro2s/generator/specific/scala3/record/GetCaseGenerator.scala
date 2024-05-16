@@ -185,13 +185,13 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
     }
 
     union match {
-      case TypeUnionRepresentation(types) =>
-        printer.add({
-          types.map {
-            case t if t.getType != NULL => s"case x: ${schemaToScalaType(t, true)} => ${x(t)}"
-            case _ => s"case null => null.asInstanceOf[AnyRef]"
-          }
-        }.mkString("\n"))
+      case union: TypeUnionRepresentation =>
+        if (union.hasNull)
+          printer
+            .add(union.noNulls.map(t => s"case Some(x: ${schemaToScalaType(t, true)}) => ${x(t)}"): _*)
+            .add("case None => null.asInstanceOf[AnyRef]")
+        else
+          printer.add(union.noNulls.map(t => s"case x: ${schemaToScalaType(t, true)} => ${x(t)}"): _*)
       case OptionRepresentation(schema) =>
         printer.add(
           s"""case None => null

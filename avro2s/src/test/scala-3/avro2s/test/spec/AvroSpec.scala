@@ -2,8 +2,6 @@
 
 package avro2s.test.spec
 
-import org.apache.avro.AvroRuntimeException
-
 import scala.annotation.switch
 
 case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String | Int, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
@@ -56,38 +54,48 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._null = value.asInstanceOf[scala.Null]
-      case 1 => this._boolean = value.asInstanceOf[Boolean]
-      case 2 => this._int = value.asInstanceOf[Int]
-      case 3 => this._long = value.asInstanceOf[Long]
-      case 4 => this._float = value.asInstanceOf[Float]
-      case 5 => this._double = value.asInstanceOf[Double]
-      case 6 => this._bytes = {
-        value match {
-          case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-        }
+      case 0 => this._null = {
+        value.asInstanceOf[scala.Null]
       }
-      case 7 => this._string = value.toString.asInstanceOf[String]
-      case 8 => this._enum = value.asInstanceOf[avro2s.test.spec.Suit]
+      case 1 => this._boolean = {
+        value.asInstanceOf[Boolean]
+      }
+      case 2 => this._int = {
+        value.asInstanceOf[Int]
+      }
+      case 3 => this._long = {
+        value.asInstanceOf[Long]
+      }
+      case 4 => this._float = {
+        value.asInstanceOf[Float]
+      }
+      case 5 => this._double = {
+        value.asInstanceOf[Double]
+      }
+      case 6 => this._bytes = {
+        val buffer = value.asInstanceOf[java.nio.ByteBuffer]
+        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+      }
+      case 7 => this._string = {
+        value.toString.asInstanceOf[String]
+      }
+      case 8 => this._enum = {
+        value.asInstanceOf[avro2s.test.spec.Suit]
+      }
       case 9 => this._array = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.toString
-            }).toList
-          }
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value.toString
+        }).toList
       }
       case 10 => this._map = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Long]
-              })
-            }
-          }
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value.asInstanceOf[Long]
+          })
         }
       }
       case 11 => this._union_nullable = {
@@ -100,10 +108,11 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         value match {
           case x: org.apache.avro.util.Utf8 => x.toString
           case x: Int => x
-          case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
-      case 13 => this._fixed = value.asInstanceOf[avro2s.test.spec.md5]
+      case 13 => this._fixed = {
+        value.asInstanceOf[avro2s.test.spec.md5]
+      }
     }
   }
 }

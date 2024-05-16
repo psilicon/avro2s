@@ -18,7 +18,9 @@ case class Record3(var field3: String) extends org.apache.avro.specific.Specific
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this.field3 = value.toString.asInstanceOf[String]
+      case 0 => this.field3 = {
+        value.toString.asInstanceOf[String]
+      }
     }
   }
 }

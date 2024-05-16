@@ -61,41 +61,32 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => this._optional_array = {
         value match {
           case null => None
-          case x: java.util.List[_] => Some({
-            x match {
-              case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value.asInstanceOf[Boolean]
-                }).toList
-              }
-          }.toList)
+          case array: java.util.List[?] =>
+            Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+              value.asInstanceOf[Boolean]
+            }).toList)
         }
       }
       case 2 => this._array_of_options = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: org.apache.avro.util.Utf8 => Some(x.toString)
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case x: org.apache.avro.util.Utf8 => Some(x.toString)
           }
+        }).toList
       }
       case 3 => this._map_of_options = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: org.apache.avro.util.Utf8 => Some(x.toString)
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: org.apache.avro.util.Utf8 => Some(x.toString)
             }
-          }
+          })
         }
       }
     }

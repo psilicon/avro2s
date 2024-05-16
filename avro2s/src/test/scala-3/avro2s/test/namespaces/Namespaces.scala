@@ -19,8 +19,12 @@ case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespace
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._record_with_explicit_namespace = value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithExplicitNamespace]
-      case 1 => this._record_with_inherited_namespace = value.asInstanceOf[avro2s.test.namespaces.RecordWithInheritedNamespace]
+      case 0 => this._record_with_explicit_namespace = {
+        value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithExplicitNamespace]
+      }
+      case 1 => this._record_with_inherited_namespace = {
+        value.asInstanceOf[avro2s.test.namespaces.RecordWithInheritedNamespace]
+      }
     }
   }
 }

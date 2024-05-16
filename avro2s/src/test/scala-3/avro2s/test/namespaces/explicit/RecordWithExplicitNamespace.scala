@@ -2,8 +2,6 @@
 
 package avro2s.test.namespaces.explicit
 
-import org.apache.avro.AvroRuntimeException
-
 import scala.annotation.switch
 
 case class RecordWithExplicitNamespace(var _string: String, var _record_with_namespace_inherited_from_direct_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent, var _array_of_records: List[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray], var _map_of_records: Map[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap], var _union_of_records: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion | String) extends org.apache.avro.specific.SpecificRecordBase {
@@ -44,34 +42,32 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._string = value.toString.asInstanceOf[String]
-      case 1 => this._record_with_namespace_inherited_from_direct_parent = value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent]
+      case 0 => this._string = {
+        value.toString.asInstanceOf[String]
+      }
+      case 1 => this._record_with_namespace_inherited_from_direct_parent = {
+        value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent]
+      }
       case 2 => this._array_of_records = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray]
-            }).toList
-          }
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray]
+        }).toList
       }
       case 3 => this._map_of_records = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
-              })
-            }
-          }
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
+          })
         }
       }
       case 4 => this._union_of_records = {
         value match {
           case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => x
           case x: org.apache.avro.util.Utf8 => x.toString
-          case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
     }

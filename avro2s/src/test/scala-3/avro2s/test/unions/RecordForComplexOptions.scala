@@ -18,7 +18,9 @@ case class RecordForComplexOptions(var field1: String) extends org.apache.avro.s
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this.field1 = value.toString.asInstanceOf[String]
+      case 0 => this.field1 = {
+        value.toString.asInstanceOf[String]
+      }
     }
   }
 }
