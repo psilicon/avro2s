@@ -25,14 +25,30 @@ case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_mil
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._uuid = value.toString.asInstanceOf[String]
-      case 1 => this._date = value.asInstanceOf[Int]
-      case 2 => this._time_millis = value.asInstanceOf[Int]
-      case 3 => this._time_micros = value.asInstanceOf[Long]
-      case 4 => this._timestamp_millis = value.asInstanceOf[Long]
-      case 5 => this._timestamp_micros = value.asInstanceOf[Long]
-      case 6 => this._local_timestamp_millis = value.asInstanceOf[Long]
-      case 7 => this._local_timestamp_micros = value.asInstanceOf[Long]
+      case 0 => this._uuid = {
+        value.toString.asInstanceOf[String]
+      }
+      case 1 => this._date = {
+        value.asInstanceOf[Int]
+      }
+      case 2 => this._time_millis = {
+        value.asInstanceOf[Int]
+      }
+      case 3 => this._time_micros = {
+        value.asInstanceOf[Long]
+      }
+      case 4 => this._timestamp_millis = {
+        value.asInstanceOf[Long]
+      }
+      case 5 => this._timestamp_micros = {
+        value.asInstanceOf[Long]
+      }
+      case 6 => this._local_timestamp_millis = {
+        value.asInstanceOf[Long]
+      }
+      case 7 => this._local_timestamp_micros = {
+        value.asInstanceOf[Long]
+      }
     }
   }
 }

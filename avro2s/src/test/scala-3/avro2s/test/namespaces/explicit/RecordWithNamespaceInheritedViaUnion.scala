@@ -18,7 +18,9 @@ case class RecordWithNamespaceInheritedViaUnion(var _string: String) extends org
 
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
-      case 0 => this._string = value.toString.asInstanceOf[String]
+      case 0 => this._string = {
+        value.toString.asInstanceOf[String]
+      }
     }
   }
 }

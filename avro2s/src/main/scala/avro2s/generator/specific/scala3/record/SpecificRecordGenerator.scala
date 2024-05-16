@@ -4,7 +4,6 @@ import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala3.FieldOps._
 import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
-import avro2s.schema.RecordInspector
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
@@ -31,7 +30,6 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .when(ns.isDefined)(_.add(s"package $nsString"))
       .newline
-      .when(RecordInspector.containsNonOptionUnion(schema))(_.add("import org.apache.avro.AvroRuntimeException").newline)
       .add("import scala.annotation.switch")
       .newline
       .add(s"case class $name(${fieldsToParams(fields)}) extends org.apache.avro.specific.SpecificRecordBase {")
@@ -93,7 +91,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       case MAP => "Map.empty"
       case UNION =>
         val types = schema.getTypes.asScala.toList
-        if (!types.exists(_.getType == NULL) || types.length > 2) logical(schema).getOrElse(defaultForType(types.head))
+        if (!types.exists(_.getType == NULL)) logical(schema).getOrElse(defaultForType(types.head))
         else "None"
       case _ => "null"
     }

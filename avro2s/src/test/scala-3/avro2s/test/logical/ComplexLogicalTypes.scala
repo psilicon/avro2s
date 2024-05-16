@@ -2,8 +2,6 @@
 
 package avro2s.test.logical
 
-import org.apache.avro.AvroRuntimeException
-
 import scala.annotation.switch
 
 case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_alt: Map[String, java.time.LocalDate], var _array: List[java.time.LocalDate], var _union: Int | java.time.Instant, var _option: Option[java.util.UUID], var _option_alt: Option[java.time.LocalDate], var _map_union: Map[String, Int | java.time.Instant], var _map_option: Map[String, Option[java.time.Instant]], var _map_array: Map[String, List[java.time.LocalDate]], var _union_map: Int | Map[String, java.util.UUID], var _union_map_alt: Int | Map[String, java.time.LocalDate], var _union_array: Int | List[java.time.LocalDate], var _array_map: List[Map[String, java.util.UUID]], var _array_map_alt: List[Map[String, java.time.LocalDate]], var _array_union: List[Int | java.time.Instant], var _array_option: List[Option[java.util.UUID]], var _array_option_alt: List[Option[java.time.LocalDate]]) extends org.apache.avro.specific.SpecificRecordBase {
@@ -198,44 +196,35 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._map = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                {java.util.UUID.fromString(value.toString)}
-              })
-            }
-          }
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            {java.util.UUID.fromString(value.toString)}
+          })
         }
       }
       case 1 => this._map_alt = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-              })
-            }
-          }
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+          })
         }
       }
       case 2 => this._array = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-            }).toList
-          }
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+        }).toList
       }
       case 3 => this._union = {
         value match {
           case x: Int => x
           case x: Long => {java.time.Instant.ofEpochMilli(x)}
-          case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
       case 4 => this._option = {
@@ -251,60 +240,48 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         }
       }
       case 6 => this._map_union = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: Int => x
-                  case x: Long => {java.time.Instant.ofEpochMilli(x)}
-                  case _ => throw new AvroRuntimeException("Invalid value")
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case x: Int => x
+              case x: Long => {java.time.Instant.ofEpochMilli(x)}
             }
-          }
+          })
         }
       }
       case 7 => this._map_option = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: Long => Some({java.time.Instant.ofEpochMilli(x)})
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: Long => Some({java.time.Instant.ofEpochMilli(x)})
             }
-          }
+          })
         }
       }
       case 8 => this._map_array = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-                    }).toList
-                  }
-              })
-            }
-          }
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            val array = value.asInstanceOf[java.util.List[?]]
+            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+              {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+            }).toList
+          })
         }
       }
       case 9 => this._union_map = {
         value match {
           case x: Int => x
-          case map: java.util.Map[_,_] => {
+          case map: java.util.Map[?,?] =>
             scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
@@ -312,14 +289,12 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 {java.util.UUID.fromString(value.toString)}
               })
             }
-          }
-          case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
       case 10 => this._union_map_alt = {
         value match {
           case x: Int => x
-          case map: java.util.Map[_,_] => {
+          case map: java.util.Map[?,?] =>
             scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
@@ -327,93 +302,69 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
               })
             }
-          }
-          case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
       case 11 => this._union_array = {
         value match {
           case x: Int => x
-          case x: java.util.List[_] => {
-            x match {
-              case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-                }).toList
-              }
-          }.toList
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case array: java.util.List[?] =>
+            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+              {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+            }).toList
         }
       }
       case 12 => this._array_map = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      {java.util.UUID.fromString(value.toString)}
-                    })
-                  }
-                }
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          val map = value.asInstanceOf[java.util.Map[?,?]]
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              {java.util.UUID.fromString(value.toString)}
+            })
           }
+        }).toList
       }
       case 13 => this._array_map_alt = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
-                    })
-                  }
-                }
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          val map = value.asInstanceOf[java.util.Map[?,?]]
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+            })
           }
+        }).toList
       }
       case 14 => this._array_union = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: Int => x
-                case x: Long => {java.time.Instant.ofEpochMilli(x)}
-                case _ => throw new AvroRuntimeException("Invalid value")
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case x: Int => x
+            case x: Long => {java.time.Instant.ofEpochMilli(x)}
           }
+        }).toList
       }
       case 15 => this._array_option = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
           }
+        }).toList
       }
       case 16 => this._array_option_alt = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
-              }
-            }).toList
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
           }
+        }).toList
       }
     }
   }

@@ -191,204 +191,160 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._map_of_option_of_record = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
             }
-          }
+          })
         }
       }
       case 1 => this._map_of_option_of_map = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case map: java.util.Map[_,_] => Some{
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
-                    }
-                  }
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case map: java.util.Map[?,?] =>
+                Some(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                  val key = kvp._1.toString
+                  val value = kvp._2
+                  (key, {
+                    value.toString
+                  })
+                })
             }
-          }
+          })
         }
       }
       case 2 => this._map_of_option_of_array = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: java.util.List[_] => Some({
-                    x match {
-                      case array: java.util.List[_] =>
-                        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                          value.toString
-                        }).toList
-                      }
-                  }.toList)
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case array: java.util.List[?] =>
+                Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                  value.toString
+                }).toList)
             }
-          }
+          })
         }
       }
       case 3 => this._array_of_option_of_record = {
-        value match {
-          case array: java.util.List[_] =>
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+          }
+        }).toList
+      }
+      case 4 => this._array_of_option_of_map = {
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case map: java.util.Map[?,?] =>
+              Some(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.toString
+                })
+              })
+          }
+        }).toList
+      }
+      case 5 => this._array_of_option_of_array = {
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          value match {
+            case null => None
+            case array: java.util.List[?] =>
+              Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                value.toString
+              }).toList)
+          }
+        }).toList
+      }
+      case 6 => this._array_of_map_of_option_of_record = {
+        val array = value.asInstanceOf[java.util.List[?]]
+        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+          val map = value.asInstanceOf[java.util.Map[?,?]]
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              value match {
+                case null => None
+                case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+              }
+            })
+          }
+        }).toList
+      }
+      case 7 => this._map_of_array_of_option_of_record = {
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            val array = value.asInstanceOf[java.util.List[?]]
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
                 case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
               }
             }).toList
-          }
-      }
-      case 4 => this._array_of_option_of_map = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case map: java.util.Map[_,_] => Some{
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value.toString
-                    })
-                  }
-                }
-              }
-            }).toList
-          }
-      }
-      case 5 => this._array_of_option_of_array = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.util.List[_] => Some({
-                  x match {
-                    case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.toString
-                      }).toList
-                    }
-                }.toList)
-              }
-            }).toList
-          }
-      }
-      case 6 => this._array_of_map_of_option_of_record = {
-        value match {
-          case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value match {
-                        case null => None
-                        case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                      }
-                    })
-                  }
-                }
-              }
-            }).toList
-          }
-      }
-      case 7 => this._map_of_array_of_option_of_record = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value match {
-                        case null => None
-                        case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                      }
-                    }).toList
-                  }
-              })
-            }
-          }
+          })
         }
       }
       case 8 => this._map_of_option_of_bytes = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: java.nio.ByteBuffer => Some(x.array())
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: java.nio.ByteBuffer => Some(x.array())
             }
-          }
+          })
         }
       }
       case 9 => this._map_of_option_of_fixed = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
             }
-          }
+          })
         }
       }
       case 10 => this._map_of_option_of_enum = {
-        value match {
-          case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
-                }
-              })
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          val key = kvp._1.toString
+          val value = kvp._2
+          (key, {
+            value match {
+              case null => None
+              case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
             }
-          }
+          })
         }
       }
     }
