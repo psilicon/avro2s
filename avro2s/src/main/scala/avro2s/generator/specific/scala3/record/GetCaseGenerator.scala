@@ -14,7 +14,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
   val typeHelpers = new TypeHelpers(ltc)
 
   import typeHelpers._
-  import typeHelpers.UnionRepresentation._
+  import typeHelpers.TypeUnion._
 
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
@@ -30,7 +30,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
     printer
       .add(s"case $index => ${field.safeName} match {")
       .indent
-      .call(printUnionPatternMatch(_, unionSchemasToType(schemas(field.schema()))))
+      .call(printUnionPatternMatch(_, TypeUnion(schemas(field.schema()))))
       .outdent
       .add("}")
 
@@ -83,7 +83,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
           .indent
           .add(s"$value.map {")
           .indent
-          .call(printUnionPatternMatch(_, unionSchemasToType(schemas(schema.getElementType))))
+          .call(printUnionPatternMatch(_, TypeUnion(schemas(schema.getElementType))))
           .outdent
           .add("}")
           .outdent
@@ -157,7 +157,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .add(s"$value match {")
           .indent
-          .call(printUnionPatternMatch(_, unionSchemasToType(schemas(schema))))
+          .call(printUnionPatternMatch(_, TypeUnion(schemas(schema))))
           .outdent
           .add("}")
       case ARRAY =>
@@ -172,11 +172,11 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
     }
   }
 
-  private def printUnionPatternMatch(printer: FunctionalPrinter, union: UnionRepresentation): FunctionalPrinter = {
+  private def printUnionPatternMatch(printer: FunctionalPrinter, union: TypeUnion): FunctionalPrinter = {
     def x(schema: Schema): String = {
       schema.getType match {
         case MAP => s"\n${printMapValue(new FunctionalPrinter(indentLevel = 1), schema, Some("x")).result()}"
-        case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), unionSchemasToType(schemas(schema))).result()}"
+        case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), TypeUnion(schemas(schema))).result()}"
         case ARRAY if schema.getElementType.isUnion => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map {${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
         case ARRAY => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map { x =>${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
         case BYTES => ltc.fromTypeWithFallback(schema, "x", s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]")
@@ -184,18 +184,11 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       }
     }
 
-    union match {
-      case union: TypeUnionRepresentation =>
-        if (union.hasNull)
-          printer
-            .add(union.noNulls.map(t => s"case Some(x: ${schemaToScalaType(t, true)}) => ${x(t)}"): _*)
-            .add("case None => null.asInstanceOf[AnyRef]")
-        else
-          printer.add(union.noNulls.map(t => s"case x: ${schemaToScalaType(t, true)} => ${x(t)}"): _*)
-      case OptionRepresentation(schema) =>
-        printer.add(
-          s"""case None => null
-             |case Some(x) => ${x(schema)}""".stripMargin)
-    }
+    if (union.hasNull)
+      printer
+        .add(union.noNulls.map(t => s"case Some(x: ${schemaToScalaType(t, true)}) => ${x(t)}"): _*)
+        .add("case None => null.asInstanceOf[AnyRef]")
+    else
+      printer.add(union.noNulls.map(t => s"case x: ${schemaToScalaType(t, true)} => ${x(t)}"): _*)
   }
 }

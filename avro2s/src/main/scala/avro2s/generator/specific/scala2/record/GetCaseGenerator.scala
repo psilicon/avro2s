@@ -196,7 +196,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
         types.zipWithIndex.map { t =>
           s"case ${pattern(t._2 + 1, "", "")} => ${x(t._1)}"
         } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
-      }.mkString("\n"))
+      }: _*)
       case OptionRepresentation(schema) =>
         printer.add(
           s"""case None => null

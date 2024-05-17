@@ -387,14 +387,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                           case x: Long => Option(x)
                           case x: Boolean => Option(x)
                           case x: Double => Option(x)
-                          case null => Option(null)
+                          case null => None
                           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
                       })
                     }
                   })
                 })
-              case null => Option(null)
+              case null => None
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
@@ -449,7 +449,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   case x: Long => Option(x)
                   case x: Boolean => Option(x)
                   case x: Double => Option(x)
-                  case null => Option(null)
+                  case null => None
                   case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
@@ -516,7 +516,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             value match {
               case x: avro2s.test.maps.Record => Option(x)
               case x: Int => Option(x)
-              case null => Option(null)
+              case null => None
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
@@ -615,7 +615,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   value.toString
                 }).toList)
               case x: Int => Option(x)
-              case null => Option(null)
+              case null => None
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })

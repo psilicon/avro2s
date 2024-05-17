@@ -7,8 +7,6 @@ import org.apache.avro.Schema
 import org.apache.avro.Schema.Type
 import org.apache.avro.Schema.Type._
 
-import scala.util.Try
-
 /**
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
@@ -17,7 +15,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
   val typeHelpers = new TypeHelpers(ltc)
 
   import typeHelpers._
-  import typeHelpers.UnionRepresentation._
+  import typeHelpers.TypeUnion._
 
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     printer
@@ -44,7 +42,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
   }
 
   private def asUnion(printer: FunctionalPrinter, input: String, schema: Schema): FunctionalPrinter = {
-    val union = unionSchemasToType(schemas(schema))
+    val union = TypeUnion(schemas(schema))
     printer
       .add(s"$input match {")
       .indent
@@ -109,9 +107,9 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
     }
   }
 
-  private def matchUnionType(printer: FunctionalPrinter, union: UnionRepresentation): FunctionalPrinter = {
+  private def matchUnionType(printer: FunctionalPrinter, union: TypeUnion): FunctionalPrinter = {
     union match {
-      case TypeUnionRepresentation(types) => printer.add({
+      case TypeUnion(types) => printer.add({
         types.map { t =>
           t.getType match {
             case RECORD | ENUM => s"case x: ${t.getFullName} => ${union.toConstructString("x")}"
@@ -134,42 +132,12 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
             case _ =>
               t.getType match {
                 case Type.STRING => s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}"
-                case Type.NULL => s"case null => ${union.toConstructString("null")}"
+                case Type.NULL => s"case null => None"
                 case _ => s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}"
               }
           }
         } :+ "case _ => throw new org.apache.avro.AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
       }: _*)
-      case union @ OptionRepresentation(schema) =>
-        val nullCasePrinter = printer.add("case null => None")
-        schema.getType match {
-          case MAP =>
-            nullCasePrinter
-              .add(s"case map: java.util.Map[?,?] =>")
-              .indent
-              .add(s"${union.toConstructString(assignMap(new FunctionalPrinter(), "map", schema).result())}")
-              .outdent
-          case ARRAY =>
-            nullCasePrinter
-              .add(s"case array: java.util.List[?] =>")
-              .indent
-              .add(s"${union.toConstructString(assignArray(new FunctionalPrinter(), "array", schema).result())}")
-              .outdent
-          case BYTES =>
-            nullCasePrinter
-              .add(s"case x: java.nio.ByteBuffer => ${union.toConstructString(ltc.toTypeWithFallback(schema, "x", "x.array()"))}")
-          case RECORD | ENUM =>
-            nullCasePrinter
-              .add(s"case x: ${schema.getFullName} => ${union.toConstructString("x")}")
-          case FIXED =>
-            nullCasePrinter
-              .add(s"case x: ${schema.getFullName} => ${union.toConstructString(ltc.toType(schema, "x"))}")
-          case _ =>
-            val x = toStringConverter("x", schema)
-            val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
-            nullCasePrinter
-              .add(s"case $xCase => ${union.toConstructString(ltc.toType(schema, x))}")
-        }
     }
   }
 
