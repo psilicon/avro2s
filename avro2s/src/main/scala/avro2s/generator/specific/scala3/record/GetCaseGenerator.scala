@@ -44,7 +44,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       .add("val key = kvp._1")
       .add(s"val value = {")
       .indent
-      .call(printMapValue(_, field.schema().getValueType))
+      .call(printMapValue(_, field.schema().getValueType, "kvp._2"))
       .outdent
       .add("}")
       .add("map.put(key, value)")
@@ -61,7 +61,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       .indent
       .add("case array =>")
       .indent
-      .call(printArrayValue(_, field.schema()))
+      .call(printArrayValue(_, field.schema(), "array"))
       .outdent
       .add("}")
       .outdent
@@ -74,8 +74,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
     printer
       .add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")
 
-  private def printArrayValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
-    val value = valueName.getOrElse("array")
+  private def printArrayValue(printer: FunctionalPrinter, schema: Schema, input: String): FunctionalPrinter = {
     printer
       .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
       .indent
@@ -83,27 +82,27 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
         schema.getElementType.getType match {
           case UNION =>
             printer
-              .add(s"$value.map {")
+              .add(s"$input.map {")
               .indent
               .call(printUnionPatternMatch(_, TypeUnion(schemas(schema.getElementType))))
           case ARRAY =>
             printer
-              .add(s"$value.map { array =>")
+              .add(s"$input.map { array =>")
               .indent
-              .call(printArrayValue(_, schema.getElementType, Some("array")))
+              .call(printArrayValue(_, schema.getElementType, "array"))
           case MAP =>
             printer
-              .add(s"$value.map { m =>")
+              .add(s"$input.map { m =>")
               .indent
-              .call(printMapValue(_, schema.getElementType, Some("m")))
+              .call(printMapValue(_, schema.getElementType, "m"))
           case BYTES =>
             printer
-              .add(s"$value.map { bytes =>")
+              .add(s"$input.map { bytes =>")
               .indent
               .add(ltc.fromTypeWithFallback(schema.getElementType, "bytes", "java.nio.ByteBuffer.wrap(bytes)"))
           case _ =>
             printer
-              .add(s"$value.map { x =>")
+              .add(s"$input.map { x =>")
               .indent
               .add(s"${ltc.fromType(schema.getElementType, "x")}.asInstanceOf[AnyRef]")
         }
@@ -114,18 +113,17 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       .add("}.toBuffer).asJava")
   }
 
-  private def printMapValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
-    val value = valueName.getOrElse("kvp._2")
+  private def printMapValue(printer: FunctionalPrinter, schema: Schema, input: String): FunctionalPrinter = {
     schema.getType match {
       case MAP =>
         printer
           .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
-          .add(s"$value.foreach { kvp =>")
+          .add(s"$input.foreach { kvp =>")
           .indent
           .add("val key = kvp._1")
           .add(s"val value = {")
           .indent
-          .call(printMapValue(_, schema.getValueType))
+          .call(printMapValue(_, schema.getValueType, "kvp._2"))
           .outdent
           .add("}")
           .add("map.put(key, value)")
@@ -134,27 +132,27 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
           .add("map")
       case UNION =>
         printer
-          .add(s"$value match {")
+          .add(s"$input match {")
           .indent
           .call(printUnionPatternMatch(_, TypeUnion(schemas(schema))))
           .outdent
           .add("}")
       case ARRAY =>
         printer
-          .call(printArrayValue(_, schema, Some("kvp._2")))
+          .call(printArrayValue(_, schema, "kvp._2"))
       case BYTES =>
         printer
-          .add(ltc.fromTypeWithFallback(schema, value, s"java.nio.ByteBuffer.wrap($value)"))
+          .add(ltc.fromTypeWithFallback(schema, input, s"java.nio.ByteBuffer.wrap($input)"))
       case _ =>
         printer
-          .add(ltc.fromType(schema, value))
+          .add(ltc.fromType(schema, input))
     }
   }
 
   private def printUnionPatternMatch(printer: FunctionalPrinter, union: TypeUnion): FunctionalPrinter = {
     def x(schema: Schema): String = {
       schema.getType match {
-        case MAP => s"\n${printMapValue(new FunctionalPrinter(indentLevel = 1), schema, Some("x")).result()}"
+        case MAP => s"\n${printMapValue(new FunctionalPrinter(indentLevel = 1), schema, "x").result()}"
         case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), TypeUnion(schemas(schema))).result()}"
         case ARRAY if schema.getElementType.isUnion => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map {${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
         case ARRAY => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map { x =>${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
