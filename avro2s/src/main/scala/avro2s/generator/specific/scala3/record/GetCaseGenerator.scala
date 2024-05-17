@@ -76,63 +76,42 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
 
   private def printArrayValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
     val value = valueName.getOrElse("array")
-    schema.getElementType.getType match {
-      case UNION =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.map {")
-          .indent
-          .call(printUnionPatternMatch(_, TypeUnion(schemas(schema.getElementType))))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case ARRAY =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.map { array =>")
-          .indent
-          .call(printArrayValue(_, schema.getElementType))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case MAP =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.map { m =>")
-          .indent
-          .call(printMapValue(_, schema.getElementType, Some("m")))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case BYTES =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.map { bytes =>")
-          .indent
-          .add(ltc.fromTypeWithFallback(schema.getElementType, "bytes", "java.nio.ByteBuffer.wrap(bytes)"))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case _ =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.map { x =>")
-          .indent
-          .add(s"${ltc.fromType(schema.getElementType, "x")}.asInstanceOf[AnyRef]")
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-    }
+    printer
+      .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
+      .indent
+      .call(printer => {
+        schema.getElementType.getType match {
+          case UNION =>
+            printer
+              .add(s"$value.map {")
+              .indent
+              .call(printUnionPatternMatch(_, TypeUnion(schemas(schema.getElementType))))
+          case ARRAY =>
+            printer
+              .add(s"$value.map { array =>")
+              .indent
+              .call(printArrayValue(_, schema.getElementType, Some("array")))
+          case MAP =>
+            printer
+              .add(s"$value.map { m =>")
+              .indent
+              .call(printMapValue(_, schema.getElementType, Some("m")))
+          case BYTES =>
+            printer
+              .add(s"$value.map { bytes =>")
+              .indent
+              .add(ltc.fromTypeWithFallback(schema.getElementType, "bytes", "java.nio.ByteBuffer.wrap(bytes)"))
+          case _ =>
+            printer
+              .add(s"$value.map { x =>")
+              .indent
+              .add(s"${ltc.fromType(schema.getElementType, "x")}.asInstanceOf[AnyRef]")
+        }
+      })
+      .outdent
+      .add("}")
+      .outdent
+      .add("}.toBuffer).asJava")
   }
 
   private def printMapValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
