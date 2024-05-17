@@ -17,8 +17,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: avro2s.test.unions.RecordForComplexOptions) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -31,8 +31,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) =>
+              case Some(x: Map[String, String]) =>
                 val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
                 x.foreach { kvp =>
                   val key = kvp._1
@@ -42,6 +41,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                   map.put(key, value)
                 }
                 map
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -54,12 +54,12 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) =>
+              case Some(x: List[String]) =>
               scala.jdk.CollectionConverters.BufferHasAsJava({
                 x.map { x =>x.asInstanceOf[AnyRef]
                 }
               }.toBuffer).asJava.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -70,8 +70,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
             array.map {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: avro2s.test.unions.RecordForComplexOptions) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
@@ -79,8 +79,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
             array.map {
-              case None => null
-              case Some(x) =>
+              case Some(x: Map[String, String]) =>
                 val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
                 x.foreach { kvp =>
                   val key = kvp._1
@@ -90,6 +89,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                   map.put(key, value)
                 }
                 map
+              case None => null.asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
@@ -97,12 +97,12 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
             array.map {
-              case None => null
-              case Some(x) =>
+              case Some(x: List[String]) =>
               scala.jdk.CollectionConverters.BufferHasAsJava({
                 x.map { x =>x.asInstanceOf[AnyRef]
                 }
               }.toBuffer).asJava.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
@@ -115,8 +115,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                 val key = kvp._1
                 val value = {
                   kvp._2 match {
-                    case None => null
-                    case Some(x) => x.asInstanceOf[AnyRef]
+                    case Some(x: avro2s.test.unions.RecordForComplexOptions) => x.asInstanceOf[AnyRef]
+                    case None => null.asInstanceOf[AnyRef]
                   }
                 }
                 map.put(key, value)
@@ -132,8 +132,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val value = {
             scala.jdk.CollectionConverters.BufferHasAsJava({
               kvp._2.map {
-                case None => null
-                case Some(x) => x.asInstanceOf[AnyRef]
+                case Some(x: avro2s.test.unions.RecordForComplexOptions) => x.asInstanceOf[AnyRef]
+                case None => null.asInstanceOf[AnyRef]
               }
             }.toBuffer).asJava
           }
@@ -147,9 +147,9 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) =>
+              case Some(x: Array[Byte]) =>
               java.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -162,8 +162,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: avro2s.test.unions.FixedForComplexOptions) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -176,8 +176,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: avro2s.test.unions.EnumForComplexOptions) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -198,7 +198,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+              case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -212,13 +213,14 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             value match {
               case null => None
               case map: java.util.Map[?,?] =>
-                Some(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                   val key = kvp._1.toString
                   val value = kvp._2
                   (key, {
                     value.toString
                   })
                 })
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -232,9 +234,10 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             value match {
               case null => None
               case array: java.util.List[?] =>
-                Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                   value.toString
                 }).toList)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -244,7 +247,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
             case null => None
-            case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+            case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }
@@ -254,13 +258,14 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           value match {
             case null => None
             case map: java.util.Map[?,?] =>
-              Some(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+              Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
                 (key, {
                   value.toString
                 })
               })
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }
@@ -270,9 +275,10 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           value match {
             case null => None
             case array: java.util.List[?] =>
-              Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                 value.toString
               }).toList)
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }
@@ -286,7 +292,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             (key, {
               value match {
                 case null => None
-                case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             })
           }
@@ -302,7 +309,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           })
@@ -316,7 +324,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: java.nio.ByteBuffer => Some(x.array())
+              case x: java.nio.ByteBuffer => Option(x.array())
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -329,7 +338,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
+              case x: avro2s.test.unions.FixedForComplexOptions => Option(x)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }
@@ -342,7 +352,8 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
+              case x: avro2s.test.unions.EnumForComplexOptions => Option(x)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }

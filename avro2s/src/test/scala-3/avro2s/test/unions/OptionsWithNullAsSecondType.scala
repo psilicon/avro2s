@@ -12,23 +12,23 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _simple match {
-        case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x: String) => x.asInstanceOf[AnyRef]
+        case None => null.asInstanceOf[AnyRef]
       }
       case 1 => _optional_array match {
-        case None => null
-        case Some(x) =>
+        case Some(x: List[Boolean]) =>
         scala.jdk.CollectionConverters.BufferHasAsJava({
           x.map { x =>x.asInstanceOf[AnyRef]
           }
         }.toBuffer).asJava.asInstanceOf[AnyRef]
+        case None => null.asInstanceOf[AnyRef]
       }
       case 2 => _array_of_options match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
             array.map {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: String) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
@@ -38,8 +38,8 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           val key = kvp._1
           val value = {
             kvp._2 match {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+              case Some(x: String) => x.asInstanceOf[AnyRef]
+              case None => null.asInstanceOf[AnyRef]
             }
           }
           map.put(key, value)
@@ -54,25 +54,28 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
     (field$: @switch) match {
       case 0 => this._simple = {
         value match {
+          case x: org.apache.avro.util.Utf8 => Option(x.toString)
           case null => None
-          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 1 => this._optional_array = {
         value match {
-          case null => None
           case array: java.util.List[?] =>
-            Some(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value.asInstanceOf[Boolean]
             }).toList)
+          case null => None
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 2 => this._array_of_options = {
         val array = value.asInstanceOf[java.util.List[?]]
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
+            case x: org.apache.avro.util.Utf8 => Option(x.toString)
             case null => None
-            case x: org.apache.avro.util.Utf8 => Some(x.toString)
+            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
       }
@@ -83,8 +86,9 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           val value = kvp._2
           (key, {
             value match {
+              case x: org.apache.avro.util.Utf8 => Option(x.toString)
               case null => None
-              case x: org.apache.avro.util.Utf8 => Some(x.toString)
+              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
         }

@@ -40,8 +40,8 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         map
       }.asInstanceOf[AnyRef]
       case 11 => _union_nullable match {
-        case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x: String) => x.asInstanceOf[AnyRef]
+        case None => null.asInstanceOf[AnyRef]
       }
       case 12 => _union_other match {
         case x: String => x.asInstanceOf[AnyRef]
@@ -101,7 +101,8 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 11 => this._union_nullable = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._union_other = {
