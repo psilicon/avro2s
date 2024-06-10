@@ -1,9 +1,9 @@
 package avro2s.generator
 
-import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2}
+import avro2s.test.arrays.{Arrays, EnumA => ArrayEnumA, EnumB => ArrayEnumB, FixedA => ArrayFixedA, FixedB => ArrayFixedB, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2, RecordA => ArrayRecordA, RecordB => ArrayRecordB}
 import avro2s.test.maps.{Maps, Record => MapRecord}
+import avro2s.test.namespaces.explicit._
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
-import avro2s.test.namespaces.explicit.{RecordWithExplicitNamespace, RecordWithNamespaceInheritedFromDirectParent, RecordWithNamespaceInheritedFromIndirectNonTopLevelParent, RecordWithNamespaceInheritedViaArray, RecordWithNamespaceInheritedViaMap, RecordWithNamespaceInheritedViaUnion}
 import avro2s.test.spec.{AvroSpec, Suit, md5}
 import avro2s.test.unions.Unions
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,6 +20,9 @@ class SerializationTest extends AnyFunSuite with Matchers {
   test("arrays can be serialized and deserialized") {
     type Union1 = String :+: Int :+: CNil
     type Union2 = ArrayRecord1 :+: ArrayRecord2 :+: Int :+: CNil
+    type Union3 = ArrayRecordA :+: ArrayRecordB :+: CNil
+    type Union4 = ArrayEnumA :+: ArrayEnumB :+: CNil
+    type Union5 = ArrayFixedA :+: ArrayFixedB :+: CNil
 
     val arrays = Arrays(
       _array_of_arrays = List(List("a", "b", "c"), List("d", "e", "f")),
@@ -35,7 +38,10 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _array_of_longs = List(1L, 2L, 3L),
       _array_of_floats = List(1.0f, 2.0f, 3.0f),
       _array_of_doubles = List(1.0, 2.0, 3.0),
-      _array_of_booleans = List(true, false, true)
+      _array_of_booleans = List(true, false, true),
+      _array_of_union_of_only_records = List(Coproduct[Union3](ArrayRecordA("A")), Coproduct[Union3](ArrayRecordB("B"))),
+      _array_of_union_of_only_enums = List(Coproduct[Union4](ArrayEnumA.A), Coproduct[Union4](ArrayEnumB.B)),
+      _array_of_union_of_only_fixed = List(Coproduct[Union5](ArrayFixedA(Array[Byte](0x6f, 0x6e))), Coproduct[Union5](ArrayFixedB(Array[Byte](0x6f, 0x6e)))),
     )
 
     deserialize[Arrays](serialize(arrays), arrays.getSchema) shouldBe arrays

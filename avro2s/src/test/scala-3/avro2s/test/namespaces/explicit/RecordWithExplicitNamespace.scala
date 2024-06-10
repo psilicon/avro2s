@@ -66,7 +66,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       }
       case 4 => this._union_of_records = {
         value match {
-          case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => x
+          case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => x.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion | String]
           case x: org.apache.avro.util.Utf8 => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }

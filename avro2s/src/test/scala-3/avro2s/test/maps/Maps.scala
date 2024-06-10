@@ -514,7 +514,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
           val value = kvp._2
           (key, {
             value match {
-              case x: avro2s.test.maps.Record => Option(x)
+              case x: avro2s.test.maps.Record => Option(x.asInstanceOf[avro2s.test.maps.Record | Int])
               case x: Int => Option(x)
               case null => None
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)

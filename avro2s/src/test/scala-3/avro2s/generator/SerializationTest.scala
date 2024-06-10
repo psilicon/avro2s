@@ -2,7 +2,7 @@ package avro2s.generator
 
 import avro2s.serialization.SerializationHelpers._
 import avro2s.test.unions.{OptionsWithNullAsSecondType, UnionOfPrimitives, Unions}
-import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2}
+import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord1, Record2 => ArrayRecord2, RecordA => ArrayRecordA, RecordB => ArrayRecordB, EnumA => ArrayEnumA, EnumB => ArrayEnumB, FixedA => ArrayFixedA}
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
 import avro2s.test.namespaces.explicit.{RecordWithExplicitNamespace, RecordWithNamespaceInheritedFromDirectParent, RecordWithNamespaceInheritedFromIndirectNonTopLevelParent, RecordWithNamespaceInheritedViaArray, RecordWithNamespaceInheritedViaMap, RecordWithNamespaceInheritedViaUnion}
@@ -181,7 +181,10 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _array_of_longs = List(1L, 2L, 3L),
       _array_of_floats = List(1.0f, 2.0f, 3.0f),
       _array_of_doubles = List(1.0, 2.0, 3.0),
-      _array_of_booleans = List(true, false, true)
+      _array_of_booleans = List(true, false, true),
+      _array_of_union_of_only_records = List(ArrayRecordA("A"), ArrayRecordB("B")),
+      _array_of_union_of_only_enums = List(ArrayEnumA.A, ArrayEnumB.B),
+      _array_of_union_of_only_fixed = List(ArrayFixedA(Array[Byte](0x6f, 0x6e))),
     )
 
     deserialize[Arrays](serialize(arrays), arrays.getSchema) shouldBe arrays

@@ -448,8 +448,8 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: org.apache.avro.util.Utf8 => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
-          case x: avro2s.test.unions.Record1 => Option(x)
-          case x: avro2s.test.unions.Record2 => Option(x)
+          case x: avro2s.test.unions.Record1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Record1 | avro2s.test.unions.Record2])
+          case x: avro2s.test.unions.Record2 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Record1 | avro2s.test.unions.Record2])
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -459,7 +459,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: org.apache.avro.util.Utf8 => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
-          case x: avro2s.test.unions.Enum1 => Option(x)
+          case x: avro2s.test.unions.Enum1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Enum1])
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -469,7 +469,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: org.apache.avro.util.Utf8 => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
-          case x: avro2s.test.unions.Fixed1 => Option(x)
+          case x: avro2s.test.unions.Fixed1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Fixed1])
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -527,21 +527,21 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 15 => this._optional_record = {
         value match {
           case null => None
-          case x: avro2s.test.unions.Record3 => Option(x)
+          case x: avro2s.test.unions.Record3 => Option(x.asInstanceOf[avro2s.test.unions.Record3])
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 16 => this._optional_enum = {
         value match {
           case null => None
-          case x: avro2s.test.unions.Enum2 => Option(x)
+          case x: avro2s.test.unions.Enum2 => Option(x.asInstanceOf[avro2s.test.unions.Enum2])
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 17 => this._optional_fixed = {
         value match {
           case null => None
-          case x: avro2s.test.unions.Fixed2 => Option(x)
+          case x: avro2s.test.unions.Fixed2 => Option(x.asInstanceOf[avro2s.test.unions.Fixed2])
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
