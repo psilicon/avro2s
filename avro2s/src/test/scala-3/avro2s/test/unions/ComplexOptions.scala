@@ -198,7 +198,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+              case x: avro2s.test.unions.RecordForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.RecordForComplexOptions])
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
@@ -247,7 +247,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
             case null => None
-            case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+            case x: avro2s.test.unions.RecordForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.RecordForComplexOptions])
             case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList
@@ -292,7 +292,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             (key, {
               value match {
                 case null => None
-                case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+                case x: avro2s.test.unions.RecordForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.RecordForComplexOptions])
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             })
@@ -309,7 +309,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: avro2s.test.unions.RecordForComplexOptions => Option(x)
+                case x: avro2s.test.unions.RecordForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.RecordForComplexOptions])
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
@@ -338,7 +338,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.FixedForComplexOptions => Option(x)
+              case x: avro2s.test.unions.FixedForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.FixedForComplexOptions])
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
@@ -352,7 +352,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           (key, {
             value match {
               case null => None
-              case x: avro2s.test.unions.EnumForComplexOptions => Option(x)
+              case x: avro2s.test.unions.EnumForComplexOptions => Option(x.asInstanceOf[avro2s.test.unions.EnumForComplexOptions])
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })

@@ -185,6 +185,81 @@
         "items": "boolean",
         "default": []
       }
+    },
+    {
+      "name": "_array_of_union_of_only_records",
+      "type": {
+        "type": "array",
+        "items": [
+          {
+            "type": "record",
+            "name": "RecordA",
+            "fields": [
+              {
+                "name": "_string",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "type": "record",
+            "name": "RecordB",
+            "fields": [
+              {
+                "name": "_string",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_union_of_only_enums",
+      "type": {
+        "type": "array",
+        "items": [
+          {
+            "type": "enum",
+            "name": "EnumA",
+            "symbols": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          {
+            "type": "enum",
+            "name": "EnumB",
+            "symbols": [
+              "A",
+              "B",
+              "C"
+            ]
+          }
+        ],
+        "default": []
+      }
+    },
+    {
+      "name": "_array_of_union_of_only_fixed",
+      "type": {
+        "type": "array",
+        "items": [
+          {
+            "type": "fixed",
+            "name": "FixedA",
+            "size": 2
+          },
+          {
+            "type": "fixed",
+            "name": "FixedB",
+            "size": 2
+          }
+        ],
+        "default": []
+      }
     }
   ]
 }

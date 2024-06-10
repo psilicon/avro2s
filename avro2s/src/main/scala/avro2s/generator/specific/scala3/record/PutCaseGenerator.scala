@@ -112,8 +112,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
       case TypeUnion(types) => printer.add({
         types.map { t =>
           t.getType match {
-            case RECORD | ENUM => s"case x: ${t.getFullName} => ${union.toConstructString("x")}"
-            case FIXED => s"case x: ${t.getFullName} => ${union.toConstructString(ltc.toType(t, "x"))}"
+            case RECORD | ENUM => s"case x: ${t.getFullName} => ${union.toConstructString(s"x.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"
+            case FIXED => s"case x: ${t.getFullName} => ${union.toConstructString(s"${ltc.toType(t, "x")}.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"
             case MAP =>
               new FunctionalPrinter()
                 .add(s"case map: java.util.Map[?,?] =>")
