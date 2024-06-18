@@ -345,4 +345,15 @@ class SerializationTest extends AnyFunSuite with Matchers {
     val serialized = serialize(complexOptions)
     deserialize[avro2s.test.unions.ComplexOptions](serialized, complexOptions.getSchema) shouldBe complexOptions
   }
+  
+  test("empty records can be serialized and deserialized") {
+    val emptyRecords = avro2s.test.records.EmptyRecords(
+      _string = "foo",
+      _empty_record = avro2s.test.records.EmptyRecord(),
+      _int = 5
+    )
+    
+    val serialized = serialize(emptyRecords)
+    deserialize[avro2s.test.records.EmptyRecords](serialized, emptyRecords.getSchema) shouldBe emptyRecords
+  }
 }

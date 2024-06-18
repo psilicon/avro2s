@@ -4,6 +4,7 @@ import avro2s.test.arrays.{Arrays, EnumA => ArrayEnumA, EnumB => ArrayEnumB, Fix
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.explicit._
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
+import avro2s.test.records.EmptyRecord
 import avro2s.test.spec.{AvroSpec, Suit, md5}
 import avro2s.test.unions.Unions
 import org.scalatest.funsuite.AnyFunSuite
@@ -367,5 +368,16 @@ class SerializationTest extends AnyFunSuite with Matchers {
     
     val serialized = serialize(complexOptions)
     deserialize[avro2s.test.unions.ComplexOptions](serialized, complexOptions.getSchema) shouldBe complexOptions
+  }
+  
+  test("empty records can be serialized and deserialized") {
+    val emptyRecords = avro2s.test.records.EmptyRecords(
+      _string = "foo",
+      _empty_record = EmptyRecord(),
+      _int = 5
+    )
+    
+    val serialized = serialize(emptyRecords)
+    deserialize[avro2s.test.records.EmptyRecords](serialized, emptyRecords.getSchema) shouldBe emptyRecords
   }
 }

@@ -12,7 +12,7 @@ case class RecordWithNamespaceInheritedFromIndirectParent(var _string: String) e
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -21,6 +21,7 @@ case class RecordWithNamespaceInheritedFromIndirectParent(var _string: String) e
       case 0 => this._string = {
         value.toString.asInstanceOf[String]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

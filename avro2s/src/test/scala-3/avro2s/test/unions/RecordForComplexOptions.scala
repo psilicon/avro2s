@@ -12,7 +12,7 @@ case class RecordForComplexOptions(var field1: String) extends org.apache.avro.s
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => field1.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -21,6 +21,7 @@ case class RecordForComplexOptions(var field1: String) extends org.apache.avro.s
       case 0 => this.field1 = {
         value.toString.asInstanceOf[String]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

@@ -324,7 +324,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         }.toBuffer).asJava.asInstanceOf[AnyRef]
         case None => null.asInstanceOf[AnyRef]
       }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -724,6 +724,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

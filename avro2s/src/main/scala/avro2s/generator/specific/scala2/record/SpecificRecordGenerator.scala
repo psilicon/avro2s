@@ -37,7 +37,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .add(s"case class $name(${fieldsToParams(fields)}) extends org.apache.avro.specific.SpecificRecordBase {")
       .indent
-      .add(toThis(fields))
+      .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
       .newline
@@ -48,7 +48,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .print(fields) { (printer, field) =>
         getCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
-      .add("case _ => new org.apache.avro.AvroRuntimeException(\"Bad index\")")
+      .add("case _ => throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
       .add("}")
       .outdent
@@ -61,6 +61,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .print(fields) { (printer, field) =>
         putCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
       }
+      .add("case _ => throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
       .add("}")
       .outdent

@@ -334,7 +334,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         }
         map
       }.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -717,6 +717,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
           }
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

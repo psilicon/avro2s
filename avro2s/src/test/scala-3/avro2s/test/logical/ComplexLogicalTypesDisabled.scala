@@ -122,7 +122,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             }
           }.toBuffer).asJava
         }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -242,6 +242,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           }
         }).toList
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

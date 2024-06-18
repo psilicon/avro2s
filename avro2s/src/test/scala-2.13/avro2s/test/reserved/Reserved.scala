@@ -51,7 +51,7 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
       case 37 => `while`.asInstanceOf[AnyRef]
       case 38 => java.nio.ByteBuffer.wrap(`with`).asInstanceOf[AnyRef]
       case 39 => `yield`.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -117,6 +117,7 @@ case class Reserved(var `abstract`: scala.Null, var `case`: Boolean, var `catch`
         }
       }
       case 39 => this.`yield` = value.toString.asInstanceOf[String]
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

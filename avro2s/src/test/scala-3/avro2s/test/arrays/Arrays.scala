@@ -165,7 +165,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
             }
           }.toBuffer).asJava
         }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -305,6 +305,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
           }
         }).toList
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

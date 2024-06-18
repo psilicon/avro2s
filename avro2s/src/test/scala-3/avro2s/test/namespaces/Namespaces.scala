@@ -13,7 +13,7 @@ case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespace
     (field$: @switch) match {
       case 0 => _record_with_explicit_namespace.asInstanceOf[AnyRef]
       case 1 => _record_with_inherited_namespace.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -25,6 +25,7 @@ case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespace
       case 1 => this._record_with_inherited_namespace = {
         value.asInstanceOf[avro2s.test.namespaces.RecordWithInheritedNamespace]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

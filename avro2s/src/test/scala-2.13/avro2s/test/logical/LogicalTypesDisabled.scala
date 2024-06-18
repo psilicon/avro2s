@@ -19,7 +19,7 @@ case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_mil
       case 5 => _timestamp_micros.asInstanceOf[AnyRef]
       case 6 => _local_timestamp_millis.asInstanceOf[AnyRef]
       case 7 => _local_timestamp_micros.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -33,6 +33,7 @@ case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_mil
       case 5 => this._timestamp_micros = value.asInstanceOf[Long]
       case 6 => this._local_timestamp_millis = value.asInstanceOf[Long]
       case 7 => this._local_timestamp_micros = value.asInstanceOf[Long]
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

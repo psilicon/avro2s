@@ -46,7 +46,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
         }
         map
       }.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -98,6 +98,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           }
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

@@ -40,7 +40,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
         case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -76,6 +76,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
           case _ => throw new AvroRuntimeException("Invalid value")
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }
