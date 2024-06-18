@@ -36,7 +36,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
         case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => x.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
       }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -71,6 +71,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

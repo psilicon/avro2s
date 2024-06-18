@@ -48,7 +48,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         case x: Int => x.asInstanceOf[AnyRef]
       }
       case 13 => _fixed.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -115,6 +115,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 13 => this._fixed = {
         value.asInstanceOf[avro2s.test.spec.md5]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

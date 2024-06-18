@@ -55,7 +55,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       case 41 => `export`.asInstanceOf[AnyRef]
       case 42 => `given`.asInstanceOf[AnyRef]
       case 43 => `then`.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -198,6 +198,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       case 43 => this.`then` = {
         value.asInstanceOf[Long]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

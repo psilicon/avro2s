@@ -189,7 +189,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             }
           }.toBuffer).asJava
         }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -377,6 +377,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           }
         }).toList
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

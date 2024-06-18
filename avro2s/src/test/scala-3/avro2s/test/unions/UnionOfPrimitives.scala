@@ -16,7 +16,7 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
         case x: Boolean => x.asInstanceOf[AnyRef]
         case x: Int => x.asInstanceOf[AnyRef]
       }
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -30,6 +30,7 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

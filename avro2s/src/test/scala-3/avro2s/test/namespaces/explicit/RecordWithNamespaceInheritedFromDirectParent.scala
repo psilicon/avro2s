@@ -13,7 +13,7 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
       case 1 => _record_with_namespace_inherited_from_indirect_non_top_level_parent.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -25,6 +25,7 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
       case 1 => this._record_with_namespace_inherited_from_indirect_non_top_level_parent = {
         value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent]
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

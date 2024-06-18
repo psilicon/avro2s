@@ -19,7 +19,7 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
       case 5 => {(_timestamp_micros.getEpochSecond * 1000000L) + (_timestamp_micros.getNano / 1000L)}.asInstanceOf[AnyRef]
       case 6 => {_local_timestamp_millis.atZone(java.time.ZoneId.of("UTC")).toInstant.toEpochMilli}.asInstanceOf[AnyRef]
       case 7 => {_local_timestamp_micros.atZone(java.time.ZoneId.of("UTC")).toInstant.getEpochSecond * 1000000L + _local_timestamp_micros.atZone(java.time.ZoneId.of("UTC")).toInstant.getNano / 1000L}.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -33,6 +33,7 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
       case 5 => this._timestamp_micros = {java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L)}
       case 6 => this._local_timestamp_millis = {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(value.asInstanceOf[Long]), java.time.ZoneId.of("UTC"))}
       case 7 => this._local_timestamp_micros = {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))}
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

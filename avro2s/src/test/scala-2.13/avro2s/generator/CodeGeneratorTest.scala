@@ -127,6 +127,15 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
       testResult(code, expectedCode)
     }
   }
+  
+  test("empty records should produce expected output") {
+    val code = generateCode("input/default/records/empty-records.avsc")
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("records", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
 
   def generateCode(path: String, logicalTypesEnabled: Boolean = false): List[GeneratedCode] = {
     val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled)

@@ -184,7 +184,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         }
         map
       }.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -391,6 +391,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           }
         }
       }
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }

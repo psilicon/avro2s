@@ -13,7 +13,7 @@ case class Record2(var _string: String, var _int: Int) extends org.apache.avro.s
     (field$: @switch) match {
       case 0 => _string.asInstanceOf[AnyRef]
       case 1 => _int.asInstanceOf[AnyRef]
-      case _ => new org.apache.avro.AvroRuntimeException("Bad index")
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 
@@ -21,6 +21,7 @@ case class Record2(var _string: String, var _int: Int) extends org.apache.avro.s
     (field$: @switch) match {
       case 0 => this._string = value.toString.asInstanceOf[String]
       case 1 => this._int = value.asInstanceOf[Int]
+      case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
 }
