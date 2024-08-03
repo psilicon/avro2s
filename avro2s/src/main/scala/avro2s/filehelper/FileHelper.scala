@@ -7,7 +7,11 @@ import java.io.File
 import scala.annotation.tailrec
 
 object FileHelper {
-  def findAvscFiles(directory: String): List[File] = {
+
+  def findAvscFiles(directory: String): List[File] = findFiles(directory, ".avsc")
+  def findAvdlFiles(directory: String): List[File] = findFiles(directory, ".avdl")
+
+  def findFiles(directory: String, suffix: String): List[File] = {
     @tailrec
     def loop(filesToCheck: List[File], foundFiles: List[File]): List[File] = {
       filesToCheck match {
@@ -16,7 +20,7 @@ object FileHelper {
           if (head.isDirectory) {
             loop(head.listFiles().toList ::: tail, foundFiles)
           } else {
-            if (head.getName.endsWith(".avsc")) {
+            if (head.getName.endsWith(suffix)) {
               loop(tail, head :: foundFiles)
             } else {
               loop(tail, foundFiles)
