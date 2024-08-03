@@ -13,8 +13,33 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
    - Currently, Enums are still generated as Java enums
  - Supports Scala 2.13
  - Compatibility with all Avro types
+ - SBT plugin
 
-#### Usage:
+#### SBT Plugin Usage
+
+Add `sbt-avro2s` to your `project/plugins.sbt`
+
+```
+addSbtPlugin("io.psilicon" % "sbt-avro2s" % "0.22.0")
+```
+
+Add the task as a compilation dependency in your `build.sbt`:
+
+```
+Compile / sourceGenerators += (Compile / avro2sGenerate).taskValue
+```
+
+Now when you compile your project the `sbt-avro2s` plugin will attempt to generate case classes for all `*.avdl` and `*.avsc` under the `src/main/avro` directory.
+
+This is only going to succeed if you also have avro in your dependencies. For example,
+
+```
+libraryDependencies ++= Seq(
+  "org.apache.avro" % "avro" % "1.11.3"
+)
+```
+
+#### Direct Usage:
 Add avro2s to your `build.sbt`:
 ```scala
 libraryDependencies += "io.psilicon" % "avro2s_2.13" % "0.3.0"
@@ -42,7 +67,6 @@ object Demo extends App {
 #### Roadmap:
  - Scaladoc generation
  - Scala 3 Enum support
- - SBT plugin
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.
