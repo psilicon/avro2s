@@ -41,7 +41,7 @@ jobs:
     - name: List GPG Keys
       run: gpg --list-keys
     - name: Build and Publish
-      run: sbt +publishSigned
+      run: sbt publishSigned
       env:
         NEXUS_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         NEXUS_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
