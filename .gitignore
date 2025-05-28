@@ -4,6 +4,9 @@
 target
 .idea
 .bsp
+.cursor
+.metals
+.vscode
 
 .DS_Store
 *ignored*
