@@ -16,11 +16,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Setup JDK
-      uses: actions/setup-java@v3
+    - name: Setup SBT
+      uses: coursier/setup-action@v1
       with:
-        distribution: temurin
-        java-version: 8
+        jvm: temurin:21
+        apps: sbt
     - name: Build and Test
       run: sbt -v +test
   publish:
