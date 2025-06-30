@@ -29,18 +29,10 @@ ThisBuild / homepage := Some(url("https://github.com/psilicon/avro2s"))
 
 ThisBuild / pomIncludeRepository := { _ => false }
 ThisBuild / publishTo := {
-  val nexus = "https://s01.oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
 }
-ThisBuild / publishMavenStyle := true
-
-ThisBuild / credentials += Credentials(
-  "Sonatype Nexus Repository Manager",
-  "s01.oss.sonatype.org",
-  sys.env.getOrElse("NEXUS_USERNAME", ""),
-  sys.env.getOrElse("NEXUS_PASSWORD", "")
-)
 
 pgpPassphrase := sys.env.get("GPG_PASSPHRASE").map(_.toArray)
 
