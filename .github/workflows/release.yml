@@ -1,5 +1,6 @@
 name: Release
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -43,9 +44,12 @@ jobs:
     - name: Build and Publish
       run: sbt publishSigned
       env:
-        NEXUS_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
-        NEXUS_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    - name: Central Portal Upload
+      run: sbt sonaUpload
+      env:
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   prepare-snapshot:
     needs: publish
     runs-on: ubuntu-latest
