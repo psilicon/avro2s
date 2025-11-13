@@ -40,6 +40,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
+      .add(s"override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()")
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -72,6 +73,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .newline
+      .add(s"def getClassSchema: org.apache.avro.Schema = SCHEMA$dollar")
       .outdent
       .add("}")
 

@@ -8,6 +8,7 @@ case class Record2(var field2: Long) extends org.apache.avro.specific.SpecificRe
   def this() = this(0)
 
   override def getSchema: org.apache.avro.Schema = Record2.SCHEMA$
+  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -28,4 +29,6 @@ case class Record2(var field2: Long) extends org.apache.avro.specific.SpecificRe
 
 object Record2 {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Record2","namespace":"avro2s.test.unions","fields":[{"name":"field2","type":"long"}]}""")
+
+  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }

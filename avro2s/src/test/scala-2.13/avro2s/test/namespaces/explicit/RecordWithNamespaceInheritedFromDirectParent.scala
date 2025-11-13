@@ -8,6 +8,7 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
   def this() = this("", new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent())
 
   override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedFromDirectParent.SCHEMA$
+  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -28,4 +29,6 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
 
 object RecordWithNamespaceInheritedFromDirectParent {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedFromDirectParent","namespace":"avro2s.test.namespaces.explicit","fields":[{"name":"_string","type":"string"},{"name":"_record_with_namespace_inherited_from_indirect_non_top_level_parent","type":{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent","fields":[{"name":"_string","type":"string"}]}}]}""")
+
+  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }

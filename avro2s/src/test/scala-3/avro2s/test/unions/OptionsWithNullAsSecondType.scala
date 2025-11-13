@@ -8,6 +8,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
   def this() = this(None, None, List.empty, Map.empty)
 
   override def getSchema: org.apache.avro.Schema = OptionsWithNullAsSecondType.SCHEMA$
+  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -100,4 +101,6 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
 
 object OptionsWithNullAsSecondType {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"OptionsWithNullAsSecondType","namespace":"avro2s.test.unions","fields":[{"name":"_simple","type":["string","null"]},{"name":"_optional_array","type":[{"type":"array","items":"boolean"},"null"]},{"name":"_array_of_options","type":{"type":"array","items":["string","null"]}},{"name":"_map_of_options","type":{"type":"map","values":["string","null"]}}]}""")
+
+  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }

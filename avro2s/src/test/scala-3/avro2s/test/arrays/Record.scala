@@ -8,6 +8,7 @@ case class Record(var _string: String, var _int: Int) extends org.apache.avro.sp
   def this() = this("", 0)
 
   override def getSchema: org.apache.avro.Schema = Record.SCHEMA$
+  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -32,4 +33,6 @@ case class Record(var _string: String, var _int: Int) extends org.apache.avro.sp
 
 object Record {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Record","namespace":"avro2s.test.arrays","fields":[{"name":"_string","type":"string"},{"name":"_int","type":"int"}]}""")
+
+  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }
