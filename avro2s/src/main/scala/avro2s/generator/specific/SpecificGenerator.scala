@@ -2,8 +2,10 @@ package avro2s.generator.specific
 
 import avro2s.error.Error.SchemaError
 import avro2s.generator.javagenerator.JavaGenericEnumGenerator.schemaToJavaEnum
+import avro2s.generator.generic.scala2.enumeration.GenericEnumGenerator.schemaToScala2Enum
+import avro2s.generator.generic.scala3.enumeration.GenericEnumGenerator.schemaToScala3Enum
 import avro2s.generator.specific.scala2.fixed.SpecificFixedGenerator.schemaToScala2Fixed
-import avro2s.generator.{GeneratedCode, GeneratorConfig}
+import avro2s.generator.{EnumType, GeneratedCode, GeneratorConfig}
 import avro2s.language.ScalaVersion
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type.{ENUM, FIXED, RECORD}
@@ -27,7 +29,7 @@ private[avro2s] class SpecificGenerator(generatorConfig: GeneratorConfig) {
   private def compileScala2(schema: Schema, namespace: Option[String]): GeneratedCode = {
     schema.getType match {
       case RECORD => schemaToScala2Record(schema, namespace)
-      case ENUM => schemaToJavaEnum(schema, namespace)
+      case ENUM => compileEnum(schema, namespace, isScala3 = false)
       case FIXED => schemaToScala2Fixed(schema, namespace)
       case _ => throw SchemaError("Only RECORD, or ENUM can be toplevel definitions")
     }
@@ -36,9 +38,17 @@ private[avro2s] class SpecificGenerator(generatorConfig: GeneratorConfig) {
   private def compileScala3(schema: Schema, namespace: Option[String]): GeneratedCode = {
     schema.getType match {
       case RECORD => schemaToScala3Record(schema, namespace)
-      case ENUM => schemaToJavaEnum(schema, namespace)
+      case ENUM => compileEnum(schema, namespace, isScala3 = true)
       case FIXED => schemaToScala2Fixed(schema, namespace)
       case _ => throw SchemaError("Only RECORD, or ENUM can be toplevel definitions")
+    }
+  }
+
+  private def compileEnum(schema: Schema, namespace: Option[String], isScala3: Boolean): GeneratedCode = {
+    generatorConfig.enumType match {
+      case Some(EnumType.ScalaADT) => schemaToScala2Enum(schema, namespace)
+      case Some(EnumType.Scala3Enum) => schemaToScala3Enum(schema, namespace)
+      case _ => schemaToJavaEnum(schema, namespace)
     }
   }
 }

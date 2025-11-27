@@ -2,8 +2,9 @@ package avro2s.generator.specific.scala3.record
 
 import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
+import avro2s.generator.specific.ScalaSpecificDataGenerator
 import avro2s.generator.specific.scala3.FieldOps._
-import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
+import avro2s.generator.{EnumType, FunctionalPrinter, GeneratedCode, GeneratorConfig}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
@@ -16,6 +17,11 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   private val putCaseGenerator = new PutCaseGenerator(ltc)
   private val typeHelpers = new TypeHelpers(ltc)
   import typeHelpers._
+  
+  private val usesScalaEnums: Boolean = generatorConfig.enumType match {
+    case Some(EnumType.ScalaADT) | Some(EnumType.Scala3Enum) => true
+    case _ => false
+  }
 
   def schemaToScala3Record(schema: Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
@@ -37,6 +43,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
+      .when(usesScalaEnums)(_.add(s"override def getSpecificData: org.apache.avro.specific.SpecificData = ${ScalaSpecificDataGenerator.FullClassName}.get()"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
