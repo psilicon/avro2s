@@ -2,7 +2,7 @@ package avro2s.generator
 
 import avro2s.filehelper.FileHelper
 import avro2s.filesorter.AvscFileSorter
-import avro2s.generator.specific.SpecificGenerator
+import avro2s.generator.specific.{ScalaSpecificDataGenerator, SpecificGenerator}
 import avro2s.language.ScalaVersion
 import avro2s.schema.{NestedSchemaExtractor, SchemaInspector, SchemaStore}
 import org.apache.avro.Schema
@@ -28,9 +28,18 @@ object CodeGenerator {
     generatorConfig: GeneratorConfig
   ): List[GeneratedCode] = {
     val schemaStore = new SchemaStore
-    schemas.flatMap { schema =>
+    val schemaCode = schemas.flatMap { schema =>
       generateCode(schema, schemaStore, generatorConfig)
     }
+    
+    // Generate ScalaSpecificData when using Scala enums
+    val supportCode = generatorConfig.enumType match {
+      case Some(EnumType.ScalaADT) | Some(EnumType.Scala3Enum) =>
+        List(ScalaSpecificDataGenerator.generate().copy(code = trimTrailingSpaces(ScalaSpecificDataGenerator.generate().code)))
+      case _ => Nil
+    }
+    
+    schemaCode ++ supportCode
   }
 
   def generateCode(

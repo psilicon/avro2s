@@ -8,7 +8,6 @@ case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespace
   def this() = this(new avro2s.test.namespaces.explicit.RecordWithExplicitNamespace(), new avro2s.test.namespaces.RecordWithInheritedNamespace())
 
   override def getSchema: org.apache.avro.Schema = Namespaces.SCHEMA$
-  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -29,6 +28,4 @@ case class Namespaces(var _record_with_explicit_namespace: avro2s.test.namespace
 
 object Namespaces {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Namespaces","namespace":"avro2s.test.namespaces","fields":[{"name":"_record_with_explicit_namespace","type":{"type":"record","name":"RecordWithExplicitNamespace","namespace":"avro2s.test.namespaces.explicit","fields":[{"name":"_string","type":"string"},{"name":"_record_with_namespace_inherited_from_direct_parent","type":{"type":"record","name":"RecordWithNamespaceInheritedFromDirectParent","fields":[{"name":"_string","type":"string"},{"name":"_record_with_namespace_inherited_from_indirect_non_top_level_parent","type":{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent","fields":[{"name":"_string","type":"string"}]}}]}},{"name":"_array_of_records","type":{"type":"array","items":{"type":"record","name":"RecordWithNamespaceInheritedViaArray","fields":[{"name":"_string","type":"string"}]}}},{"name":"_map_of_records","type":{"type":"map","values":{"type":"record","name":"RecordWithNamespaceInheritedViaMap","fields":[{"name":"_string","type":"string"}]}}},{"name":"_union_of_records","type":[{"type":"record","name":"RecordWithNamespaceInheritedViaUnion","fields":[{"name":"_string","type":"string"}]},"string"]}]}},{"name":"_record_with_inherited_namespace","type":{"type":"record","name":"RecordWithInheritedNamespace","fields":[{"name":"_string","type":"string"},{"name":"_record_with_namespace_inherited_from_indirect_parent","type":{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectParent","fields":[{"name":"_string","type":"string"}]}}]}}]}""")
-
-  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }

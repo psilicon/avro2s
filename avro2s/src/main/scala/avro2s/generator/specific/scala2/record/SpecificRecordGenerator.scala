@@ -2,8 +2,9 @@ package avro2s.generator.specific.scala2.record
 
 import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
+import avro2s.generator.specific.ScalaSpecificDataGenerator
 import avro2s.generator.specific.scala2.FieldOps._
-import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
+import avro2s.generator.{EnumType, FunctionalPrinter, GeneratedCode, GeneratorConfig}
 import avro2s.schema.RecordInspector
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
@@ -17,6 +18,11 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   private val putCaseGenerator = new PutCaseGenerator(ltc)
   private val typeHelpers = new TypeHelpers(ltc)
   import typeHelpers._
+  
+  private val usesScalaEnums: Boolean = generatorConfig.enumType match {
+    case Some(EnumType.ScalaADT) | Some(EnumType.Scala3Enum) => true
+    case _ => false
+  }
 
   def schemaToScala2Record(schema: Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
@@ -40,7 +46,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
-      .add(s"override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()")
+      .when(usesScalaEnums)(_.add(s"override def getSpecificData: org.apache.avro.specific.SpecificData = ${ScalaSpecificDataGenerator.FullClassName}.get()"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -73,8 +79,6 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
-      .newline
-      .add(s"def getClassSchema: org.apache.avro.Schema = SCHEMA$dollar")
       .outdent
       .add("}")
 

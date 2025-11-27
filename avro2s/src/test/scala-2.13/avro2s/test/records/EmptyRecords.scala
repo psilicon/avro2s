@@ -8,7 +8,6 @@ case class EmptyRecords(var _string: String, var _empty_record: avro2s.test.reco
   def this() = this("", new avro2s.test.records.EmptyRecord(), 0)
 
   override def getSchema: org.apache.avro.Schema = EmptyRecords.SCHEMA$
-  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -31,6 +30,4 @@ case class EmptyRecords(var _string: String, var _empty_record: avro2s.test.reco
 
 object EmptyRecords {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"EmptyRecords","namespace":"avro2s.test.records","fields":[{"name":"_string","type":"string"},{"name":"_empty_record","type":{"type":"record","name":"EmptyRecord","fields":[]}},{"name":"_int","type":"int"}]}""")
-
-  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }

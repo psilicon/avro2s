@@ -5,4 +5,5 @@ import avro2s.language.ScalaVersion
 case class GeneratorConfig(
   targetScalaVersion: ScalaVersion,
   logicalTypesEnabled: Boolean,
+  enumType: Option[EnumType] = None,
 )

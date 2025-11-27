@@ -1,11 +1,11 @@
-package avro2s.generator.specific.scala2.enumeration
+package avro2s.generator.generic.scala2.enumeration
 
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 import org.apache.commons.text.StringEscapeUtils
 
 import scala.jdk.CollectionConverters._
 
-private[avro2s] object SpecificEnumGenerator {
+private[avro2s] object GenericEnumGenerator {
   def schemaToScala2Enum(schema: org.apache.avro.Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
     val enumSymbols = schema.getEnumSymbols.asScala
@@ -34,8 +34,6 @@ private[avro2s] object SpecificEnumGenerator {
       }
       .newline
       .add(s"""val SCHEMA$$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"${StringEscapeUtils.escapeJava(schema.toString)}\")""")
-      .newline
-      .add(s"def getClassSchema: org.apache.avro.Schema = SCHEMA$$")
       .newline
       .add(s"def fromString(value: String): $name = value match {")
       .indent

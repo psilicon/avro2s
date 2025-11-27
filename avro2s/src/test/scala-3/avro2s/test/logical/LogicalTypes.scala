@@ -8,7 +8,6 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
   def this() = this(java.util.UUID.fromString("00000000-0000-0000-0000-000000000000"), java.time.LocalDate.ofEpochDay(0), java.time.LocalTime.ofNanoOfDay(0), java.time.LocalTime.ofNanoOfDay(0), java.time.Instant.ofEpochMilli(0), java.time.Instant.ofEpochSecond(0, 0), java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC")), java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC")))
 
   override def getSchema: org.apache.avro.Schema = LogicalTypes.SCHEMA$
-  override def getSpecificData: org.apache.avro.specific.SpecificData = avro2s.specific.ScalaSpecificData.get()
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
@@ -57,6 +56,4 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
 object LogicalTypes {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalTypes","namespace":"avro2s.test.logical","fields":[{"name":"_uuid","type":{"type":"string","logicalType":"uuid"}},{"name":"_date","type":{"type":"int","logicalType":"date"}},{"name":"_time_millis","type":{"type":"int","logicalType":"time-millis"}},{"name":"_time_micros","type":{"type":"long","logicalType":"time-micros"}},{"name":"_timestamp_millis","type":{"type":"long","logicalType":"timestamp-millis"}},{"name":"_timestamp_micros","type":{"type":"long","logicalType":"timestamp-micros"}},{"name":"_local_timestamp_millis","type":{"type":"long","logicalType":"local-timestamp-millis"}},{"name":"_local_timestamp_micros","type":{"type":"long","logicalType":"local-timestamp-micros"}}]}""")
-
-  def getClassSchema: org.apache.avro.Schema = SCHEMA$
 }
