@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Setup SBT
-      uses: coursier/setup-action@v1
+      uses: coursier/setup-action@v2
       with:
         jvm: temurin:21
         apps: sbt

@@ -1,6 +1,6 @@
 ThisBuild / version := "0.24.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "2.13.18"
 
 ThisBuild / organization := "io.psilicon"
 ThisBuild / organizationName := "psilicon"
@@ -48,13 +48,13 @@ lazy val avro2s = (projectMatrix in file("avro2s"))
     libraryDependencies ++= Seq(
       "org.apache.avro" % "avro" % versions.avro,
       "org.apache.avro" % "avro-compiler" % versions.avro,
-      "io.circe" %% "circe-core" % "0.14.13",
-      "io.circe" %% "circe-parser" % "0.14.13",
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.13.0",
+      "io.circe" %% "circe-core" % "0.14.15",
+      "io.circe" %% "circe-parser" % "0.14.15",
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
       // Test
       "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-      "org.slf4j" % "slf4j-api" % "1.7.36" % Test,
-      "ch.qos.logback" % "logback-classic" % "1.2.10" % Test,
+      "org.slf4j" % "slf4j-api" % "2.0.17" % Test,
+      "ch.qos.logback" % "logback-classic" % "1.5.32" % Test,
     ) ++ (
       if (scalaVersion.value.startsWith("2")) {
         Seq(
@@ -64,7 +64,7 @@ lazy val avro2s = (projectMatrix in file("avro2s"))
         Seq()
       }
     ),
-  ).jvmPlatform(scalaVersions = Seq("2.12.20", "2.13.16", "3.3.6"))
+  ).jvmPlatform(scalaVersions = Seq("2.12.21", "2.13.18", "3.3.7"))
 
 lazy val sbtAvro2s = (projectMatrix in file("sbt-avro2s"))
   .settings(
@@ -80,9 +80,9 @@ lazy val sbtAvro2s = (projectMatrix in file("sbt-avro2s"))
     publishArtifact := false,
     Compile / publishArtifact := false,
     Test / publishArtifact := false
-  ).jvmPlatform(scalaVersions = Seq("2.12.20")).dependsOn(avro2s)
+  ).jvmPlatform(scalaVersions = Seq("2.12.21")).dependsOn(avro2s)
   .enablePlugins(SbtPlugin)
 
 lazy val versions = new {
-  val avro = "1.11.4"
+  val avro = "1.12.1"
 }
