@@ -3,6 +3,7 @@ package avro2s.generator.specific.scala3.record
 import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala3.FieldOps._
+import avro2s.generator.specific.SchemaLiteral
 import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
@@ -73,7 +74,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .add(s"object $name {")
       .indent
-      .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .add(s"val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .call(printConversionInfrastructure(_, distinctConversions))
       .outdent
       .add("}")
