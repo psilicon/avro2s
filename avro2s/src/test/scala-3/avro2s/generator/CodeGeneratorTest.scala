@@ -146,6 +146,41 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     }
   }
 
+  test("large schema should produce chunked SCHEMA$ val") {
+    val padding = "a" * 65001
+    val schemaJson =
+      s"""{"type":"record","name":"BigRecord","namespace":"test","doc":"$padding","fields":[{"name":"id","type":"string"}]}"""
+    val schema = new org.apache.avro.Schema.Parser().parse(schemaJson)
+    val schemaStore = new SchemaStore
+    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_3, false)
+
+    val results = CodeGenerator.generateCode(schema, schemaStore, generatorConfig)
+
+    results should have length 1
+    val code = results.head.code
+    code should include("Array(")
+    code should include(".mkString")
+    val tripleQuotedSegments = code.split("\"\"\"").zipWithIndex.collect {
+      case (seg, i) if i % 2 == 1 => seg
+    }
+    tripleQuotedSegments should not be empty
+    tripleQuotedSegments.foreach(seg => seg.length should be <= 65000)
+  }
+
+  test("large avsc file with over 65000 chars should produce chunked SCHEMA$ val") {
+    val results = generateCode("input/default/large/large.avsc")
+
+    results should have length 1
+    val code = results.head.code
+    code should include("Array(")
+    code should include(".mkString")
+    val tripleQuotedSegments = code.split("\"\"\"").zipWithIndex.collect {
+      case (seg, i) if i % 2 == 1 => seg
+    }
+    tripleQuotedSegments should not be empty
+    tripleQuotedSegments.foreach(seg => seg.length should be <= 65000)
+  }
+
   def generateCode(path: String, logicalTypesEnabled: Boolean = false): List[GeneratedCode] = {
     val generatorConfig = GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled)
 

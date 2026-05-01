@@ -1,5 +1,6 @@
 package avro2s.generator.specific.scala2.fixed
 
+import avro2s.generator.specific.SchemaLiteral
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 
 private[avro2s] object SpecificFixedGenerator {
@@ -36,7 +37,7 @@ private[avro2s] object SpecificFixedGenerator {
       .newline
       .add(s"object $name {")
       .indent
-      .add(s"""val SCHEMA$$ = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .add(s"val SCHEMA$$ = ${SchemaLiteral.parseExpression(schema.toString)}")
       .add(s"val READER$$ = new org.apache.avro.specific.SpecificDatumReader[$name]($name.SCHEMA$$, $name.SCHEMA$$, new org.apache.avro.specific.SpecificData())")
       .add(s"val WRITER$$ = new org.apache.avro.specific.SpecificDatumWriter[$name]($name.SCHEMA$$, new org.apache.avro.specific.SpecificData())")
       .add(s"def apply(data: Array[Byte]): $name = {")

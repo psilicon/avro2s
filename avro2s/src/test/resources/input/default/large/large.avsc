@@ -1,0 +1,3248 @@
+{
+  "type": "record",
+  "name": "LargeRecord",
+  "namespace": "avro2s.test.large",
+  "doc": "A large record schema used to test that avro2s correctly handles SCHEMA$ strings exceeding the JVM 65535-byte string literal limit by chunking them into an Array(...).mkString expression",
+  "fields": [
+    {
+      "name": "field_001",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 001: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_002",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 002: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_003",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 003: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_004",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 004: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_005",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 005: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_006",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 006: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_007",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 007: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_008",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 008: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_009",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 009: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_010",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 010: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_011",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 011: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_012",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 012: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_013",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 013: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_014",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 014: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_015",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 015: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_016",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 016: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_017",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 017: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_018",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 018: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_019",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 019: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_020",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 020: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_021",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 021: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_022",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 022: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_023",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 023: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_024",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 024: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_025",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 025: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_026",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 026: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_027",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 027: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_028",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 028: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_029",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 029: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_030",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 030: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_031",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 031: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_032",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 032: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_033",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 033: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_034",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 034: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_035",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 035: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_036",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 036: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_037",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 037: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_038",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 038: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_039",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 039: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_040",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 040: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_041",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 041: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_042",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 042: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_043",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 043: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_044",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 044: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_045",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 045: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_046",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 046: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_047",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 047: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_048",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 048: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_049",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 049: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_050",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 050: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_051",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 051: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_052",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 052: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_053",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 053: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_054",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 054: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_055",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 055: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_056",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 056: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_057",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 057: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_058",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 058: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_059",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 059: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_060",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 060: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_061",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 061: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_062",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 062: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_063",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 063: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_064",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 064: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_065",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 065: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_066",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 066: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_067",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 067: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_068",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 068: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_069",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 069: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_070",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 070: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_071",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 071: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_072",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 072: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_073",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 073: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_074",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 074: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_075",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 075: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_076",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 076: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_077",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 077: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_078",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 078: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_079",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 079: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_080",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 080: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_081",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 081: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_082",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 082: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_083",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 083: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_084",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 084: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_085",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 085: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_086",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 086: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_087",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 087: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_088",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 088: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_089",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 089: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_090",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 090: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_091",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 091: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_092",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 092: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_093",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 093: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_094",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 094: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_095",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 095: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_096",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 096: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_097",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 097: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_098",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 098: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_099",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 099: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_100",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 100: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_101",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 101: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_102",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 102: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_103",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 103: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_104",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 104: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_105",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 105: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_106",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 106: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_107",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 107: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_108",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 108: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_109",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 109: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_110",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 110: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_111",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 111: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_112",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 112: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_113",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 113: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_114",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 114: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_115",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 115: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_116",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 116: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_117",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 117: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_118",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 118: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_119",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 119: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_120",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 120: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_121",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 121: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_122",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 122: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_123",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 123: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_124",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 124: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_125",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 125: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_126",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 126: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_127",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 127: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_128",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 128: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_129",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 129: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_130",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 130: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_131",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 131: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_132",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 132: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_133",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 133: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_134",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 134: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_135",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 135: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_136",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 136: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_137",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 137: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_138",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 138: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_139",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 139: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_140",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 140: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_141",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 141: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_142",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 142: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_143",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 143: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_144",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 144: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_145",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 145: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_146",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 146: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_147",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 147: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_148",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 148: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_149",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 149: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_150",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 150: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_151",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 151: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_152",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 152: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_153",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 153: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_154",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 154: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_155",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 155: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_156",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 156: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_157",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 157: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_158",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 158: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_159",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 159: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_160",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 160: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_161",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 161: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_162",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 162: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_163",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 163: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_164",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 164: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_165",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 165: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_166",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 166: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_167",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 167: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_168",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 168: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_169",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 169: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_170",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 170: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_171",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 171: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_172",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 172: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_173",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 173: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_174",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 174: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_175",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 175: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_176",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 176: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_177",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 177: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_178",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 178: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_179",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 179: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_180",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 180: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_181",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 181: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_182",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 182: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_183",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 183: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_184",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 184: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_185",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 185: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_186",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 186: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_187",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 187: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_188",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 188: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_189",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 189: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_190",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 190: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_191",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 191: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_192",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 192: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_193",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 193: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_194",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 194: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_195",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 195: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_196",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 196: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_197",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 197: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_198",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 198: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_199",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 199: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_200",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 200: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_201",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 201: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_202",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 202: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_203",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 203: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_204",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 204: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_205",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 205: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_206",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 206: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_207",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 207: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_208",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 208: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_209",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 209: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_210",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 210: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_211",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 211: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_212",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 212: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_213",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 213: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_214",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 214: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_215",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 215: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_216",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 216: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_217",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 217: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_218",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 218: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_219",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 219: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_220",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 220: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_221",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 221: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_222",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 222: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_223",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 223: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_224",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 224: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_225",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 225: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_226",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 226: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_227",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 227: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_228",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 228: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_229",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 229: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_230",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 230: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_231",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 231: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_232",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 232: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_233",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 233: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_234",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 234: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_235",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 235: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_236",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 236: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_237",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 237: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_238",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 238: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_239",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 239: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_240",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 240: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_241",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 241: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_242",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 242: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_243",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 243: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_244",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 244: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_245",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 245: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_246",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 246: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_247",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 247: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_248",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 248: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_249",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 249: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_250",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 250: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_251",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 251: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_252",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 252: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_253",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 253: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_254",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 254: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_255",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 255: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_256",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 256: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_257",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 257: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_258",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 258: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_259",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 259: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_260",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 260: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_261",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 261: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_262",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 262: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_263",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 263: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_264",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 264: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_265",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 265: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_266",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 266: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_267",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 267: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_268",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 268: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_269",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 269: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_270",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 270: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_271",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 271: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_272",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 272: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_273",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 273: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_274",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 274: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_275",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 275: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_276",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 276: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_277",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 277: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_278",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 278: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_279",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 279: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_280",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 280: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_281",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 281: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_282",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 282: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_283",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 283: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_284",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 284: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_285",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 285: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_286",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 286: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_287",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 287: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_288",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 288: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_289",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 289: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_290",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 290: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_291",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 291: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_292",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 292: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_293",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 293: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_294",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 294: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_295",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 295: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_296",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 296: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_297",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 297: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_298",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 298: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_299",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 299: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_300",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 300: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_301",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 301: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_302",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 302: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_303",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 303: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_304",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 304: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_305",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 305: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_306",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 306: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_307",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 307: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_308",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 308: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_309",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 309: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_310",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 310: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_311",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 311: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_312",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 312: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_313",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 313: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_314",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 314: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_315",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 315: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_316",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 316: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_317",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 317: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_318",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 318: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_319",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 319: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_320",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 320: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_321",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 321: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_322",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 322: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_323",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 323: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_324",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 324: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_325",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 325: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_326",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 326: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_327",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 327: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_328",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 328: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_329",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 329: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_330",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 330: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_331",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 331: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_332",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 332: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_333",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 333: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_334",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 334: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_335",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 335: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_336",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 336: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_337",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 337: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_338",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 338: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_339",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 339: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_340",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 340: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_341",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 341: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_342",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 342: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_343",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 343: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_344",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 344: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_345",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 345: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_346",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 346: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_347",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 347: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_348",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 348: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_349",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 349: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_350",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 350: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_351",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 351: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_352",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 352: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_353",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 353: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_354",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 354: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_355",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 355: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_356",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 356: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_357",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 357: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_358",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 358: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_359",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 359: this field stores an optional string value used in downstream processing pipelines"
+    },
+    {
+      "name": "field_360",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Documentation for field 360: this field stores an optional string value used in downstream processing pipelines"
+    }
+  ]
+}
