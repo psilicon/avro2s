@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "LogicalFixedDecimal",
+  "fields": [
+    {
+      "name": "_decimal_fixed",
+      "type": {
+        "type": "fixed",
+        "name": "DecimalFixed",
+        "size": 2,
+        "logicalType": "decimal",
+        "precision": 4,
+        "scale": 2
+      }
+    }
+  ]
+}

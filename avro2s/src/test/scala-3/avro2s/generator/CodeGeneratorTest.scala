@@ -181,6 +181,24 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     tripleQuotedSegments.foreach(seg => seg.length should be <= 65000)
   }
 
+  test("logical fixed decimal types should produce expected output") {
+    val code = generateCode("input/logical-enabled/logical/logical-fixed-decimal.avsc", logicalTypesEnabled = true)
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
+  test("logical duration types should produce expected output") {
+    val code = generateCode("input/logical-enabled/logical/logical-duration.avsc", logicalTypesEnabled = true)
+
+    code.foreach { code =>
+      val expectedCode = loadTestCode("logical", code.path.split("/").last)
+      testResult(code, expectedCode)
+    }
+  }
+
   def generateCode(path: String, logicalTypesEnabled: Boolean = false): List[GeneratedCode] = {
     val generatorConfig = GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled)
 

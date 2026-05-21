@@ -15,8 +15,8 @@ case class DecimalFixed() extends org.apache.avro.specific.SpecificFixed {
 
 object DecimalFixed {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"DecimalFixed","namespace":"avro2s.test.logical","size":2,"logicalType":"decimal","precision":4,"scale":2}""")
-  val READER$ = new org.apache.avro.specific.SpecificDatumReader[DecimalFixed](DecimalFixed.SCHEMA$)
-  val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[DecimalFixed](DecimalFixed.SCHEMA$)
+  val READER$ = new org.apache.avro.specific.SpecificDatumReader[DecimalFixed](DecimalFixed.SCHEMA$, DecimalFixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
+  val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[DecimalFixed](DecimalFixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): DecimalFixed = {
     val fixed = new avro2s.test.logical.DecimalFixed()
     fixed.bytes(data)

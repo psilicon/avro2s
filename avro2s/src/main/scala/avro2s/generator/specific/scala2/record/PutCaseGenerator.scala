@@ -28,6 +28,9 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .call(matchUnion(_, "value", field.schema()))
           .outdent
           .add("}")
+      case BYTES if ltc.avroAutoConverts(field.schema()) =>
+        printer
+          .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
       case BYTES =>
         printer
           .add(s"case $index => this.${field.safeName} = {")
