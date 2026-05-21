@@ -14,7 +14,7 @@ case class md5() extends org.apache.avro.specific.SpecificFixed {
 }
 
 object md5 {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"md5","namespace":"avro2s.test.spec","size":16}""")
+  val SCHEMA$ = new org.apache.avro.SchemaParser().parse("""{"type":"fixed","name":"md5","namespace":"avro2s.test.spec","size":16}""").mainSchema()
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[md5](md5.SCHEMA$, md5.SCHEMA$, new org.apache.avro.specific.SpecificData())
   val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[md5](md5.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): md5 = {

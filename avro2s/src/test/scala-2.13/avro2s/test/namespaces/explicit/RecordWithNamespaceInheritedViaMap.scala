@@ -25,5 +25,5 @@ case class RecordWithNamespaceInheritedViaMap(var _string: String) extends org.a
 }
 
 object RecordWithNamespaceInheritedViaMap {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedViaMap","namespace":"avro2s.test.namespaces.explicit","fields":[{"name":"_string","type":"string"}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.SchemaParser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedViaMap","namespace":"avro2s.test.namespaces.explicit","fields":[{"name":"_string","type":"string"}]}""").mainSchema()
 }

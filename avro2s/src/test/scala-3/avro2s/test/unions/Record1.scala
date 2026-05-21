@@ -27,5 +27,5 @@ case class Record1(var field1: String) extends org.apache.avro.specific.Specific
 }
 
 object Record1 {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Record1","namespace":"avro2s.test.unions","fields":[{"name":"field1","type":"string"}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.SchemaParser().parse("""{"type":"record","name":"Record1","namespace":"avro2s.test.unions","fields":[{"name":"field1","type":"string"}]}""").mainSchema()
 }

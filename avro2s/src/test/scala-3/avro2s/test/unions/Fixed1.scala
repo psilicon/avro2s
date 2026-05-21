@@ -14,7 +14,7 @@ case class Fixed1() extends org.apache.avro.specific.SpecificFixed {
 }
 
 object Fixed1 {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"Fixed1","namespace":"avro2s.test.unions","size":1}""")
+  val SCHEMA$ = new org.apache.avro.SchemaParser().parse("""{"type":"fixed","name":"Fixed1","namespace":"avro2s.test.unions","size":1}""").mainSchema()
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[Fixed1](Fixed1.SCHEMA$, Fixed1.SCHEMA$, new org.apache.avro.specific.SpecificData())
   val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[Fixed1](Fixed1.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): Fixed1 = {

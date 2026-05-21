@@ -27,5 +27,5 @@ case class RecordWithNamespaceInheritedFromIndirectParent(var _string: String) e
 }
 
 object RecordWithNamespaceInheritedFromIndirectParent {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectParent","namespace":"avro2s.test.namespaces","fields":[{"name":"_string","type":"string"}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.SchemaParser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectParent","namespace":"avro2s.test.namespaces","fields":[{"name":"_string","type":"string"}]}""").mainSchema()
 }
