@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "LogicalDuration",
+  "fields": [
+    {
+      "name": "_duration",
+      "type": {
+        "type": "fixed",
+        "name": "DurationFixed",
+        "size": 12,
+        "logicalType": "duration"
+      }
+    }
+  ]
+}
