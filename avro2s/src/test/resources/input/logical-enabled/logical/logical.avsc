@@ -58,6 +58,36 @@
         "type": "long",
         "logicalType": "local-timestamp-micros"
       }
+    },
+    {
+      "name": "_timestamp_nanos",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-nanos"
+      }
+    },
+    {
+      "name": "_local_timestamp_nanos",
+      "type": {
+        "type": "long",
+        "logicalType": "local-timestamp-nanos"
+      }
+    },
+    {
+      "name": "_decimal",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      }
+    },
+    {
+      "name": "_big_decimal",
+      "type": {
+        "type": "bytes",
+        "logicalType": "big-decimal"
+      }
     }
   ]
 }

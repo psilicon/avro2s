@@ -46,6 +46,11 @@ private[avro2s] object LogicalTypes {
       }.getOrElse(default)
     }
     
+    def avroAutoConverts(schema: Schema): Boolean = Option(schema.getLogicalType).exists { logicalType =>
+      val key = LogicalTypeKey(schema.getType, logicalType.getName)
+      logicalTypeMap.get(key).exists(lt => lt.validate(schema) && lt.avroAutoConverts)
+    }
+
     def logicalTypeInUse(schema: Schema): Boolean = Option(schema.getLogicalType).exists { logicalType =>
       val schemaType = schema.getType
       val logicalTypeName = logicalType.getName
@@ -56,7 +61,7 @@ private[avro2s] object LogicalTypes {
     def getConversionClass(schema: Schema): Option[String] = {
       Option(schema.getLogicalType).flatMap { logicalType =>
         val key = LogicalTypeKey(schema.getType, logicalType.getName)
-        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.conversionClass)
+        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.conversionClass).filter(_.nonEmpty)
       }
     }
 
@@ -96,6 +101,11 @@ private[avro2s] object LogicalTypes {
     def defaultValue(schema: Schema): String
 
     def conversionClass: String
+
+    /** True if Avro automatically converts this BYTES-backed type to the target Scala type
+     *  before calling put(), meaning put() receives the target type directly rather than a ByteBuffer.
+     */
+    def avroAutoConverts: Boolean = false
   }
 
   case object UUID extends LogicalType("uuid", Set(STRING)) {
@@ -194,32 +204,106 @@ private[avro2s] object LogicalTypes {
     override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion"
   }
 
-  // TODO: implement decimal
-  case object Decimal extends LogicalType("decimal", Set(BYTES, FIXED)) {
-    override def toType(value: String, schema: Schema): String = ???
+  case object TimestampNanosecondPrecision extends LogicalType("timestamp-nanos", Set(LONG)) {
+    override def toType(value: String, schema: Schema): String =
+      s"java.time.Instant.ofEpochSecond($value / 1_000_000_000L, $value % 1_000_000_000L)"
 
-    override def fromType(value: String, schema: Schema): String = ???
+    override def fromType(value: String, schema: Schema): String =
+      s"$value.getEpochSecond * 1_000_000_000L + $value.getNano"
 
-    override def getType(schema: Schema): String = ???
+    override def getType(schema: Schema): String = "java.time.Instant"
 
-    override def defaultValue(schema: Schema): String = ???
+    override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochSecond(0L, 0L)"
 
-    override def conversionClass: String = ???
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimestampNanosConversion"
   }
 
-  // TODO: Implement duration
+  case object LocalTimestampNanosecondPrecision extends LogicalType("local-timestamp-nanos", Set(LONG)) {
+    override def toType(value: String, schema: Schema): String =
+      s"java.time.LocalDateTime.ofEpochSecond($value / 1_000_000_000L, ($value % 1_000_000_000L).toInt, java.time.ZoneOffset.UTC)"
+
+    override def fromType(value: String, schema: Schema): String =
+      s"$value.toEpochSecond(java.time.ZoneOffset.UTC) * 1_000_000_000L + $value.getNano"
+
+    override def getType(schema: Schema): String = "java.time.LocalDateTime"
+
+    override def defaultValue(schema: Schema): String =
+      "java.time.LocalDateTime.ofEpochSecond(0L, 0, java.time.ZoneOffset.UTC)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion"
+  }
+
+  case object Decimal extends LogicalType("decimal", Set(BYTES, FIXED)) {
+    override def toType(value: String, schema: Schema): String = {
+      val scale = Option(schema.getLogicalType)
+        .collect { case d: org.apache.avro.LogicalTypes.Decimal => d }
+        .map(_.getScale)
+        .getOrElse(0)
+      if (schema.getType == FIXED)
+        s"scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger($value.asInstanceOf[org.apache.avro.generic.GenericFixed].bytes()), $scale))"
+      else
+        s"scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger($value.array()), $scale))"
+    }
+
+    override def fromType(value: String, schema: Schema): String = {
+      val scale = Option(schema.getLogicalType)
+        .collect { case d: org.apache.avro.LogicalTypes.Decimal => d }
+        .map(_.getScale)
+        .getOrElse(0)
+      if (schema.getType == FIXED) {
+        val fixedSize = schema.getFixedSize
+        val fullName = schema.getFullName
+        s"""val unscaled = $value.setScale($scale).bigDecimal.unscaledValue().toByteArray; if (unscaled.length > $fixedSize) throw new ArithmeticException("Decimal value does not fit in " + $fixedSize + " bytes: requires " + unscaled.length + " bytes"); val padded = new Array[Byte]($fixedSize); val fillByte: Byte = if (unscaled.length > 0 && unscaled(0) < 0) 0xFF.toByte else 0x00.toByte; java.util.Arrays.fill(padded, fillByte); System.arraycopy(unscaled, 0, padded, $fixedSize - unscaled.length, unscaled.length); val result = new $fullName(); result.bytes(padded); result"""
+      } else
+        s"java.nio.ByteBuffer.wrap($value.setScale($scale).bigDecimal.unscaledValue().toByteArray)"
+    }
+
+    override def getType(schema: Schema): String = "scala.math.BigDecimal"
+
+    override def defaultValue(schema: Schema): String = "scala.math.BigDecimal(0)"
+
+    override def conversionClass: String = ""
+
+    override def validate(schema: Schema): Boolean =
+      Option(schema.getLogicalType).exists(_.isInstanceOf[org.apache.avro.LogicalTypes.Decimal])
+  }
+
+  case object AvroJavaBigDecimal extends LogicalType("big-decimal", Set(BYTES)) {
+    override def toType(value: String, schema: Schema): String =
+      s"$value.asInstanceOf[java.math.BigDecimal]"
+
+    override def fromType(value: String, schema: Schema): String =
+      s"new org.apache.avro.Conversions.BigDecimalConversion().toBytes($value, null, null)"
+
+    override def getType(schema: Schema): String = "java.math.BigDecimal"
+
+    override def defaultValue(schema: Schema): String = "java.math.BigDecimal.ZERO"
+
+    override def validate(schema: Schema): Boolean = schema.getType == BYTES
+
+    override def conversionClass: String = ""
+
+    override def avroAutoConverts: Boolean = true
+  }
+
   case object Duration extends LogicalType("duration", Set(FIXED)) {
-    override def toType(value: String, schema: Schema): String = ???
+    override def toType(value: String, schema: Schema): String =
+      s"$value.asInstanceOf[org.apache.avro.util.TimePeriod]"
 
-    override def fromType(value: String, schema: Schema): String = ???
+    override def fromType(value: String, schema: Schema): String = {
+      val fullName = schema.getFullName
+      s"new org.apache.avro.Conversions.DurationConversion().toFixed($value, $fullName.SCHEMA$$, $fullName.SCHEMA$$.getLogicalType)"
+    }
 
-    override def getType(schema: Schema): String = ???
+    override def getType(schema: Schema): String = "org.apache.avro.util.TimePeriod"
 
     override def validate(schema: Schema): Boolean = schema.getFixedSize == 12
 
-    override def defaultValue(schema: Schema): String = ???
+    override def defaultValue(schema: Schema): String = "org.apache.avro.util.TimePeriod.of(0L, 0L, 0L)"
 
-    override def conversionClass: String = ???
+    override def conversionClass: String = ""
+
+    override def avroAutoConverts: Boolean = true
   }
 
   private val supportedLogicalTypes: List[LogicalType] = List(
@@ -230,7 +314,12 @@ private[avro2s] object LogicalTypes {
     TimestampMillisecondPrecision,
     TimestampMicrosecondPrecision,
     LocalTimestampMillisecondPrecision,
-    LocalTimestampMicrosecondPrecision
+    LocalTimestampMicrosecondPrecision,
+    TimestampNanosecondPrecision,
+    LocalTimestampNanosecondPrecision,
+    Decimal,
+    Duration,
+    AvroJavaBigDecimal
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)

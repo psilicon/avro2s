@@ -262,10 +262,42 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _timestamp_millis = java.time.Instant.ofEpochMilli(1234567890123L),
       _timestamp_micros = java.time.Instant.ofEpochSecond(1234567890L, 123456000L),
       _local_timestamp_millis = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(1234567890123L), java.time.ZoneOffset.UTC),
-      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC)
+      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC),
+      _timestamp_nanos = java.time.Instant.ofEpochSecond(1234567890L, 123456789L),
+      _local_timestamp_nanos = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456789L), java.time.ZoneOffset.UTC),
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes
+  }
+
+  test("logical fixed decimal can be serialized and deserialized") {
+    val logicalFixedDecimal = avro2s.test.logical.LogicalFixedDecimal(
+      _decimal_fixed = scala.math.BigDecimal("12.34")
+    )
+    deserialize[avro2s.test.logical.LogicalFixedDecimal](serialize(logicalFixedDecimal), logicalFixedDecimal.getSchema) shouldBe logicalFixedDecimal
+  }
+
+  test("logical fixed decimal handles negative values via sign extension") {
+    val negative = avro2s.test.logical.LogicalFixedDecimal(
+      _decimal_fixed = scala.math.BigDecimal("-12.34")
+    )
+    deserialize[avro2s.test.logical.LogicalFixedDecimal](serialize(negative), negative.getSchema) shouldBe negative
+  }
+
+  test("logical fixed decimal rejects values that do not fit in the fixed size") {
+    val tooLarge = avro2s.test.logical.LogicalFixedDecimal(
+      _decimal_fixed = scala.math.BigDecimal("99999.99")
+    )
+    an[ArithmeticException] should be thrownBy serialize(tooLarge)
+  }
+
+  test("logical duration can be serialized and deserialized") {
+    val logicalDuration = avro2s.test.logical.LogicalDuration(
+      _duration = org.apache.avro.util.TimePeriod.of(1L, 2L, 3L)
+    )
+    deserialize[avro2s.test.logical.LogicalDuration](serialize(logicalDuration), logicalDuration.getSchema) shouldBe logicalDuration
   }
 
   test("logical types disabled can be serialized and deserialized") {
