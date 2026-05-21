@@ -22,9 +22,17 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       case MAP => printMapCase(printer, index, field)
       case ARRAY => printArrayCase(printer, index, field)
       case BYTES => printByteCase(printer, index, field)
+      case FIXED => printFixedCase(printer, index, field)
       case _ => printDefaultCase(printer, index, field)
     }
   }
+
+  private def printFixedCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
+    if (ltc.logicalTypeInUse(field.schema())) {
+      printer.add(s"case $index => ${ltc.fromType(field.schema(), field.safeName)}.asInstanceOf[AnyRef]")
+    } else {
+      printer.add(s"case $index => ${field.safeName}.asInstanceOf[AnyRef]")
+    }
 
   private def printUnionCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
     printer

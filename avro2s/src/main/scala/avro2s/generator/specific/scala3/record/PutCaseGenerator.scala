@@ -25,6 +25,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         field.schema().getType match {
           case UNION =>
             printer.call(asUnion(_, "value", field.schema()))
+          case BYTES if ltc.avroAutoConverts(field.schema()) =>
+            printer.add(s"value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema(), false))}]")
           case BYTES =>
             printer.call(asBytes(_, "value", field.schema()))
           case MAP =>
