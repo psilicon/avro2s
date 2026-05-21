@@ -3,8 +3,8 @@ package avro2s.generator.specific.scala3.record
 import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala3.FieldOps._
-import avro2s.generator.specific.SchemaLiteral
-import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
+import avro2s.generator.specific.{ScalaSpecificDataGenerator, SchemaLiteral}
+import avro2s.generator.{EnumType, FunctionalPrinter, GeneratedCode, GeneratorConfig}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
@@ -18,6 +18,11 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   private val typeHelpers = new TypeHelpers(ltc)
   import typeHelpers._
 
+  private val usesScalaEnums: Boolean = generatorConfig.enumType match {
+    case Some(EnumType.ScalaADT) | Some(EnumType.Scala3Enum) => true
+    case _ => false
+  }
+
   def schemaToScala3Record(schema: Schema, namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
     val fields = schema.getFields.asScala.toList
@@ -26,6 +31,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     val distinctConversions =
       if (!generatorConfig.logicalTypesEnabled) Nil
       else fields.flatMap(f => ltc.collectConversionClasses(f.schema())).distinct
+    val recordHasEnum = usesScalaEnums && recordReferencesEnum(schema)
+    val needsModel = distinctConversions.nonEmpty || recordHasEnum
 
     val functionalPrinter = new FunctionalPrinter()
 
@@ -41,7 +48,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
-      .when(distinctConversions.nonEmpty)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
+      .when(needsModel)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -75,11 +82,22 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
-      .call(printConversionInfrastructure(_, distinctConversions))
+      .call(printModelInfrastructure(_, distinctConversions, recordHasEnum))
       .outdent
       .add("}")
 
     GeneratedCode(s"${ns.map(_.replace(".", "/") + "/").getOrElse("") + name}.scala", code.result())
+  }
+
+  private def recordReferencesEnum(schema: Schema): Boolean = {
+    def refs(s: Schema): Boolean = s.getType match {
+      case ENUM => true
+      case UNION => s.getTypes.asScala.exists(refs)
+      case ARRAY => refs(s.getElementType)
+      case MAP => refs(s.getValueType)
+      case _ => false
+    }
+    schema.getFields.asScala.exists(f => refs(f.schema()))
   }
 
   private def printGetConversion(printer: FunctionalPrinter, name: String, fields: List[Schema.Field]): FunctionalPrinter = {
@@ -110,23 +128,33 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     }
   }
 
-  private def printConversionInfrastructure(printer: FunctionalPrinter, distinctConversions: List[String]): FunctionalPrinter = {
-    if (distinctConversions.isEmpty) printer
-    else distinctConversions
-      .foldLeft(printer) { (p, cls) =>
+  private def printModelInfrastructure(printer: FunctionalPrinter, distinctConversions: List[String], recordHasEnum: Boolean): FunctionalPrinter = {
+    if (distinctConversions.isEmpty && !recordHasEnum) printer
+    else {
+      val baseCtor =
+        if (recordHasEnum) s"new ${ScalaSpecificDataGenerator.FullClassName}()"
+        else "new org.apache.avro.specific.SpecificData()"
+
+      val withVals = distinctConversions.foldLeft(printer) { (p, cls) =>
         val shortName = cls.split('.').last
         p.add(s"val $dollar$shortName: org.apache.avro.Conversion[?] = new $cls()")
       }
-      .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
-      .indent
-      .add("val model = new org.apache.avro.specific.SpecificData()")
-      .add(distinctConversions.map { cls =>
+
+      val modelBlock = withVals
+        .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
+        .indent
+        .add(s"val model = $baseCtor")
+
+      val withConversions = distinctConversions.foldLeft(modelBlock) { (p, cls) =>
         val shortName = cls.split('.').last
-        s"model.addLogicalTypeConversion($dollar$shortName)"
-      }: _*)
-      .add("model")
-      .outdent
-      .add("}")
+        p.add(s"model.addLogicalTypeConversion($dollar$shortName)")
+      }
+
+      withConversions
+        .add("model")
+        .outdent
+        .add("}")
+    }
   }
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {

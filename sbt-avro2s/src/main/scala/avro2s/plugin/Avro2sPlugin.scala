@@ -1,6 +1,6 @@
 package avro2s.plugin
 
-import avro2s.generator.{CodeGenerator, GeneratorConfig}
+import avro2s.generator.{CodeGenerator, EnumType, GeneratorConfig}
 import sbt.Keys.*
 import sbt.internal.util.ManagedLogger
 import sbt.*
@@ -18,12 +18,14 @@ object Avro2sPlugin extends AutoPlugin {
     lazy val avro2sGeneratedScalaTarget = settingKey[File]("Scala source directory for compiled avro")
     lazy val avro2sGeneratedAvscTarget  = settingKey[File]("Target for storing 'avsc' files generated from avro2sSchemaSource 'avdl' files")
     lazy val avro2sLogicalTypesEnabled = settingKey[Boolean]("Whether to enable avro2s logical types")
+    lazy val avro2sEnumType = settingKey[Option[EnumType]]("Enum generation strategy: None = Java enum (default), Some(EnumType.ScalaADT) = Scala 2.13 sealed ADT, Some(EnumType.Scala3Enum) = Scala 3 native enum")
 
     lazy val defaultSettings: Seq[Setting[?]] = Seq(
       avro2sSchemaSource := sourceDirectory.value / "avro",
       avro2sGeneratedAvscTarget := target.value / "avro2s" / "generated" / "avsc",
       avro2sGeneratedScalaTarget := (Compile / sourceManaged).value / "compiled_avro",
-      avro2sLogicalTypesEnabled := true
+      avro2sLogicalTypesEnabled := true,
+      avro2sEnumType := None
     )
   }
 
@@ -47,6 +49,7 @@ object Avro2sPlugin extends AutoPlugin {
     val generatorConfig  = GeneratorConfig(
       avro2s.language.ScalaVersion.fromString(scalaBinaryVersion.value),
       logicalTypesEnabled = avro2sLogicalTypesEnabled.value,
+      enumType = avro2sEnumType.value,
     )
 
     AvdlCodeGenerator.generateCode( // Generate AVDL derived code

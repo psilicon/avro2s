@@ -143,7 +143,7 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
       s"""{"type":"record","name":"BigRecord","namespace":"test","doc":"$padding","fields":[{"name":"id","type":"string"}]}"""
     val schema = new org.apache.avro.Schema.Parser().parse(schemaJson)
     val schemaStore = new SchemaStore
-    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, false)
+    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, false, None)
 
     val results = CodeGenerator.generateCode(schema, schemaStore, generatorConfig)
 
@@ -172,18 +172,41 @@ class CodeGeneratorTest extends AnyFunSuite with Matchers {
     tripleQuotedSegments.foreach(seg => seg.length should be <= 65000)
   }
 
-  def generateCode(path: String, logicalTypesEnabled: Boolean = false): List[GeneratedCode] = {
-    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled)
-    
+  test("scala ADT enums should produce expected output") {
+    val code = generateCode("input/scala-enums/spec/enum-spec.avsc", enumType = Some(EnumType.ScalaADT))
+
+    code.foreach { c =>
+      val name = c.path.split("/").last
+      val dir =
+        if (c.path.startsWith("avro2s/generated/")) "generated"
+        else "test/enums"
+      val expectedCode = Using(Source.fromFile(s"avro2s/src/test/scala-2.13/avro2s/$dir/$name"))(_.getLines.mkString("\n")).get
+      withClue(s"For path: ${c.path}") {
+        testResult(c, expectedCode)
+      }
+    }
+  }
+
+  test("scala ADT enums emit exactly one ScalaSpecificData") {
+    val code = generateCode("input/scala-enums/spec/enum-spec.avsc", enumType = Some(EnumType.ScalaADT))
+    val ssd = code.filter(_.path == "avro2s/generated/ScalaSpecificData.scala")
+    ssd should have length 1
+    ssd.head.code should include("""case "avro2s.test.enums.Suit" => avro2s.test.enums.Suit.fromString(symbol)""")
+  }
+
+  test("default (java enum) mode emits no ScalaSpecificData") {
+    val code = generateCode("input/scala-enums/spec/enum-spec.avsc", enumType = None)
+    code.exists(_.path == "avro2s/generated/ScalaSpecificData.scala") shouldBe false
+  }
+
+  def generateCode(path: String, logicalTypesEnabled: Boolean = false, enumType: Option[EnumType] = None): List[GeneratedCode] = {
+    val generatorConfig = GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled, enumType)
+
     val resourcePath = getClass.getClassLoader.getResource(path).getPath
     val file = new File(resourcePath)
     val schemas = new FileInputParser().getSchemas(file)
-    val schemaStore = new SchemaStore
 
-    for {
-      schema <- schemas
-      generatedCode <- CodeGenerator.generateCode(schema, schemaStore, generatorConfig)
-    } yield generatedCode
+    CodeGenerator.generateCode(schemas, generatorConfig)
   }
 
   private def loadTestCode(test: String, name: String): String = {

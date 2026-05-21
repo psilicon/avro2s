@@ -10,10 +10,10 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
 #### Features:
  - Supports Scala 3
    - Union types are supported without the need for shapeless
-   - Currently, Enums are still generated as Java enums
  - Supports Scala 2.13
  - Compatibility with all Avro types
  - SBT plugin
+ - Optional idiomatic Scala enum generation (Scala 2.13 sealed ADT or Scala 3 native `enum`)
 
 #### SBT Plugin Usage
 
@@ -59,14 +59,39 @@ object Demo extends App {
   CodeGenerator.generateCode(
     "input_directory",
     "output_directory",
-    GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled = true)
+    GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled = true, enumType = None)
   )
 }  
 ```
 
+#### Scala enums (optional)
+
+By default avro2s generates Java `enum` types for Avro enum schemas. To generate idiomatic Scala enums instead, set `avro2sEnumType` in your `build.sbt`:
+
+```scala
+// Scala 2.13 — sealed abstract class with case objects:
+avro2sEnumType := Some(avro2s.generator.EnumType.ScalaADT)
+
+// Scala 3 — native enum:
+avro2sEnumType := Some(avro2s.generator.EnumType.Scala3Enum)
+```
+
+When set, avro2s additionally emits an `avro2s.generated.ScalaSpecificData` class. Each generated record that contains an enum field (or logical-type conversions) gets a `MODEL$` value in its companion object and overrides `getSpecificData` to return it. `ScalaSpecificData.createEnum` dispatches to each generated enum's companion `fromString` via a closed pattern match — no reflection.
+
+Wire format is unchanged. Java and Scala consumers of the same schema can interoperate.
+
+**Deserialization note:** Avro's `SpecificDatumReader(schema)` uses the default `SpecificData` instance, which does not know about your Scala enums. When using Scala enums, construct your reader with the record's `MODEL$` explicitly:
+
+```scala
+import org.apache.avro.specific.SpecificDatumReader
+
+val reader = new SpecificDatumReader[MyRecord](
+  MyRecord.SCHEMA$, MyRecord.SCHEMA$, MyRecord.MODEL$
+)
+```
+
 #### Roadmap:
  - Scaladoc generation
- - Scala 3 Enum support
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.

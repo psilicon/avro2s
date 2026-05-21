@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "EnumSpec",
+  "namespace": "avro2s.test.enums",
+  "fields": [
+    {
+      "name": "_enum",
+      "type": {
+        "type": "enum",
+        "name": "Suit",
+        "symbols": ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]
+      }
+    },
+    {
+      "name": "_optional_enum",
+      "type": ["null", "Suit"],
+      "default": null
+    },
+    {
+      "name": "_name",
+      "type": "string"
+    }
+  ]
+}

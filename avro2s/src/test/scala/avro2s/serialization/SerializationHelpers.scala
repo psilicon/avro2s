@@ -40,4 +40,10 @@ object SerializationHelpers {
     val decoder: BinaryDecoder = DecoderFactory.get().binaryDecoder(bytes, null)
     reader.read(null.asInstanceOf[T], decoder)
   }
+
+  def deserializeWithModel[T <: SpecificRecordBase](bytes: Array[Byte], schema: Schema, model: SpecificData): T = {
+    val reader = new SpecificDatumReader[T](schema, schema, model)
+    val decoder: BinaryDecoder = DecoderFactory.get().binaryDecoder(bytes, null)
+    reader.read(null.asInstanceOf[T], decoder)
+  }
 }

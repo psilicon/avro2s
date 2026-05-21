@@ -6,6 +6,7 @@ import avro2s.test.arrays.{Arrays, Record => ArrayRecord, Record1 => ArrayRecord
 import avro2s.test.maps.{Maps, Record => MapRecord}
 import avro2s.test.namespaces.{Namespaces, RecordWithInheritedNamespace, RecordWithNamespaceInheritedFromIndirectParent}
 import avro2s.test.namespaces.explicit.{RecordWithExplicitNamespace, RecordWithNamespaceInheritedFromDirectParent, RecordWithNamespaceInheritedFromIndirectNonTopLevelParent, RecordWithNamespaceInheritedViaArray, RecordWithNamespaceInheritedViaMap, RecordWithNamespaceInheritedViaUnion}
+import avro2s.test.enums.{EnumSpec, Suit => EnumSuit}
 import avro2s.test.spec.{AvroSpec, Suit, md5}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -372,5 +373,36 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
     val serialized = serialize(emptyRecords)
     deserialize[avro2s.test.records.EmptyRecords](serialized, emptyRecords.getSchema) shouldBe emptyRecords
+  }
+
+  test("scala 3 enum field can be serialized and deserialized") {
+    val spec = EnumSpec(_enum = EnumSuit.SPADES, _optional_enum = Some(EnumSuit.HEARTS), _name = "hello")
+    deserializeWithModel[EnumSpec](serialize(spec), spec.getSchema, EnumSpec.MODEL$) shouldBe spec
+  }
+
+  test("scala 3 enum optional field with None can be round-tripped") {
+    val spec = EnumSpec(_enum = EnumSuit.CLUBS, _optional_enum = None, _name = "nope")
+    deserializeWithModel[EnumSpec](serialize(spec), spec.getSchema, EnumSpec.MODEL$) shouldBe spec
+  }
+
+  test("scala 3 enum all symbols round-trip") {
+    Seq(EnumSuit.SPADES, EnumSuit.HEARTS, EnumSuit.DIAMONDS, EnumSuit.CLUBS).foreach { s =>
+      val spec = EnumSpec(_enum = s, _optional_enum = Some(s), _name = "x")
+      deserializeWithModel[EnumSpec](serialize(spec), spec.getSchema, EnumSpec.MODEL$) shouldBe spec
+    }
+  }
+
+  test("scala 3 enum fromString rejects unknown symbols") {
+    an[IllegalArgumentException] shouldBe thrownBy(EnumSuit.fromString("JOKER"))
+  }
+
+  test("EnumSpec.getSpecificData returns the ScalaSpecificData-backed MODEL$") {
+    val data = EnumSpec.MODEL$
+    data.getClass.getName shouldBe "avro2s.generated.ScalaSpecificData"
+  }
+
+  test("EnumSpec record instance returns same MODEL$ via getSpecificData override") {
+    val spec = EnumSpec(_enum = EnumSuit.SPADES, _optional_enum = None, _name = "x")
+    spec.getSpecificData() should be theSameInstanceAs EnumSpec.MODEL$
   }
 }
