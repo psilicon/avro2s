@@ -8,7 +8,7 @@ class SchemaLiteralTest extends AnyFunSuite with Matchers {
   test("short schema uses single triple-quoted literal") {
     val json = """{"type":"record","name":"Foo","fields":[]}"""
     val result = SchemaLiteral.parseExpression(json)
-    result shouldBe s"""new org.apache.avro.Schema.Parser().parse(\"\"\"$json\"\"\")"""
+    result shouldBe s"""new org.apache.avro.SchemaParser().parse(\"\"\"$json\"\"\").mainSchema()"""
     result should not include "Array("
   }
 

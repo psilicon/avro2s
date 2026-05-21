@@ -31,5 +31,5 @@ case class Record2(var _string: String, var _int: Int) extends org.apache.avro.s
 }
 
 object Record2 {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Record2","namespace":"avro2s.test.arrays","fields":[{"name":"_string","type":"string"},{"name":"_int","type":"int"}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.SchemaParser().parse("""{"type":"record","name":"Record2","namespace":"avro2s.test.arrays","fields":[{"name":"_string","type":"string"},{"name":"_int","type":"int"}]}""").mainSchema()
 }

@@ -25,5 +25,5 @@ case class RecordForComplexOptions(var field1: String) extends org.apache.avro.s
 }
 
 object RecordForComplexOptions {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"RecordForComplexOptions","namespace":"avro2s.test.unions","fields":[{"name":"field1","type":"string"}]}""")
+  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.SchemaParser().parse("""{"type":"record","name":"RecordForComplexOptions","namespace":"avro2s.test.unions","fields":[{"name":"field1","type":"string"}]}""").mainSchema()
 }

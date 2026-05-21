@@ -24,7 +24,7 @@ private[avro2s] object JavaGenericEnumGenerator {
       .indent
       .add(enumSymbols.mkString(", ") + ";")
       .newline
-      .add(s"""public static final org.apache.avro.Schema SCHEMA$$ = new org.apache.avro.Schema.Parser().parse(\"${StringEscapeUtils.escapeJava(schema.toString)}\");""")
+      .add(s"""public static final org.apache.avro.Schema SCHEMA$$ = new org.apache.avro.SchemaParser().parse(\"${StringEscapeUtils.escapeJava(schema.toString)}\").mainSchema();""")
       .add(s"public static org.apache.avro.Schema getClassSchema() { return SCHEMA$$; }")
       .newline
       .add(s"@Override")
