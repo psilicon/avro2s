@@ -2,7 +2,6 @@ package avro2s.plugin
 
 
 import avro2s.filehelper.FileHelper
-import avro2s.generator.{CodeGenerator, GeneratorConfig}
 import org.apache.avro.Schema
 import org.apache.avro.compiler.idl.Idl
 import sbt.io.IO
@@ -52,23 +51,14 @@ class AvdlCodeGenerator(avscOutputDir: String, logger: sbt.util.Logger) {
 }
 
 object AvdlCodeGenerator {
-  def generateCode(
-                    inputDirectory: String,
-                    avscDirectory: String,
-                    outputDirectory: String,
-                    generatorConfig: GeneratorConfig,
-                    logger: sbt.util.Logger,
-                  ): List[File] = {
+  def generateAvsc(
+    inputDirectory: String,
+    avscDirectory: String,
+    logger: sbt.util.Logger,
+  ): List[File] = {
     IO.createDirectory(new File(avscDirectory))
-    new AvdlCodeGenerator(
-      avscDirectory,
-      logger,
-    ).generateAvsc(inputDirectory)
-
-    CodeGenerator.generateCode(
-      avscDirectory,
-      outputDirectory,
-      generatorConfig,
-    )
+    new AvdlCodeGenerator(avscDirectory, logger).generateAvsc(inputDirectory)
+    FileHelper.findAvscFiles(avscDirectory)
   }
+
 }

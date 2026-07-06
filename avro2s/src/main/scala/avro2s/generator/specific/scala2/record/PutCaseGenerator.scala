@@ -2,6 +2,7 @@ package avro2s.generator.specific.scala2.record
 
 import avro2s.generator.FunctionalPrinter
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
+import avro2s.generator.specific.ScalaEnumSupport
 import avro2s.generator.specific.scala2.FieldOps._
 import avro2s.generator.specific.scala2.record.UnionRepresentation.{CoproductRepresentation, OptionRepresentation, UnionRepresentation}
 import org.apache.avro.Schema
@@ -14,7 +15,7 @@ import scala.util.Try
  * NOTE: This features code that is not stack safe, based on the expectation that deeply nested schemas are unlikely, and that build tools
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
  */
-private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
+private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Boolean) {
   private val typeHelpers = new TypeHelpers(ltc)
 
   import typeHelpers._
@@ -54,6 +55,9 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         val value = s"${toStringConverter("value", field.schema())}"
         printer
           .add(s"case $index => this.${field.safeName} = ${ltc.toTypeWithFallback(field.schema(), value, fallback)}")
+      case ENUM if scalaEnums =>
+        printer
+          .add(s"case $index => this.${field.safeName} = ${ScalaEnumSupport.putConversion("value", field.schema())}")
       case _ =>
         if (ltc.logicalTypeInUse(field.schema())) {
           printer
@@ -128,6 +132,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array")}")
           .outdent
           .add("}")
+      case ENUM if scalaEnums =>
+        printer.add(ScalaEnumSupport.putConversion(valueName, schema))
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
           printer.add(s"$valueName.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
@@ -164,6 +170,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
       case BYTES =>
         printer
           .call(matchBytes(_, "value", schema))
+      case ENUM if scalaEnums =>
+        printer.add(ScalaEnumSupport.putConversion("value", schema))
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
           printer.add(s"value.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
@@ -178,6 +186,10 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
       case CoproductRepresentation(types) => printer.add({
         types.flatMap { t =>
           t.getType match {
+            case ENUM if scalaEnums => List(
+              s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)",
+              s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => Coproduct[${union.asString(typeHelpers)}](${t.getFullName}.valueOf(x.toString))"""
+            )
             case RECORD | ENUM => List(s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)")
             case MAP =>
               List(new FunctionalPrinter()
@@ -229,6 +241,10 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           case BYTES =>
             nullCasePrinter
               .add(s"case x: java.nio.ByteBuffer => Some(${ltc.toTypeWithFallback(schema, "x", "x.array()")})")
+          case ENUM if scalaEnums =>
+            nullCasePrinter
+              .add(s"case x: ${schema.getFullName} => Some(x)")
+              .add(s"case x: org.apache.avro.generic.GenericEnumSymbol[_] => Some(${schema.getFullName}.valueOf(x.toString))")
           case RECORD | ENUM =>
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(x)")

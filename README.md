@@ -10,7 +10,7 @@ Avro2s is essentially a rewrite of [avrohugger](https://github.com/julianpeeters
 #### Features:
  - Supports Scala 3
    - Union types are supported without the need for shapeless
-   - Currently, Enums are still generated as Java enums
+   - Enums are generated as Java enums by default; opt into Scala-native enums with `Compile / avro2sEnumType := "scala"` (see Enum Representation below)
  - Supports Scala 2.13
  - Compatibility with all Avro types
  - SBT plugin
@@ -64,9 +64,33 @@ object Demo extends App {
 }  
 ```
 
+#### Enum Representation:
+
+By default, avro2s generates enums as Java enums (`.java` sources extending Avro's `GenericEnumSymbol`), for maximum interoperability with Java code and other JVM tooling. Setting `avro2sEnumType := "scala"`, scoped to the configuration that runs `avro2sGenerate`, switches to **plain Scala-native enums** instead:
+
+```
+Compile / avro2sEnumType := "scala"
+```
+
+The plugin's default (`"java"`) is itself set per-configuration (`Compile`/`Test`), so an unscoped `avro2sEnumType := "scala"` in your `build.sbt` lands in the global scope and is shadowed by that default — always scope the override to match, e.g. `Test / avro2sEnumType := "scala"` too if you also generate under `Test`.
+
+One `avro2sGenerate` invocation combines AVDL-derived and authored AVSC schemas before generating code, so enums from both formats can share a namespace.
+
+Scala 3 targets get a real `enum <Name> { case ... }`; Scala 2.13 targets get a `sealed trait` + case object ADT. Either way, the generated type has no Avro-specific API (no `getSchema`, no `GenericEnumSymbol`) and no `java.lang.Enum` API (no `compareTo`, no `name`) — it's a plain Scala type, and it works through stock Avro readers and writers. Avro's own reflective class discovery, schema lookup, and record construction remain in use; no custom reflective bridge or data adapter is generated.
+
+Under the hood, the real type is generated at `<namespace>.internal.<Name>` and re-exposed as `<namespace>.<Name>` via a compile-time alias (a top-level type + val alias on Scala 3, a package object on Scala 2.13). Because no JVM class exists at the schema's full name, stock Avro's class-by-schema-name lookup falls back to `GenericData.EnumSymbol`, so generated records convert at the Avro boundary: `get()` wraps the field in an `EnumSymbol`, and `put()` converts it back via the companion object's `valueOf`. Scala 3 records also carry a `@scala.annotation.static SCHEMA$`, so class-based readers and schema-from-class lookups keep working.
+
+Limitations:
+ - No JVM class exists at the schema's fullname, so Java-side lookup-by-schema-name misses; Java callers must import `<namespace>.internal.<Name>` directly rather than `<namespace>.<Name>`.
+ - Enums must have a namespace.
+ - Enum symbols named `values` or `valueOf` are rejected at generation time because they collide with companion members. Scala 3 also rejects `fromOrdinal`.
+ - On Scala 2.13, one `package.scala` is generated per namespace. Batch generation collects its aliases from the schema store without rediscovering schemas. Repeated single-schema calls sharing the same `SchemaStore` include all previously discovered aliases. Independent calls with separate stores writing to the same namespace can still overwrite each other's alias file.
+ - User schemas that define types under `<namespace>.internal` (or a type literally named `internal`) collide with the generated internal package in `scala` mode.
+
+Direct library users select `GeneratorConfig(targetScalaVersion, logicalTypesEnabled, EnumType.ScalaEnum)`; Java mode remains the default. Use ordinary Avro `SpecificDatumReader` and `SpecificDatumWriter` constructors. There are no generated `datumReader`/`datumWriter` factories to configure.
+
 #### Roadmap:
  - Scaladoc generation
- - Scala 3 Enum support
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.

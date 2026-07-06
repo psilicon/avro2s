@@ -1,10 +1,10 @@
 > compile
 
-$ exists target/avro2s/generated/avsc/TestAvdl.avsc
-$ exists target/scala-3.4.0/src_managed/main/compiled_avro/example/TestAvdl.scala
-$ exists target/scala-3.4.0/classes/example/TestAvdl.class
+$ exists target/avro2s/generated/avsc/testAvdl.avsc
+$ exists target/scala-3.4.0/src_managed/main/compiled_avro/example/TestAVDL.scala
+$ exists target/scala-3.4.0/classes/example/TestAVDL.class
 
-$ exists target/scala-3.4.0/src_managed/main/compiled_avro/example/TestAvsc.scala
-$ exists target/scala-3.4.0/classes/example/TestAvsc.class
+$ exists target/scala-3.4.0/src_managed/main/compiled_avro/example/TestAVSC.scala
+$ exists target/scala-3.4.0/classes/example/TestAVSC.class
 
 > clean

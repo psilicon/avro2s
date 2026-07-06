@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Card",
+  "namespace": "avro2s.test.adtenums",
+  "fields": [
+    {"name": "suit", "type": {"type": "enum", "name": "Suit", "symbols": ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]}},
+    {"name": "trump", "type": ["null", "Suit"], "default": null},
+    {"name": "history", "type": {"type": "array", "items": "Suit"}},
+    {"name": "byPlayer", "type": {"type": "map", "values": "Suit"}},
+    {"name": "maybeHistory", "type": {"type": "array", "items": ["null", "Suit"]}},
+    {"name": "kw", "type": {"type": "enum", "name": "Kw", "symbols": ["new", "type", "lazy", "NORMAL"]}},
+    {"name": "maybeKw", "type": ["null", "Kw"], "default": null},
+    {"name": "cp", "type": ["null", "Suit", "string"], "default": null}
+  ]
+}

@@ -14,8 +14,9 @@ import scala.jdk.CollectionConverters._
 private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) {
   private val dollar = "$"
   private val ltc = LogicalTypeConverter(if (generatorConfig.logicalTypesEnabled) LogicalTypes.logicalTypeMap else Map.empty)
-  private val getCaseGenerator = new GetCaseGenerator(ltc)
-  private val putCaseGenerator = new PutCaseGenerator(ltc)
+  private val scalaEnums = generatorConfig.enumType == avro2s.generator.EnumType.ScalaEnum
+  private val getCaseGenerator = new GetCaseGenerator(ltc, scalaEnums)
+  private val putCaseGenerator = new PutCaseGenerator(ltc, scalaEnums)
   private val typeHelpers = new TypeHelpers(ltc)
   import typeHelpers._
 

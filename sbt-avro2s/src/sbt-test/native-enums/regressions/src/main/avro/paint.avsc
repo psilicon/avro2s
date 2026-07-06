@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Paint",
+  "namespace": "example",
+  "fields": [
+    {
+      "name": "color",
+      "type": {"type": "enum", "name": "Color", "symbols": ["RED", "BLACK"]}
+    }
+  ]
+}
