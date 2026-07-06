@@ -1,0 +1,6 @@
+{
+  "type": "enum",
+  "name": "Collision",
+  "namespace": "example",
+  "symbols": ["value", "List"]
+}

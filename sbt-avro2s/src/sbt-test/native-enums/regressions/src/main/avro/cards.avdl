@@ -1,0 +1,5 @@
+@namespace("example")
+protocol Cards {
+  enum Suit { HEARTS, SPADES }
+  record Card { Suit suit; }
+}

@@ -1,4 +1,4 @@
-import avro2s.generator.{CodeGenerator, GeneratorConfig}
+import avro2s.generator.{CodeGenerator, EnumType, GeneratorConfig}
 import avro2s.language.ScalaVersion
 
 object RegenerateTestCode extends App {
@@ -38,5 +38,17 @@ object RegenerateTestCode extends App {
     "avro2s/src/test/resources/input/logical-enabled",
     "avro2s/src/test/scala-3",
     GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled = true)
+  )
+
+  CodeGenerator.generateCode(
+    "avro2s/src/test/resources/input/scala-3-enums",
+    "avro2s/src/test/scala-3",
+    GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled = false, enumType = EnumType.ScalaEnum)
+  )
+
+  CodeGenerator.generateCode(
+    "avro2s/src/test/resources/input/scala-2.13-enums",
+    "avro2s/src/test/scala-2.13",
+    GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled = false, enumType = EnumType.ScalaEnum)
   )
 }
