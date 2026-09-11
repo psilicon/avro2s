@@ -3,8 +3,8 @@
 package avro2s.test
 
 package object adtenums {
-  type Kw = avro2s.test.adtenums.internal.Kw
-  val Kw: avro2s.test.adtenums.internal.Kw.type = avro2s.test.adtenums.internal.Kw
-  type Suit = avro2s.test.adtenums.internal.Suit
-  val Suit: avro2s.test.adtenums.internal.Suit.type = avro2s.test.adtenums.internal.Suit
+  type Kw = _root_.avro2s.test.adtenums.internal.Kw
+  val Kw: _root_.avro2s.test.adtenums.internal.Kw.type = _root_.avro2s.test.adtenums.internal.Kw
+  type Suit = _root_.avro2s.test.adtenums.internal.Suit
+  val Suit: _root_.avro2s.test.adtenums.internal.Suit.type = _root_.avro2s.test.adtenums.internal.Suit
 }

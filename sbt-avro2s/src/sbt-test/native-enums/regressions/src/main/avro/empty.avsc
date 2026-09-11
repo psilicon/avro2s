@@ -1,0 +1,4 @@
+{
+  "type": "record", "name": "EmptyRecord", "namespace": "example",
+  "fields": [{"name": "empty", "type": ["null", {"type": "enum", "name": "Empty", "symbols": []}]}]
+}

@@ -8,10 +8,10 @@ import scala.jdk.CollectionConverters._
 
 private[avro2s] object Scala3EnumGenerator {
   def schemaToScala3Enum(schema: org.apache.avro.Schema): GeneratedCode = {
-    ScalaEnumSupport.validateSymbols(schema, Set("values", "valueOf", "fromOrdinal"))
     val name = schema.getName
     val ns = Option(schema.getNamespace).filter(_.nonEmpty).get
-    val cases = schema.getEnumSymbols.asScala.map(caseName).mkString(", ")
+    val symbols = schema.getEnumSymbols.asScala.toList
+    val enumType = ScalaEnumSupport.internalType(schema)
     val dollar = "$"
 
     val code = new FunctionalPrinter()
@@ -19,15 +19,33 @@ private[avro2s] object Scala3EnumGenerator {
       .newline
       .add(s"package $ns.internal {")
       .indent
-      .add(s"enum $name {")
-      .indent
-      .add(s"case $cases")
-      .outdent
-      .add("}")
+      .when(symbols.nonEmpty) { p =>
+        p.add(s"enum $name(private val symbol$dollar: _root_.java.lang.String) {")
+          .indent
+          .print(symbols) { (p, symbol) =>
+            p.add(s"""case ${caseName(symbol)} extends $enumType("$symbol")""")
+          }
+          .newline
+          .add(s"override def toString: _root_.java.lang.String = symbol$dollar")
+          .outdent
+          .add("}")
+      }
+      .when(symbols.isEmpty)(_.add(s"sealed trait $name extends _root_.scala.Product with _root_.scala.Serializable"))
       .newline
       .add(s"object $name {")
       .indent
-      .add(s"val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
+      .add(s"val SCHEMA$dollar: _root_.org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
+      .newline
+      .call(ScalaEnumSupport.printFromAvroSymbol(_, schema, caseName))
+      .when(symbols.isEmpty) { p =>
+        p.newline
+          .add(s"def values: _root_.scala.Array[$enumType] = _root_.scala.Array.empty[$enumType]")
+          .add(s"def valueOf(value: _root_.java.lang.String): $enumType = fromAvroSymbol(value)")
+          .add(s"def fromOrdinal(ordinal: _root_.scala.Int): $enumType =")
+          .indent
+          .add(s"""throw new _root_.java.util.NoSuchElementException("Empty enum ${schema.getFullName} has no ordinal " + ordinal)""")
+          .outdent
+      }
       .outdent
       .add("}")
       .outdent
@@ -35,8 +53,8 @@ private[avro2s] object Scala3EnumGenerator {
       .newline
       .add(s"package $ns {")
       .indent
-      .add(s"type $name = $ns.internal.$name")
-      .add(s"val $name: $ns.internal.$name.type = $ns.internal.$name")
+      .add(s"type $name = $enumType")
+      .add(s"val $name: $enumType.type = $enumType")
       .outdent
       .add("}")
 
@@ -44,5 +62,5 @@ private[avro2s] object Scala3EnumGenerator {
   }
 
   private def caseName(symbol: String): String =
-    if (ReservedWords.set.contains(symbol)) s"`$symbol`" else symbol
+    ScalaEnumSupport.caseName(symbol, ReservedWords.set, Set("fromOrdinal"))
 }

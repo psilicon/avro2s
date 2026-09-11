@@ -7,12 +7,12 @@ private[specific] object SchemaLiteral {
   def parseExpression(schemaJson: String): String = {
     val chunks = splitLiteral(schemaJson)
     if (chunks.size == 1)
-      s"new org.apache.avro.Schema.Parser().parse($tq$schemaJson$tq)"
+      s"new _root_.org.apache.avro.Schema.Parser().parse($tq$schemaJson$tq)"
     else {
       val chunkLiterals = chunks
         .map(c => s"    $tq$c$tq")
         .mkString(",\n")
-      s"new org.apache.avro.Schema.Parser().parse(Array(\n$chunkLiterals).mkString)"
+      s"new _root_.org.apache.avro.Schema.Parser().parse(_root_.scala.Array(\n$chunkLiterals).mkString)"
     }
   }
 

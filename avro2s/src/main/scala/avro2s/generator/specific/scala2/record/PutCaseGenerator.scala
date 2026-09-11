@@ -188,7 +188,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           t.getType match {
             case ENUM if scalaEnums => List(
               s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)",
-              s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => Coproduct[${union.asString(typeHelpers)}](${t.getFullName}.valueOf(x.toString))"""
+              s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => Coproduct[${union.asString(typeHelpers)}](_root_.${t.getFullName}.fromAvroSymbol(x.toString))"""
             )
             case RECORD | ENUM => List(s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)")
             case MAP =>
@@ -244,7 +244,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           case ENUM if scalaEnums =>
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(x)")
-              .add(s"case x: org.apache.avro.generic.GenericEnumSymbol[_] => Some(${schema.getFullName}.valueOf(x.toString))")
+              .add(s"case x: org.apache.avro.generic.GenericEnumSymbol[_] => Some(_root_.${schema.getFullName}.fromAvroSymbol(x.toString))")
           case RECORD | ENUM =>
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(x)")

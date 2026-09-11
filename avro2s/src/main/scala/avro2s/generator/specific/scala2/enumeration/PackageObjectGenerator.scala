@@ -20,8 +20,8 @@ private[avro2s] object PackageObjectGenerator {
       .print(enumSchemas.sortBy(_.getName)) { (p, s) =>
         val name = s.getName
         p
-          .add(s"type $name = $namespace.internal.$name")
-          .add(s"val $name: $namespace.internal.$name.type = $namespace.internal.$name")
+          .add(s"type $name = _root_.$namespace.internal.$name")
+          .add(s"val $name: _root_.$namespace.internal.$name.type = _root_.$namespace.internal.$name")
       }
       .outdent
       .add("}")
