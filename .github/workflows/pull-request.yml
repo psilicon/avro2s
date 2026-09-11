@@ -13,4 +13,9 @@ jobs:
         jvm: temurin:21
         apps: sbt
     - name: Build and Test
-      run: sbt -v +test
+      run: >-
+        sbt -v +test
+        'avro2s2_12/publishLocal'
+        'project sbtAvro2s2_12'
+        'set Compile / packageBin / publishArtifact := true'
+        'scripted native-enums/regressions standard/standard'

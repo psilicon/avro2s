@@ -54,13 +54,6 @@ class NativeEnumGeneratorTest extends AnyFunSuite with Matchers {
       a[ConfigError] should be thrownBy CodeGenerator.generateCode(List(schema), config)
     }
 
-    (List("values", "valueOf") ::: (if (version == "3") List("fromOrdinal") else Nil)).foreach { symbol =>
-      test(s"Scala $version rejects companion member collision $symbol before emitting sources") {
-        val schema = new Schema.Parser().parse(s"""{"type":"enum","name":"Suit","namespace":"cards","symbols":["$symbol"]}""")
-        a[ConfigError] should be thrownBy CodeGenerator.generateCode(List(schema), config)
-      }
-    }
-
     test(s"Scala $version rejects a default-package enum referenced from a named package") {
       val schema = new Schema.Parser().parse("""{"type":"record","name":"Hand","namespace":"cards","fields":[
         {"name":"suit","type":{"type":"enum","name":"Suit","namespace":"","symbols":["A"]}}]}""")

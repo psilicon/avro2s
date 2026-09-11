@@ -11,7 +11,7 @@
 
 #### Native enum plugin regression:
 
-The `native-enums/regressions` scripted test generates, compiles, and runs Scala 2.13 and Scala 3 code. It covers mixed AVDL/AVSC inputs sharing a namespace, enum symbols named `value` and `List`, and large ASCII and Unicode schema descriptions.
+The `native-enums/regressions` scripted test generates, compiles, and runs Scala 2.13 and Scala 3 code. It covers mixed AVDL/AVSC inputs sharing a namespace, member-colliding symbols, `_`, repeated namespace segments, empty enums, and `org`/`Array` shadowing in large ASCII and Unicode schemas. Generic Avro writers/readers independently verify the original wire symbols through direct fields, options, collections, and unions.
 
 Run from the repository root:
 
@@ -26,6 +26,6 @@ The session-only override enables the plugin JAR for local test publication; the
 
 #### Native enum verification:
 
-- `NativeEnumGeneratorTest` compares every generated native file, including Scala 2 aliases, with the compiled serialization fixtures. It also covers complete single-schema output, shared-store incremental aliases, namespace validation, and companion-member collisions.
+- `NativeEnumGeneratorTest` compares every generated native file, including Scala 2 aliases, with the compiled serialization fixtures. It also covers complete single-schema output, shared-store incremental aliases, and namespace validation. Companion-member collisions are exercised by the scripted compilation and serialization regression.
 - Scala 2.13 and Scala 3 serialization tests use ordinary stock Avro constructors for direct, optional, array, map, and union enum positions. Scala 3 also tests class-based readers and schema lookup.
 - `sbt test` retains the existing Java-mode output comparisons.

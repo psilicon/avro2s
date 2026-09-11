@@ -5,6 +5,8 @@ Compile / avro2sEnumType := "scala"
 Compile / sourceGenerators += (Compile / avro2sGenerate).taskValue
 
 libraryDependencies += "org.apache.avro" % "avro" % "1.12.1"
+libraryDependencies ++= (if (scalaBinaryVersion.value == "2.13")
+  Seq("com.chuusai" %% "shapeless" % "2.3.13") else Nil)
 
 val prepareSchemas = taskKey[Unit]("Create large enum schemas for compilation tests")
 
@@ -16,6 +18,6 @@ prepareSchemas := {
     "LargeSupplementary" -> ("😀" * 11000)
   ).foreach { case (name, doc) =>
     IO.write(directory / s"$name.avsc",
-      s"""{"type":"enum","name":"$name","namespace":"example","doc":"$doc","symbols":["A"]}""")
+      s"""{"type":"enum","name":"$name","namespace":"example","doc":"$doc","symbols":["A","org","Array"]}""")
   }
 }

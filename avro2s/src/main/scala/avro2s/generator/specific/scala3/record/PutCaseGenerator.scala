@@ -125,7 +125,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           t.getType match {
             case ENUM if scalaEnums => List(
               s"case x: ${t.getFullName} => ${union.toConstructString(s"x.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}",
-              s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => ${union.toConstructString(s"${t.getFullName}.valueOf(x.toString).asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"""
+              s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => ${union.toConstructString(s"_root_.${t.getFullName}.fromAvroSymbol(x.toString).asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"""
             )
             case RECORD | ENUM => List(s"case x: ${t.getFullName} => ${union.toConstructString(s"x.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}")
             case FIXED => List(s"case x: ${t.getFullName} => ${union.toConstructString(s"${ltc.toType(t, "x")}.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}")

@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "SymbolsRecord",
+  "namespace": "example",
+  "fields": [
+    {"name": "symbol", "type": {
+      "type": "enum", "name": "Symbols",
+      "symbols": ["values", "valueOf", "fromOrdinal", "fromAvroSymbol", "toString", "hashCode", "getClass", "notify", "notifyAll", "wait", "clone", "finalize", "asInstanceOf", "isInstanceOf", "equals", "eq", "ne", "synchronized", "_", "org", "Array", "String", "List", "value", "symbol", "ordinal", "productPrefix", "productElement", "productArity", "canEqual", "scala", "java", "Symbols", "internal", "_root_", "NORMAL"]
+    }},
+    {"name": "optional", "type": ["null", "Symbols"]},
+    {"name": "array", "type": {"type": "array", "items": "Symbols"}},
+    {"name": "mapping", "type": {"type": "map", "values": "Symbols"}},
+    {"name": "optionalArray", "type": {"type": "array", "items": ["null", "Symbols"]}},
+    {"name": "union", "type": ["string", "Symbols"]}
+  ]
+}

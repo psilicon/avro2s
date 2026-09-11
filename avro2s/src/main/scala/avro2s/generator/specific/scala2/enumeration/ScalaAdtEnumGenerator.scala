@@ -8,12 +8,11 @@ import scala.jdk.CollectionConverters._
 
 private[avro2s] object ScalaAdtEnumGenerator {
   def schemaToScala2Adt(schema: org.apache.avro.Schema): GeneratedCode = {
-    ScalaEnumSupport.validateSymbols(schema, Set("values", "valueOf"))
     val name = schema.getName
     val ns = Option(schema.getNamespace).filter(_.nonEmpty).get
     val symbols = schema.getEnumSymbols.asScala.toList
     val dollar = "$"
-    val enumType = s"_root_.$ns.internal.$name"
+    val enumType = ScalaEnumSupport.internalType(schema)
     def caseReference(symbol: String): String = s"$enumType.${caseName(symbol)}"
 
     val code = new FunctionalPrinter()
@@ -25,18 +24,17 @@ private[avro2s] object ScalaAdtEnumGenerator {
       .newline
       .add(s"object $name {")
       .indent
-      .print(symbols) { (p, s) => p.add(s"case object ${caseName(s)} extends $name") }
+      .print(symbols) { (p, s) =>
+        p.add(s"""case object ${caseName(s)} extends $enumType { override def toString: _root_.java.lang.String = "$s" }""")
+      }
       .newline
       .add(s"val values: _root_.scala.List[$enumType] = _root_.scala.List(${symbols.map(caseReference).mkString(", ")})")
       .newline
-      .add(s"val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
+      .add(s"val SCHEMA$dollar: _root_.org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .newline
-      .add(s"def valueOf(value: _root_.java.lang.String): $enumType = value match {")
-      .indent
-      .print(symbols) { (p, s) => p.add(s"""case "$s" => ${caseReference(s)}""") }
-      .add(s"""case other => throw new org.apache.avro.AvroRuntimeException("No enum symbol " + other + " in $ns.$name")""")
-      .outdent
-      .add("}")
+      .call(ScalaEnumSupport.printFromAvroSymbol(_, schema, caseName))
+      .newline
+      .add(s"def valueOf(value: _root_.java.lang.String): $enumType = fromAvroSymbol(value)")
       .outdent
       .add("}")
 
@@ -44,5 +42,5 @@ private[avro2s] object ScalaAdtEnumGenerator {
   }
 
   private def caseName(symbol: String): String =
-    if (ReservedWords.set.contains(symbol)) s"`$symbol`" else symbol
+    ScalaEnumSupport.caseName(symbol, ReservedWords.set, Set.empty)
 }
