@@ -94,8 +94,20 @@ Limitations:
 
 Direct library users select `GeneratorConfig(targetScalaVersion, logicalTypesEnabled, EnumType.ScalaEnum)`; Java mode remains the default. Use ordinary Avro `SpecificDatumReader` and `SpecificDatumWriter` constructors. There are no generated `datumReader`/`datumWriter` factories to configure.
 
-#### Roadmap:
- - Scaladoc generation
+#### Generated documentation
+
+Avro `doc` strings are emitted automatically as Scaladoc on generated records,
+fixed types, and Scala enum types (including their public aliases). Record field
+`doc` strings become `@param` entries on the case class. Java enums receive Javadoc.
+This applies to both Scala 2.13 and Scala 3 output, including nested named types.
+Field descriptions appear in the class/constructor parameter documentation. With
+the current Scala toolchain, they are not repeated beneath the individual `var`
+entries in the member list. Generated Avro methods such as `get` and `put` do not
+currently receive additional descriptions.
+
+Multiline documentation is preserved; missing or whitespace-only docs produce no
+comment. Comment delimiters and backslashes are escaped so documentation cannot
+break the generated source. No additional configuration is required.
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.

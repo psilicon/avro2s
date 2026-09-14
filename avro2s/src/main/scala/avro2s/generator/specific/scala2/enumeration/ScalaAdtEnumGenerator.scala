@@ -2,7 +2,7 @@ package avro2s.generator.specific.scala2.enumeration
 
 import avro2s.generator.specific.{ScalaEnumSupport, SchemaLiteral}
 import avro2s.generator.specific.scala2.ReservedWords
-import avro2s.generator.{FunctionalPrinter, GeneratedCode}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, Scaladoc}
 
 import scala.jdk.CollectionConverters._
 
@@ -20,6 +20,7 @@ private[avro2s] object ScalaAdtEnumGenerator {
       .newline
       .add(s"package $ns.internal")
       .newline
+      .call(Scaladoc.print(_, schema.getDoc))
       .add(s"sealed trait $name extends _root_.scala.Product with _root_.scala.Serializable")
       .newline
       .add(s"object $name {")

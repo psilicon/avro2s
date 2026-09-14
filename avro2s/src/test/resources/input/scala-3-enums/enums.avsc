@@ -3,7 +3,7 @@
   "name": "Card",
   "namespace": "avro2s.test.scalaenums",
   "fields": [
-    {"name": "suit", "type": {"type": "enum", "name": "Suit", "symbols": ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]}},
+    {"name": "suit", "type": {"type": "enum", "name": "Suit", "doc": "The suit of a playing card.", "symbols": ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]}},
     {"name": "trump", "type": ["null", "Suit"], "default": null},
     {"name": "history", "type": {"type": "array", "items": "Suit"}},
     {"name": "byPlayer", "type": {"type": "map", "values": "Suit"}},

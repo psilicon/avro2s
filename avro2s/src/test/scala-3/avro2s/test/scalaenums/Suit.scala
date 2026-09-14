@@ -1,6 +1,9 @@
 /** GENERATED CODE */
 
 package avro2s.test.scalaenums.internal {
+  /**
+   * The suit of a playing card.
+   */
   enum Suit(private val symbol$: _root_.java.lang.String) {
     case SPADES extends _root_.avro2s.test.scalaenums.internal.Suit("SPADES")
     case HEARTS extends _root_.avro2s.test.scalaenums.internal.Suit("HEARTS")
@@ -11,7 +14,7 @@ package avro2s.test.scalaenums.internal {
   }
 
   object Suit {
-    val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Suit","namespace":"avro2s.test.scalaenums","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}""")
+    val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Suit","namespace":"avro2s.test.scalaenums","doc":"The suit of a playing card.","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}""")
 
     def fromAvroSymbol(value: _root_.java.lang.String): _root_.avro2s.test.scalaenums.internal.Suit = value match {
       case "SPADES" => _root_.avro2s.test.scalaenums.internal.Suit.SPADES
@@ -24,6 +27,12 @@ package avro2s.test.scalaenums.internal {
 }
 
 package avro2s.test.scalaenums {
+  /**
+   * The suit of a playing card.
+   */
   type Suit = _root_.avro2s.test.scalaenums.internal.Suit
+  /**
+   * The suit of a playing card.
+   */
   val Suit: _root_.avro2s.test.scalaenums.internal.Suit.type = _root_.avro2s.test.scalaenums.internal.Suit
 }
