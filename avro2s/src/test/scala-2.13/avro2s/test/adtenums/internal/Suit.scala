@@ -2,6 +2,9 @@
 
 package avro2s.test.adtenums.internal
 
+/**
+ * The suit of a playing card.
+ */
 sealed trait Suit extends _root_.scala.Product with _root_.scala.Serializable
 
 object Suit {
@@ -12,7 +15,7 @@ object Suit {
 
   val values: _root_.scala.List[_root_.avro2s.test.adtenums.internal.Suit] = _root_.scala.List(_root_.avro2s.test.adtenums.internal.Suit.SPADES, _root_.avro2s.test.adtenums.internal.Suit.HEARTS, _root_.avro2s.test.adtenums.internal.Suit.DIAMONDS, _root_.avro2s.test.adtenums.internal.Suit.CLUBS)
 
-  val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Suit","namespace":"avro2s.test.adtenums","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}""")
+  val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Suit","namespace":"avro2s.test.adtenums","doc":"The suit of a playing card.","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}""")
 
   def fromAvroSymbol(value: _root_.java.lang.String): _root_.avro2s.test.adtenums.internal.Suit = value match {
     case "SPADES" => _root_.avro2s.test.adtenums.internal.Suit.SPADES

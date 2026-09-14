@@ -1,7 +1,7 @@
 package avro2s.generator.specific.scala2.fixed
 
 import avro2s.generator.specific.SchemaLiteral
-import avro2s.generator.{FunctionalPrinter, GeneratedCode}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, Scaladoc}
 
 private[avro2s] object SpecificFixedGenerator {
   private val dollar = "$"
@@ -18,6 +18,7 @@ private[avro2s] object SpecificFixedGenerator {
       .newline
       .when(ns.isDefined)(_.add(s"package $nsString"))
       .newline
+      .call(Scaladoc.print(_, schema.getDoc))
       .add(s"case class $name() extends org.apache.avro.specific.SpecificFixed {")
       .indent
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")

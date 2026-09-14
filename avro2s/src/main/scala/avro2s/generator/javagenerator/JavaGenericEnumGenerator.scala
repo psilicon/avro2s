@@ -1,6 +1,6 @@
 package avro2s.generator.javagenerator
 
-import avro2s.generator.{FunctionalPrinter, GeneratedCode}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, Scaladoc}
 import org.apache.commons.text.StringEscapeUtils
 
 import scala.collection.compat._
@@ -20,6 +20,7 @@ private[avro2s] object JavaGenericEnumGenerator {
       .newline
       .when(ns.isDefined)(_.add(s"package $nsString;"))
       .newline
+      .call(Scaladoc.print(_, schema.getDoc))
       .add(s"public enum $name implements org.apache.avro.generic.GenericEnumSymbol<$name> {")
       .indent
       .add(enumSymbols.mkString(", ") + ";")

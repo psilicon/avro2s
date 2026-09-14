@@ -1,0 +1,45 @@
+{
+  "type": "record",
+  "name": "DocumentedRecord",
+  "namespace": "avro2s.test.docs",
+  "doc": "A documented record.\r\nSecond line with café and 日本語.\r\n\r\nLiteral /* opening and */ closing delimiters.",
+  "fields": [
+    {
+      "name": "type",
+      "type": "string",
+      "doc": "The record category.\nMay contain /* or */."
+    },
+    {
+      "name": "given",
+      "type": "string",
+      "doc": "A Scala 3 keyword."
+    },
+    {
+      "name": "id",
+      "type": {
+        "type": "fixed",
+        "name": "DocumentedFixed",
+        "size": 4,
+        "doc": "A four-byte identifier."
+      },
+      "doc": "The identifier."
+    },
+    {
+      "name": "state",
+      "type": {
+        "type": "enum",
+        "name": "DocumentedEnum",
+        "symbols": [
+          "ON",
+          "OFF"
+        ],
+        "doc": "Available states."
+      }
+    },
+    {
+      "name": "blank",
+      "type": "string",
+      "doc": " \t\r\n "
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import avro2s.generator.logical.LogicalTypes
 import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.specific.scala3.FieldOps._
 import avro2s.generator.specific.SchemaLiteral
-import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, GeneratorConfig, Scaladoc}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Type._
 
@@ -37,6 +37,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .add("import scala.annotation.switch")
       .newline
+      .call(Scaladoc.print(_, schema.getDoc, fields.map(f => f.name() -> f.doc())))
       .add(s"case class $name(${fieldsToParams(fields)}) extends org.apache.avro.specific.SpecificRecordBase {")
       .indent
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))

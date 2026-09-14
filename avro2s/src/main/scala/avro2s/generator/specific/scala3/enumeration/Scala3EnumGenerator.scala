@@ -2,7 +2,7 @@ package avro2s.generator.specific.scala3.enumeration
 
 import avro2s.generator.specific.{ScalaEnumSupport, SchemaLiteral}
 import avro2s.generator.specific.scala3.ReservedWords
-import avro2s.generator.{FunctionalPrinter, GeneratedCode}
+import avro2s.generator.{FunctionalPrinter, GeneratedCode, Scaladoc}
 
 import scala.jdk.CollectionConverters._
 
@@ -19,6 +19,7 @@ private[avro2s] object Scala3EnumGenerator {
       .newline
       .add(s"package $ns.internal {")
       .indent
+      .call(Scaladoc.print(_, schema.getDoc))
       .when(symbols.nonEmpty) { p =>
         p.add(s"enum $name(private val symbol$dollar: _root_.java.lang.String) {")
           .indent
@@ -53,7 +54,9 @@ private[avro2s] object Scala3EnumGenerator {
       .newline
       .add(s"package $ns {")
       .indent
+      .call(Scaladoc.print(_, schema.getDoc))
       .add(s"type $name = $enumType")
+      .call(Scaladoc.print(_, schema.getDoc))
       .add(s"val $name: $enumType.type = $enumType")
       .outdent
       .add("}")

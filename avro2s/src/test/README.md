@@ -29,3 +29,8 @@ The session-only override enables the plugin JAR for local test publication; the
 - `NativeEnumGeneratorTest` compares every generated native file, including Scala 2 aliases, with the compiled serialization fixtures. It also covers complete single-schema output, shared-store incremental aliases, and namespace validation. Companion-member collisions are exercised by the scripted compilation and serialization regression.
 - Scala 2.13 and Scala 3 serialization tests use ordinary stock Avro constructors for direct, optional, array, map, and union enum positions. Scala 3 also tests class-based readers and schema lookup.
 - `sbt test` retains the existing Java-mode output comparisons.
+
+#### Scaladoc verification:
+
+- `ScaladocGeneratorTest` covers multiline and blank docs, field-only docs, reserved parameter names, comment escaping, records and nested fixed/enum types, and native enum aliases (including empty enums) on both output targets.
+- The documented fixtures under `test/docs` and the native enum fixtures compile as part of `sbt test`; source comparisons check that they match the current generator output.
