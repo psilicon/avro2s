@@ -12,11 +12,11 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_maps.size / 0.75d).toInt))
         _map_of_maps.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(kvp._2.size / 0.75d).toInt))
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
@@ -31,7 +31,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 1 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_union.size / 0.75d).toInt))
         _map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -45,7 +45,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 2 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_union_of_map_of_union.size / 0.75d).toInt))
         _map_of_union_of_map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -54,11 +54,11 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               case Some(x: Long) => x.asInstanceOf[AnyRef]
               case Some(x: Boolean) => x.asInstanceOf[AnyRef]
               case Some(x: Map[String, Map[String, Option[String | Long | Boolean | Double]]]) =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(x.size / 0.75d).toInt))
                 x.foreach { kvp =>
                   val key = kvp._1
                   val value = {
-                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(kvp._2.size / 0.75d).toInt))
                     kvp._2.foreach { kvp =>
                       val key = kvp._1
                       val value = {
@@ -85,45 +85,55 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_arrays.size / 0.75d).toInt))
         _map_of_arrays.foreach { kvp =>
           val key = kvp._1
           val value = {
-            new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+            if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
           }
           map.put(key, value)
         }
         map
       }.asInstanceOf[AnyRef]
       case 4 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_arrays_of_maps.size / 0.75d).toInt))
         _map_of_arrays_of_maps.foreach { kvp =>
           val key = kvp._1
           val value = {
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              kvp._2.iterator.map { m =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
-                m.foreach { kvp =>
-                  val key = kvp._1
-                  val value = {
-                    kvp._2.asInstanceOf[AnyRef]
-                  }
-                  map.put(key, value)
+            {
+              def toJavaArray$(input$: List[Map[String, Boolean]]): java.util.ArrayList[AnyRef] = {
+                var remaining$ = input$
+                val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+                while (remaining$.nonEmpty) {
+                  val element$ = remaining$.head
+                  result$.add({
+                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(element$.size / 0.75d).toInt))
+                    element$.foreach { kvp =>
+                      val key = kvp._1
+                      val value = {
+                        kvp._2.asInstanceOf[AnyRef]
+                      }
+                      map.put(key, value)
+                    }
+                    map
+                  })
+                  remaining$ = remaining$.tail
                 }
-                map
+                result$
               }
-            }.toBuffer).asJava
+              toJavaArray$(kvp._2)
+            }
           }
           map.put(key, value)
         }
         map
       }.asInstanceOf[AnyRef]
       case 5 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_map_of_union.size / 0.75d).toInt))
         _map_of_map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(kvp._2.size / 0.75d).toInt))
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
@@ -144,15 +154,15 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 6 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_map_of_arrays.size / 0.75d).toInt))
         _map_of_map_of_arrays.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(kvp._2.size / 0.75d).toInt))
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
-                new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+                if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
               }
               map.put(key, value)
             }
@@ -163,7 +173,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 7 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_fixed.size / 0.75d).toInt))
         _map_of_fixed.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -174,7 +184,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 8 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_enum.size / 0.75d).toInt))
         _map_of_enum.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -185,7 +195,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 9 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_record.size / 0.75d).toInt))
         _map_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -196,7 +206,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 10 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_union_of_record.size / 0.75d).toInt))
         _map_of_union_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -211,7 +221,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 11 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_bytes.size / 0.75d).toInt))
         _map_of_bytes.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -222,7 +232,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 12 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_string.size / 0.75d).toInt))
         _map_of_string.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -233,7 +243,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 13 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_int.size / 0.75d).toInt))
         _map_of_int.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -244,7 +254,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 14 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_long.size / 0.75d).toInt))
         _map_of_long.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -255,7 +265,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 15 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_float.size / 0.75d).toInt))
         _map_of_float.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -266,7 +276,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 16 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_double.size / 0.75d).toInt))
         _map_of_double.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -277,7 +287,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 17 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_boolean.size / 0.75d).toInt))
         _map_of_boolean.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -288,7 +298,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 18 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_null.size / 0.75d).toInt))
         _map_of_null.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -299,13 +309,13 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 19 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_union_of_array.size / 0.75d).toInt))
         _map_of_union_of_array.foreach { kvp =>
           val key = kvp._1
           val value = {
             kvp._2 match {
               case Some(x: List[String]) =>
-                new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+                if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
               case Some(x: Int) => x.asInstanceOf[AnyRef]
               case None => null.asInstanceOf[AnyRef]
             }

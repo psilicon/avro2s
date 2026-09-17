@@ -32,6 +32,36 @@ class GeneratedArrayRuntimeTest extends AnyFunSuite with Matchers {
     new SpecificDatumReader[T](source.getSchema).read(existing, decoder)
   }
 
+  test("array getters preserve existing boxes and collection contents across sizes") {
+    for (size <- List(0, 1, 16, 128)) {
+      val value = new Arrays()
+      value._array_of_ints = List.tabulate(size)(index => 1000 + index)
+      value._array_of_strings = List.tabulate(size)(index => s"item-$index")
+      value._array_of_bytes = List.tabulate(size)(index => Array(index.toByte))
+      val boxes = value._array_of_ints.asInstanceOf[List[AnyRef]]
+      val ints = value.get(9).asInstanceOf[java.util.List[AnyRef]]
+      val strings = value.get(8).asInstanceOf[java.util.List[String]]
+      val bytes = value.get(7).asInstanceOf[java.util.List[ByteBuffer]]
+
+      ints.size() shouldBe size
+      strings.size() shouldBe size
+      bytes.size() shouldBe size
+      for (index <- 0 until size) {
+        ints.get(index) should be theSameInstanceAs boxes(index)
+        strings.get(index) shouldBe value._array_of_strings(index)
+        bytes.get(index).get(0) shouldBe index.toByte
+      }
+      val reused = readInto(value, new Arrays())
+      serialize(reused).toSeq shouldBe serialize(value).toSeq
+      ints.clear()
+      strings.clear()
+      bytes.clear()
+      value._array_of_ints.size shouldBe size
+      value._array_of_strings.size shouldBe size
+      value._array_of_bytes.size shouldBe size
+    }
+  }
+
   test("array getters return mutable detached collections, including nested arrays") {
     val value = populatedArrays()
     val expectedBytes = serialize(value).toSeq

@@ -18,14 +18,24 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
       }
       case 2 => history match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.iterator.map { x =>
-              _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[avro2s.test.scalaenums.Suit]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(element$)
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(byPlayer.size / 0.75d).toInt))
         byPlayer.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -37,12 +47,24 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
       }.asInstanceOf[AnyRef]
       case 4 => maybeHistory match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.iterator.map {
-              case Some(x: avro2s.test.scalaenums.Suit) => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
-              case None => null.asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[Option[avro2s.test.scalaenums.Suit]]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  element$ match {
+                    case Some(x: avro2s.test.scalaenums.Suit) => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
+                    case None => null.asInstanceOf[AnyRef]
+                  }
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
       case 5 => _root_.avro2s.test.scalaenums.Kw.toAvroSymbol$(kw).asInstanceOf[AnyRef]
       case 6 => maybeKw match {

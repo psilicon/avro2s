@@ -18,19 +18,31 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => _optional_array match {
         case None => null
         case Some(x) =>
-          new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+          if (x.isEmpty) new java.util.ArrayList[Boolean](0) else new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
       }
       case 2 => _array_of_options match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.iterator.map {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[Option[String]]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  element$ match {
+                    case None => null
+                    case Some(x) => x.asInstanceOf[AnyRef]
+                  }
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_options.size / 0.75d).toInt))
         _map_of_options.foreach { kvp =>
           val key = kvp._1
           val value = {
