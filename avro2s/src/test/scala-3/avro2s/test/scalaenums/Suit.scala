@@ -16,6 +16,22 @@ package avro2s.test.scalaenums.internal {
   object Suit {
     val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Suit","namespace":"avro2s.test.scalaenums","doc":"The suit of a playing card.","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}""")
 
+    private val avroSymbol$0: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "SPADES")
+    private val avroSymbol$1: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "HEARTS")
+    private val avroSymbol$2: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "DIAMONDS")
+    private val avroSymbol$3: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "CLUBS")
+
+    def toAvroSymbol$(value: _root_.avro2s.test.scalaenums.internal.Suit): _root_.org.apache.avro.generic.GenericData.EnumSymbol = {
+      if (value == null) null
+      else value.toString match {
+        case "SPADES" => avroSymbol$0
+        case "HEARTS" => avroSymbol$1
+        case "DIAMONDS" => avroSymbol$2
+        case "CLUBS" => avroSymbol$3
+        case other => throw new _root_.org.apache.avro.AvroRuntimeException("No enum symbol " + other + " in avro2s.test.scalaenums.Suit")
+      }
+    }
+
     def fromAvroSymbol(value: _root_.java.lang.String): _root_.avro2s.test.scalaenums.internal.Suit = value match {
       case "SPADES" => _root_.avro2s.test.scalaenums.internal.Suit.SPADES
       case "HEARTS" => _root_.avro2s.test.scalaenums.internal.Suit.HEARTS

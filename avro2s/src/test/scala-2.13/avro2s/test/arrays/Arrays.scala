@@ -17,19 +17,15 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
       case 0 => _array_of_arrays match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { array =>
-              scala.jdk.CollectionConverters.BufferHasAsJava({
-                array.map { x =>
-                  x.asInstanceOf[AnyRef]
-                }
-              }.toBuffer).asJava
+            array.iterator.map { array =>
+              new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
             }
           }.toBuffer).asJava
         }
       case 1 => _array_of_maps match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { m =>
+            array.iterator.map { m =>
               val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
               m.foreach { kvp =>
                 val key = kvp._1
@@ -45,7 +41,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
       case 2 => _array_of_unions match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")
@@ -54,16 +50,12 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
         }
       case 3 => _array_of_records match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[avro2s.test.arrays.Record](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 4 => _array_of_union_of_records match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
@@ -73,80 +65,48 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
         }
       case 5 => _array_of_enums match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[avro2s.test.arrays.Enum](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 6 => _array_of_fixed match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[avro2s.test.arrays.Fixed](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 7 => _array_of_bytes match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { bytes =>
+            array.iterator.map { bytes =>
               java.nio.ByteBuffer.wrap(bytes)
             }
           }.toBuffer).asJava
         }
       case 8 => _array_of_strings match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 9 => _array_of_ints match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 10 => _array_of_longs match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Long](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 11 => _array_of_floats match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Float](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 12 => _array_of_doubles match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Double](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 13 => _array_of_booleans match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 14 => _array_of_union_of_only_records match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")
@@ -156,7 +116,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
       case 15 => _array_of_union_of_only_enums match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")
@@ -166,7 +126,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
       case 16 => _array_of_union_of_only_fixed match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Inl(x) => x.asInstanceOf[AnyRef]
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")
@@ -198,13 +158,13 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
                     val key = kvp._1.toString
                     val value = kvp._2
                     (key, {
                       value.toString
                     })
-                  }
+                  }.toMap
                 }
               }
             }).toList

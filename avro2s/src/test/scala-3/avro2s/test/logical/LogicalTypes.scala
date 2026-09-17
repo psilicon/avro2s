@@ -5,7 +5,7 @@ package avro2s.test.logical
 import scala.annotation.switch
 
 case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDate, var _time_millis: java.time.LocalTime, var _time_micros: java.time.LocalTime, var _timestamp_millis: java.time.Instant, var _timestamp_micros: java.time.Instant, var _local_timestamp_millis: java.time.LocalDateTime, var _local_timestamp_micros: java.time.LocalDateTime) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(java.util.UUID.fromString("00000000-0000-0000-0000-000000000000"), java.time.LocalDate.ofEpochDay(0), java.time.LocalTime.ofNanoOfDay(0), java.time.LocalTime.ofNanoOfDay(0), java.time.Instant.ofEpochMilli(0), java.time.Instant.ofEpochSecond(0, 0), java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC")), java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC")))
+  def this() = this(LogicalTypes.$default$0, LogicalTypes.$default$1, LogicalTypes.$default$2, LogicalTypes.$default$2, LogicalTypes.$default$3, LogicalTypes.$default$4, LogicalTypes.$default$5, LogicalTypes.$default$6)
 
   override def getSchema: org.apache.avro.Schema = LogicalTypes.SCHEMA$
 
@@ -92,4 +92,11 @@ object LogicalTypes {
     model.addLogicalTypeConversion($LocalTimestampMicrosConversion)
     model
   }
+  private val $default$0: java.util.UUID = java.util.UUID.fromString("00000000-0000-0000-0000-000000000000")
+  private val $default$1: java.time.LocalDate = java.time.LocalDate.ofEpochDay(0)
+  private val $default$2: java.time.LocalTime = java.time.LocalTime.ofNanoOfDay(0)
+  private val $default$3: java.time.Instant = java.time.Instant.ofEpochMilli(0)
+  private val $default$4: java.time.Instant = java.time.Instant.ofEpochSecond(0, 0)
+  private val $default$5: java.time.LocalDateTime = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC"))
+  private val $default$6: java.time.LocalDateTime = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC"))
 }

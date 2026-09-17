@@ -11,16 +11,16 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
-      case 0 => (if (suit == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, suit.toString)).asInstanceOf[AnyRef]
+      case 0 => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(suit).asInstanceOf[AnyRef]
       case 1 => trump match {
-        case Some(x: avro2s.test.scalaenums.Suit) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Some(x: avro2s.test.scalaenums.Suit) => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
         case None => null.asInstanceOf[AnyRef]
       }
       case 2 => history match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+            array.iterator.map { x =>
+              _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
@@ -29,7 +29,7 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
         byPlayer.foreach { kvp =>
           val key = kvp._1
           val value = {
-            (if (kvp._2 == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, kvp._2.toString)).asInstanceOf[AnyRef]
+            _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(kvp._2).asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -38,19 +38,19 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
       case 4 => maybeHistory match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
-              case Some(x: avro2s.test.scalaenums.Suit) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+            array.iterator.map {
+              case Some(x: avro2s.test.scalaenums.Suit) => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
               case None => null.asInstanceOf[AnyRef]
             }
           }.toBuffer).asJava
         }
-      case 5 => (if (kw == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Kw.SCHEMA$, kw.toString)).asInstanceOf[AnyRef]
+      case 5 => _root_.avro2s.test.scalaenums.Kw.toAvroSymbol$(kw).asInstanceOf[AnyRef]
       case 6 => maybeKw match {
-        case Some(x: avro2s.test.scalaenums.Kw) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Kw.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Some(x: avro2s.test.scalaenums.Kw) => _root_.avro2s.test.scalaenums.Kw.toAvroSymbol$(x).asInstanceOf[AnyRef]
         case None => null.asInstanceOf[AnyRef]
       }
       case 7 => cp match {
-        case Some(x: avro2s.test.scalaenums.Suit) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.scalaenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Some(x: avro2s.test.scalaenums.Suit) => _root_.avro2s.test.scalaenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
         case Some(x: String) => x.asInstanceOf[AnyRef]
         case None => null.asInstanceOf[AnyRef]
       }
@@ -79,13 +79,13 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
       }
       case 3 => this.byPlayer = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
           val key = kvp._1.toString
           val value = kvp._2
           (key, {
             value match { case x: _root_.avro2s.test.scalaenums.Suit => x; case x => _root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString) }
           })
-        }
+        }.toMap
       }
       case 4 => this.maybeHistory = {
         val array = value.asInstanceOf[java.util.List[?]]

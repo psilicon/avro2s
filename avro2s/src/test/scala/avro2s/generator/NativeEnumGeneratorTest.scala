@@ -54,6 +54,24 @@ class NativeEnumGeneratorTest extends AnyFunSuite with Matchers {
       a[ConfigError] should be thrownBy CodeGenerator.generateCode(List(schema), config)
     }
 
+    test(s"Scala $version enum cache members cannot collide with schema symbols") {
+      val schema = new Schema.Parser().parse("""{"type":"enum","name":"Symbols","namespace":"cards","symbols":["toAvroSymbol","avroSymbol0","values"]}""")
+      val code = CodeGenerator.generateCode(List(schema), config).find(_.path.endsWith("/Symbols.scala")).get.code
+      code should include("def toAvroSymbol$(value:")
+      code should include("private val avroSymbol$0:")
+      code should include("case \"toAvroSymbol\" => _root_.cards.internal.Symbols.toAvroSymbol")
+      code should include("case \"avroSymbol0\" => _root_.cards.internal.Symbols.avroSymbol0")
+      code should include("case \"values\" => _root_.cards.internal.Symbols.values$avro")
+    }
+
+    test(s"Scala $version empty enums keep a null-safe wrapper helper without cache entries") {
+      val schema = new Schema.Parser().parse("""{"type":"enum","name":"Empty","namespace":"cards","symbols":[]}""")
+      val code = CodeGenerator.generateCode(List(schema), config).find(_.path.endsWith("/Empty.scala")).get.code
+      code should include("def toAvroSymbol$(value: _root_.cards.internal.Empty)")
+      code should include("if (value == null) null")
+      code should not include "private val avroSymbol$"
+    }
+
     test(s"Scala $version rejects a default-package enum referenced from a named package") {
       val schema = new Schema.Parser().parse("""{"type":"record","name":"Hand","namespace":"cards","fields":[
         {"name":"suit","type":{"type":"enum","name":"Suit","namespace":"","symbols":["A"]}}]}""")

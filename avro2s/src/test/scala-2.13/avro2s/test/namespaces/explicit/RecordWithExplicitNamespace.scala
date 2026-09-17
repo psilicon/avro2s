@@ -18,11 +18,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       case 1 => _record_with_namespace_inherited_from_direct_parent.asInstanceOf[AnyRef]
       case 2 => _array_of_records match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 3 => {
         val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
@@ -59,13 +55,13 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       case 3 => this._map_of_records = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
                 value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
               })
-            }
+            }.toMap
           }
         }
       }
