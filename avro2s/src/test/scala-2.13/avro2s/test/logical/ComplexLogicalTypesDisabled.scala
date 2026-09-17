@@ -15,7 +15,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -39,7 +39,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         case Some(x) => x.asInstanceOf[AnyRef]
       }
       case 4 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_union.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_union.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_union.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -54,7 +54,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         map
       }.asInstanceOf[AnyRef]
       case 5 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_array.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_array.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_array.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -67,7 +67,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 6 => _union_map match {
         case Inl(x) => x.asInstanceOf[AnyRef]
         case Inr(Inl(x)) =>
-          val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(x.size / 0.75d).toInt))
+          val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = x.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
           x.foreach { kvp =>
             val key = kvp._1
             val value = {
@@ -93,7 +93,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               while (remaining$.nonEmpty) {
                 val element$ = remaining$.head
                 result$.add({
-                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(element$.size / 0.75d).toInt))
+                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = element$.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                   element$.foreach { kvp =>
                     val key = kvp._1
                     val value = {
@@ -162,13 +162,15 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 0 => this._map = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.toString
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.toString
+                })
+              }.toMap
+            }
           }
         }
       }
@@ -196,35 +198,39 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 4 => this._map_union = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: Int => Coproduct[Int :+: Long :+: CNil](x)
-                  case x: Long => Coproduct[Int :+: Long :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Int :+: Long :+: CNil] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case x: Int => Coproduct[Int :+: Long :+: CNil](x)
+                    case x: Long => Coproduct[Int :+: Long :+: CNil](x)
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
       case 5 => this._map_array = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value.asInstanceOf[Int]
-                    }).toList
-                  }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Int]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case array: java.util.List[_] =>
+                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                        value.asInstanceOf[Int]
+                      }).toList
+                    }
+                })
+              }.toMap
+            }
           }
         }
       }
@@ -232,13 +238,15 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case x: Int => Coproduct[Int :+: Map[String, String] :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, String] :+: CNil]{
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.toString
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.toString
+                })
+              }.toMap
+            }
           }
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -263,13 +271,15 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value.toString
-                    })
-                  }.toMap
+                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (key, {
+                        value.toString
+                      })
+                    }.toMap
+                  }
                 }
               }
             }).toList

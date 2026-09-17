@@ -25,7 +25,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
           if (array.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 10 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -86,13 +86,15 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       }
       case 10 => this._map = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-          val key = kvp._1.toString
-          val value = kvp._2
-          (key, {
-            value.asInstanceOf[Long]
-          })
-        }.toMap
+        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              value.asInstanceOf[Long]
+            })
+          }.toMap
+        }
       }
       case 11 => this._union_nullable = {
         value match {

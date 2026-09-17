@@ -164,6 +164,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   private def assignMap(functionalPrinter: FunctionalPrinter, inputName: String, schema: Schema): FunctionalPrinter = {
     functionalPrinter
+      .add(s"if ($inputName.isEmpty) _root_.scala.collection.immutable.Map.empty[String, ${schemaToScalaType(schema.getValueType, true)}] else {")
+      .indent
       .add(s"scala.jdk.CollectionConverters.MapHasAsScala($inputName).asScala.iterator.map { kvp =>")
       .indent
       .add("val key = kvp._1.toString")
@@ -175,6 +177,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       .add("})")
       .outdent
       .add("}.toMap")
+      .outdent
+      .add("}")
   }
 
   private def assignMapInner(printer: FunctionalPrinter, schema: Schema): FunctionalPrinter = {

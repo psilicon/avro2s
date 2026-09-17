@@ -38,7 +38,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               while (remaining$.nonEmpty) {
                 val element$ = remaining$.head
                 result$.add({
-                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(element$.size / 0.75d).toInt))
+                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = element$.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                   element$.foreach { kvp =>
                     val key = kvp._1
                     val value = {
@@ -234,13 +234,15 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
         val array = value.asInstanceOf[java.util.List[?]]
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           val map = value.asInstanceOf[java.util.Map[?,?]]
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
-              value.toString
-            })
-          }.toMap
+          if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+              val key = kvp._1.toString
+              val value = kvp._2
+              (key, {
+                value.toString
+              })
+            }.toMap
+          }
         }).toList
       }
       case 2 => this._array_of_unions = {

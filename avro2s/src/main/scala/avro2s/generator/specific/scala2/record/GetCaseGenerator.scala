@@ -177,10 +177,10 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     }
   }
 
-  // Keep the default capacity for small maps and account for HashMap's default load factor.
+  // Keep small maps on an integer-only fast path, using HashMap's default load factor above 12 entries.
   // Double.toInt saturates for very large sizes instead of overflowing to a negative capacity.
   private def mapCapacity(input: String): String =
-    s"_root_.scala.math.max(16, _root_.scala.math.ceil($input.size / 0.75d).toInt)"
+    s"{ val size$$ = $input.size; if (size$$ <= 12) 16 else _root_.scala.math.ceil(size$$ / 0.75d).toInt }"
 
   private def printUnionPatternMatch(printer: FunctionalPrinter, union: UnionRepresentation): FunctionalPrinter = {
     def pattern(remaining: Int, left: String, right: String): String = {

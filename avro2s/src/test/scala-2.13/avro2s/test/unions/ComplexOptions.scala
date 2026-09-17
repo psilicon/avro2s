@@ -12,7 +12,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_record.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_record.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -26,14 +26,14 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         map
       }.asInstanceOf[AnyRef]
       case 1 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_map.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_map.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_map.foreach { kvp =>
           val key = kvp._1
           val value = {
             kvp._2 match {
               case None => null
               case Some(x) =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(x.size / 0.75d).toInt))
+                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = x.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                 x.foreach { kvp =>
                   val key = kvp._1
                   val value = {
@@ -49,7 +49,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         map
       }.asInstanceOf[AnyRef]
       case 2 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_array.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_array.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_array.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -96,7 +96,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                   element$ match {
                     case None => null
                     case Some(x) =>
-                      val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(x.size / 0.75d).toInt))
+                      val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = x.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                       x.foreach { kvp =>
                         val key = kvp._1
                         val value = {
@@ -145,7 +145,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
               while (remaining$.nonEmpty) {
                 val element$ = remaining$.head
                 result$.add({
-                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(element$.size / 0.75d).toInt))
+                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = element$.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                   element$.foreach { kvp =>
                     val key = kvp._1
                     val value = {
@@ -166,7 +166,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
           }
         }
       case 7 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_array_of_option_of_record.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_array_of_option_of_record.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_array_of_option_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -194,7 +194,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         map
       }.asInstanceOf[AnyRef]
       case 8 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_bytes.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_bytes.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_bytes.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -209,7 +209,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         map
       }.asInstanceOf[AnyRef]
       case 9 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_fixed.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_fixed.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_fixed.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -223,7 +223,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         map
       }.asInstanceOf[AnyRef]
       case 10 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_option_of_enum.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_option_of_enum.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_option_of_enum.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -245,63 +245,71 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
       case 0 => this._map_of_option_of_record = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.RecordForComplexOptions]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
       case 1 => this._map_of_option_of_map = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case map: java.util.Map[_,_] => Some{
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
-                    }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[Map[String, String]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case map: java.util.Map[_,_] => Some{
+                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                          val key = kvp._1.toString
+                          val value = kvp._2
+                          (key, {
+                            value.toString
+                          })
+                        }.toMap
+                      }
+                    }
                   }
-                }
-              })
-            }.toMap
+                })
+              }.toMap
+            }
           }
         }
       }
       case 2 => this._map_of_option_of_array = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: java.util.List[_] => Some({
-                    x match {
-                      case array: java.util.List[_] =>
-                        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                          value.toString
-                        }).toList
-                      }
-                  }.toList)
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[List[String]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: java.util.List[_] => Some({
+                      x match {
+                        case array: java.util.List[_] =>
+                          scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                            value.toString
+                          }).toList
+                        }
+                    }.toList)
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
@@ -323,13 +331,15 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
               value match {
                 case null => None
                 case map: java.util.Map[_,_] => Some{
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value.toString
-                    })
-                  }.toMap
+                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (key, {
+                        value.toString
+                      })
+                    }.toMap
+                  }
                 }
               }
             }).toList
@@ -359,16 +369,18 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case map: java.util.Map[_,_] => {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value match {
-                        case null => None
-                        case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                      }
-                    })
-                  }.toMap
+                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.RecordForComplexOptions]] else {
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (key, {
+                        value match {
+                          case null => None
+                          case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                        }
+                      })
+                    }.toMap
+                  }
                 }
               }
             }).toList
@@ -377,69 +389,77 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
       case 7 => this._map_of_array_of_option_of_record = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value match {
-                        case null => None
-                        case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                      }
-                    }).toList
-                  }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Option[avro2s.test.unions.RecordForComplexOptions]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case array: java.util.List[_] =>
+                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                        value match {
+                          case null => None
+                          case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                        }
+                      }).toList
+                    }
+                })
+              }.toMap
+            }
           }
         }
       }
       case 8 => this._map_of_option_of_bytes = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: java.nio.ByteBuffer => Some(x.array())
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[Array[Byte]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: java.nio.ByteBuffer => Some(x.array())
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
       case 9 => this._map_of_option_of_fixed = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.FixedForComplexOptions]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
       case 10 => this._map_of_option_of_enum = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
-                }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.EnumForComplexOptions]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
+                  }
+                })
+              }.toMap
+            }
           }
         }
       }
