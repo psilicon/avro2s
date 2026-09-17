@@ -30,8 +30,32 @@ private[avro2s] object ScalaEnumSupport {
       .outdent
       .add("}")
 
+  def printAvroSymbolCache(printer: FunctionalPrinter, schema: Schema): FunctionalPrinter = {
+    // EnumSymbol is immutable; '$' keeps cache members distinct from authored symbols.
+    val symbolType = "_root_.org.apache.avro.generic.GenericData.EnumSymbol"
+    val symbols = schema.getEnumSymbols.asScala.toList.zipWithIndex
+    printer
+      .print(symbols) { case (p, (symbol, index)) =>
+        p.add(s"""private val avroSymbol$$$index: $symbolType = new $symbolType(SCHEMA$$, "$symbol")""")
+      }
+      .when(symbols.nonEmpty)(_.newline)
+      .add(s"def toAvroSymbol$$(value: ${internalType(schema)}): $symbolType = {")
+      .indent
+      .add("if (value == null) null")
+      .add("else value.toString match {")
+      .indent
+      .print(symbols) { case (p, (symbol, index)) =>
+        p.add(s"""case "$symbol" => avroSymbol$$$index""")
+      }
+      .add(s"""case other => throw new _root_.org.apache.avro.AvroRuntimeException("No enum symbol " + other + " in ${schema.getFullName}")""")
+      .outdent
+      .add("}")
+      .outdent
+      .add("}")
+  }
+
   def wrapExpression(input: String, schema: Schema): String =
-    s"(if ($input == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.${schema.getFullName}.SCHEMA$$, $input.toString))"
+    s"_root_.${schema.getFullName}.toAvroSymbol$$($input)"
 
   def putConversion(input: String, schema: Schema): String =
     s"$input match { case x: _root_.${schema.getFullName} => x; case x => _root_.${schema.getFullName}.fromAvroSymbol(x.toString) }"

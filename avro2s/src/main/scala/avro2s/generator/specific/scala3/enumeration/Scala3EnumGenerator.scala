@@ -37,6 +37,8 @@ private[avro2s] object Scala3EnumGenerator {
       .indent
       .add(s"val SCHEMA$dollar: _root_.org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .newline
+      .call(ScalaEnumSupport.printAvroSymbolCache(_, schema))
+      .newline
       .call(ScalaEnumSupport.printFromAvroSymbol(_, schema, caseName))
       .when(symbols.isEmpty) { p =>
         p.newline

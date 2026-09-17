@@ -18,15 +18,12 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => _optional_array match {
         case None => null
         case Some(x) =>
-        scala.jdk.CollectionConverters.BufferHasAsJava({
-          x.map { x =>x.asInstanceOf[AnyRef]
-          }
-        }.toBuffer).asJava.asInstanceOf[AnyRef]
+          new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
       }
       case 2 => _array_of_options match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case None => null
               case Some(x) => x.asInstanceOf[AnyRef]
             }
@@ -85,7 +82,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 3 => this._map_of_options = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
@@ -94,7 +91,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
                   case x: org.apache.avro.util.Utf8 => Some(x.toString)
                 }
               })
-            }
+            }.toMap
           }
         }
       }

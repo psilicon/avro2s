@@ -33,6 +33,8 @@ private[avro2s] object ScalaAdtEnumGenerator {
       .newline
       .add(s"val SCHEMA$dollar: _root_.org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .newline
+      .call(ScalaEnumSupport.printAvroSymbolCache(_, schema))
+      .newline
       .call(ScalaEnumSupport.printFromAvroSymbol(_, schema, caseName))
       .newline
       .add(s"def valueOf(value: _root_.java.lang.String): $enumType = fromAvroSymbol(value)")

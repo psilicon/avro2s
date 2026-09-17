@@ -18,6 +18,34 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
   private val fixedLocalTimestampMillis = java.time.LocalDateTime.ofInstant(fixedTimestampMillis, java.time.ZoneOffset.UTC)
   private val fixedLocalTimestampMicros = java.time.LocalDateTime.ofInstant(fixedTimestampMicros, java.time.ZoneOffset.UTC)
 
+  test("no-arg records share immutable logical defaults while retaining independent fields") {
+    val first = new avro2s.test.logical.LogicalTypes()
+    val second = new avro2s.test.logical.LogicalTypes()
+    val expected = Seq[AnyRef](
+      new UUID(0L, 0L),
+      java.time.LocalDate.ofEpochDay(0),
+      java.time.LocalTime.MIDNIGHT,
+      java.time.LocalTime.MIDNIGHT,
+      java.time.Instant.EPOCH,
+      java.time.Instant.EPOCH,
+      java.time.LocalDateTime.of(1970, 1, 1, 0, 0),
+      java.time.LocalDateTime.of(1970, 1, 1, 0, 0)
+    )
+
+    expected.zipWithIndex.foreach { case (value, index) =>
+      first.get(index) shouldBe value
+      (first.get(index) eq second.get(index)) shouldBe true
+    }
+
+    first._uuid = fixedUuid
+    first._date = fixedDate
+    first._local_timestamp_millis = fixedLocalTimestampMillis
+    second._uuid shouldBe expected(0)
+    second._date shouldBe expected(1)
+    second._local_timestamp_millis shouldBe expected(6)
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(second), second.getSchema) shouldBe second
+  }
+
   test("time-millis should work at the edges") {
     def logicalTypes(time: java.time.LocalTime) = avro2s.test.logical.LogicalTypes(
       _uuid = fixedUuid,

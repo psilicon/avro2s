@@ -14,6 +14,22 @@ object Kw {
 
   val SCHEMA$: _root_.org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"enum","name":"Kw","namespace":"avro2s.test.adtenums","symbols":["new","type","lazy","NORMAL"]}""")
 
+  private val avroSymbol$0: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "new")
+  private val avroSymbol$1: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "type")
+  private val avroSymbol$2: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "lazy")
+  private val avroSymbol$3: _root_.org.apache.avro.generic.GenericData.EnumSymbol = new _root_.org.apache.avro.generic.GenericData.EnumSymbol(SCHEMA$, "NORMAL")
+
+  def toAvroSymbol$(value: _root_.avro2s.test.adtenums.internal.Kw): _root_.org.apache.avro.generic.GenericData.EnumSymbol = {
+    if (value == null) null
+    else value.toString match {
+      case "new" => avroSymbol$0
+      case "type" => avroSymbol$1
+      case "lazy" => avroSymbol$2
+      case "NORMAL" => avroSymbol$3
+      case other => throw new _root_.org.apache.avro.AvroRuntimeException("No enum symbol " + other + " in avro2s.test.adtenums.Kw")
+    }
+  }
+
   def fromAvroSymbol(value: _root_.java.lang.String): _root_.avro2s.test.adtenums.internal.Kw = value match {
     case "new" => _root_.avro2s.test.adtenums.internal.Kw.`new`
     case "type" => _root_.avro2s.test.adtenums.internal.Kw.`type`

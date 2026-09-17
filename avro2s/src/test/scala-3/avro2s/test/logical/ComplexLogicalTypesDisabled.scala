@@ -24,11 +24,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       }.asInstanceOf[AnyRef]
       case 1 => _array match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 2 => _union match {
         case x: Int => x.asInstanceOf[AnyRef]
@@ -57,11 +53,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         _map_array.foreach { kvp =>
           val key = kvp._1
           val value = {
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              kvp._2.map { x =>
-                x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava
+            new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
           }
           map.put(key, value)
         }
@@ -83,15 +75,12 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 7 => _union_array match {
         case x: Int => x.asInstanceOf[AnyRef]
         case x: List[Int] =>
-        scala.jdk.CollectionConverters.BufferHasAsJava({
-          x.map { x =>x.asInstanceOf[AnyRef]
-          }
-        }.toBuffer).asJava.asInstanceOf[AnyRef]
+          new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
       }
       case 8 => _array_map match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { m =>
+            array.iterator.map { m =>
               val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
               m.foreach { kvp =>
                 val key = kvp._1
@@ -107,7 +96,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 9 => _array_union match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case x: Int => x.asInstanceOf[AnyRef]
               case x: Long => x.asInstanceOf[AnyRef]
             }
@@ -116,7 +105,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 10 => _array_option match {
         case array =>
           scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
+            array.iterator.map {
               case Some(x: String) => x.asInstanceOf[AnyRef]
               case None => null.asInstanceOf[AnyRef]
             }
@@ -130,13 +119,13 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
     (field$: @switch) match {
       case 0 => this._map = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
           val key = kvp._1.toString
           val value = kvp._2
           (key, {
             value.toString
           })
-        }
+        }.toMap
       }
       case 1 => this._array = {
         val array = value.asInstanceOf[java.util.List[?]]
@@ -160,7 +149,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       }
       case 4 => this._map_union = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
           val key = kvp._1.toString
           val value = kvp._2
           (key, {
@@ -170,11 +159,11 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
             }
           })
-        }
+        }.toMap
       }
       case 5 => this._map_array = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
           val key = kvp._1.toString
           val value = kvp._2
           (key, {
@@ -183,19 +172,19 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               value.asInstanceOf[Int]
             }).toList
           })
-        }
+        }.toMap
       }
       case 6 => this._union_map = {
         value match {
           case x: Int => x
           case map: java.util.Map[?,?] =>
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
                 value.toString
               })
-            }
+            }.toMap
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -213,13 +202,13 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         val array = value.asInstanceOf[java.util.List[?]]
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           val map = value.asInstanceOf[java.util.Map[?,?]]
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
             val key = kvp._1.toString
             val value = kvp._2
             (key, {
               value.toString
             })
-          }
+          }.toMap
         }).toList
       }
       case 9 => this._array_union = {

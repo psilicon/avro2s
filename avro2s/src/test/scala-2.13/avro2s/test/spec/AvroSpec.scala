@@ -25,11 +25,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 8 => _enum.asInstanceOf[AnyRef]
       case 9 => _array match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 10 => {
         val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
@@ -82,13 +78,13 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 10 => this._map = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
                 value.asInstanceOf[Long]
               })
-            }
+            }.toMap
           }
         }
       }
