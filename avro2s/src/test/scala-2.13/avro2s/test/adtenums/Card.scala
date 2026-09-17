@@ -38,7 +38,7 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
           }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(byPlayer.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = byPlayer.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         byPlayer.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -105,13 +105,15 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
       case 3 => this.byPlayer = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
-              })
-            }.toMap
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.adtenums.Suit] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
+                })
+              }.toMap
+            }
           }
         }
       }

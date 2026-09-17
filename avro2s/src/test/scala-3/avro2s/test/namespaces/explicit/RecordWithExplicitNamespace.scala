@@ -18,7 +18,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
           if (array.isEmpty) new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](0) else new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_records.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_records.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_records.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -52,13 +52,15 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       }
       case 3 => this._map_of_records = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-          val key = kvp._1.toString
-          val value = kvp._2
-          (key, {
-            value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
-          })
-        }.toMap
+        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap] else {
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
+            })
+          }.toMap
+        }
       }
       case 4 => this._union_of_records = {
         value match {

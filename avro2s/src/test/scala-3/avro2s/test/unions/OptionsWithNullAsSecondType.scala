@@ -42,7 +42,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_options.size / 0.75d).toInt))
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_options.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_options.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -90,17 +90,19 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       }
       case 3 => this._map_of_options = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-          val key = kvp._1.toString
-          val value = kvp._2
-          (key, {
-            value match {
-              case x: org.apache.avro.util.Utf8 => Option(x.toString)
-              case null => None
-              case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-            }
-          })
-        }.toMap
+        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              value match {
+                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case null => None
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            })
+          }.toMap
+        }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
