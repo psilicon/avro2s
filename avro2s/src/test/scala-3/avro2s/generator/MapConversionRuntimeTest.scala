@@ -9,6 +9,34 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 class MapConversionRuntimeTest extends AnyFunSuite with Matchers {
+
+  test("map getters preserve entries and detached mutability across sizing boundaries and hash collisions") {
+    val collidingKeys = (1 to 7).foldLeft(List("")) { (keys, _) =>
+      keys.flatMap(prefix => List(prefix + "Aa", prefix + "BB"))
+    }
+    assert(collidingKeys.map(_.hashCode).distinct.size == 1)
+    val record = new Maps()
+    val field = record.getSchema.getField("_map_of_int").pos()
+    val genericReader = new org.apache.avro.generic.GenericDatumReader[org.apache.avro.generic.GenericData.Record](record.getSchema)
+    for (size <- List(0, 1, 12, 13, 24, 25, 64, 128)) {
+      val expected = collidingKeys.take(size).zipWithIndex.map { case (key, index) => key -> (1000 + index) }.toMap
+      record._map_of_int = expected
+      record._map_of_maps = Map("nested" -> Map("key" -> "value"))
+      val result = record.get(field).asInstanceOf[java.util.Map[String, java.lang.Integer]]
+      result.size() shouldBe size
+      expected.foreach { case (key, value) => result.get(key).intValue() shouldBe value }
+      result.clear()
+      record._map_of_int shouldBe expected
+      val nestedField = record.getSchema.getField("_map_of_maps").pos()
+      record.get(nestedField).asInstanceOf[java.util.Map[String, java.util.Map[String, String]]].get("nested").clear()
+      record._map_of_maps shouldBe Map("nested" -> Map("key" -> "value"))
+
+      val decoded = genericReader.read(null, DecoderFactory.get().binaryDecoder(serialize(record), null))
+      val wireMap = decoded.get("_map_of_int").asInstanceOf[java.util.Map[Utf8, java.lang.Integer]]
+      wireMap.size() shouldBe size
+      expected.foreach { case (key, value) => wireMap.get(new Utf8(key)).intValue() shouldBe value }
+    }
+  }
   test("map put converts wire keys and values into an independent immutable map") {
     val input = new java.util.HashMap[Utf8, java.lang.Integer]()
     val expected = (0 until 128).map(i => s"key_$i" -> (1000 + i)).toMap

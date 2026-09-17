@@ -146,7 +146,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       case INT | LONG | FLOAT | DOUBLE => "0"
       case BOOLEAN => "false"
       case STRING => "\"\""
-      case BYTES => "Array[Byte]()"
+      case BYTES => "_root_.scala.Array.emptyByteArray"
       case RECORD | FIXED => s"new ${schema.getFullName}()"
       case ARRAY => "List.empty"
       case MAP => "Map.empty"

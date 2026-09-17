@@ -39,7 +39,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     printer
       .add(s"case $index => {")
       .indent
-      .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
+      .add(s"val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](${mapCapacity(field.safeName)})")
       .add(s"${field.safeName}.foreach { kvp =>")
       .indent
       .add("val key = kvp._1")
@@ -82,67 +82,59 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   private def printArrayValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
     val value = valueName.getOrElse("array")
-    schema.getElementType.getType match {
-      case UNION =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.iterator.map {")
-          .indent
-          .call(printUnionPatternMatch(_, unionSchemasToType(schemas(schema.getElementType))))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case ARRAY =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.iterator.map { array =>")
-          .indent
-          .call(printArrayValue(_, schema.getElementType))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case MAP =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.iterator.map { m =>")
-          .indent
-          .call(printMapValue(_, schema.getElementType, Some("m")))
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case BYTES if !ltc.logicalTypeInUse(schema.getElementType) =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.iterator.map { bytes =>")
-          .indent
-          .add("java.nio.ByteBuffer.wrap(bytes)")
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case ENUM if scalaEnums =>
-        printer
-          .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
-          .indent
-          .add(s"$value.iterator.map { x =>")
-          .indent
-          .add(s"${ScalaEnumSupport.wrapExpression("x", schema.getElementType)}.asInstanceOf[AnyRef]")
-          .outdent
-          .add("}")
-          .outdent
-          .add("}.toBuffer).asJava")
-      case _ =>
-        val elementType = schemaToScalaType(schema.getElementType, useLogical = true)
-        // Avro clears collections returned by get when reusing records, so return a detached mutable copy.
-        printer.add(s"new java.util.ArrayList[$elementType](scala.jdk.CollectionConverters.SeqHasAsJava($value).asJava)")
+    val element = schema.getElementType
+    val needsConversion = element.getType match {
+      case UNION | ARRAY | MAP => true
+      case BYTES => !ltc.logicalTypeInUse(element)
+      case ENUM => scalaEnums
+      case _ => false
     }
+    val elementType = schemaToScalaType(element, useLogical = true)
+    if (!needsConversion) {
+      // The collection constructor preserves existing boxes and keeps large identity copies efficient.
+      return printer.add(s"if ($value.isEmpty) new java.util.ArrayList[$elementType](0) else new java.util.ArrayList[$elementType](scala.jdk.CollectionConverters.SeqHasAsJava($value).asJava)")
+    }
+    // Avro clears collections returned by get when reusing records, so return a detached mutable copy.
+    // A capture-free local method keeps collection loops out of the record's get method for the JIT.
+    printer
+      .add("{")
+      .indent
+      .add(s"def toJavaArray$$(input$$: List[$elementType]): java.util.ArrayList[AnyRef] = {")
+      .indent
+      .add("var remaining$ = input$")
+      .add("val result$ = new java.util.ArrayList[AnyRef](remaining$.size)")
+      .add("while (remaining$.nonEmpty) {")
+      .indent
+      .add("val element$ = remaining$.head")
+      .add("result$.add({")
+      .indent
+      .call { printer =>
+        element.getType match {
+          case UNION =>
+            printer
+              .add("element$ match {")
+              .indent
+              .call(printUnionPatternMatch(_, unionSchemasToType(schemas(element))))
+              .outdent
+              .add("}")
+          case ARRAY => printer.call(printArrayValue(_, element, Some("element$")))
+          case MAP => printer.call(printMapValue(_, element, Some("element$")))
+          case BYTES if !ltc.logicalTypeInUse(element) => printer.add("java.nio.ByteBuffer.wrap(element$)")
+          case ENUM if scalaEnums => printer.add(ScalaEnumSupport.wrapExpression("element$", element))
+          case _ => printer.add("element$")
+        }
+      }
+      .outdent
+      .add("})")
+      .add("remaining$ = remaining$.tail")
+      .outdent
+      .add("}")
+      .add("result$")
+      .outdent
+      .add("}")
+      .add(s"toJavaArray$$($value)")
+      .outdent
+      .add("}")
   }
 
   private def printMapValue(printer: FunctionalPrinter, schema: Schema, valueName: Option[String] = None): FunctionalPrinter = {
@@ -150,7 +142,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     schema.getType match {
       case MAP =>
         printer
-          .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
+          .add(s"val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](${mapCapacity(value)})")
           .add(s"$value.foreach { kvp =>")
           .indent
           .add("val key = kvp._1")
@@ -184,6 +176,11 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           .add(s"$value.asInstanceOf[AnyRef]")
     }
   }
+
+  // Keep the default capacity for small maps and account for HashMap's default load factor.
+  // Double.toInt saturates for very large sizes instead of overflowing to a negative capacity.
+  private def mapCapacity(input: String): String =
+    s"_root_.scala.math.max(16, _root_.scala.math.ceil($input.size / 0.75d).toInt)"
 
   private def printUnionPatternMatch(printer: FunctionalPrinter, union: UnionRepresentation): FunctionalPrinter = {
     def pattern(remaining: Int, left: String, right: String): String = {

@@ -15,10 +15,10 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       case 1 => _record_with_namespace_inherited_from_direct_parent.asInstanceOf[AnyRef]
       case 2 => _array_of_records match {
         case array =>
-          new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
+          if (array.isEmpty) new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](0) else new java.util.ArrayList[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](_root_.scala.math.max(16, _root_.scala.math.ceil(_map_of_records.size / 0.75d).toInt))
         _map_of_records.foreach { kvp =>
           val key = kvp._1
           val value = {
