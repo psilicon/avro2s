@@ -28,6 +28,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       if (!generatorConfig.logicalTypesEnabled) Nil
       else fields.flatMap(f => ltc.collectConversionClasses(f.schema())).distinct
     val (constructor, defaultValues) = toThis(name, fields)
+    val customCoders = if (generatorConfig.customCodersEnabled) Some(new CustomCoderGenerator(schema, generatorConfig)) else None
 
     val functionalPrinter = new FunctionalPrinter()
 
@@ -72,6 +73,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .outdent
       .add("}")
       .call(printGetConversion(_, name, fields))
+      .call(p => customCoders.fold(p)(_.printMethods(p)))
       .outdent
       .add("}")
       .newline
@@ -79,6 +81,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .indent
       .add(s"${if (scalaEnums) "@scala.annotation.static " else ""}val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .call(printConversionInfrastructure(_, distinctConversions))
+      .call(p => customCoders.fold(p)(_.printCompanion(p)))
       .add(defaultValues: _*)
       .outdent
       .add("}")

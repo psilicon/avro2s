@@ -13,6 +13,9 @@ import org.apache.avro.Schema
 import org.apache.avro.Schema.Type.{ENUM, FIXED, RECORD}
 
 private[avro2s] class SpecificGenerator(generatorConfig: GeneratorConfig) {
+  if (generatorConfig.customCodersEnabled && generatorConfig.targetScalaVersion != ScalaVersion.Scala_3)
+    throw ConfigError("Custom Avro coders require a Scala 3 target")
+
   private val scala2SpecificGenerator = new scala2.record.SpecificRecordGenerator(generatorConfig)
   private val scala3SpecificGenerator = new scala3.record.SpecificRecordGenerator(generatorConfig)
   import scala2SpecificGenerator._

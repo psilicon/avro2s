@@ -1,0 +1,389 @@
+{
+  "type": "record",
+  "name": "All",
+  "namespace": "example",
+  "fields": [
+    {
+      "name": "nothing",
+      "type": "null"
+    },
+    {
+      "name": "flag",
+      "type": "boolean"
+    },
+    {
+      "name": "count",
+      "type": "int"
+    },
+    {
+      "name": "longValue",
+      "type": "long"
+    },
+    {
+      "name": "floatValue",
+      "type": "float"
+    },
+    {
+      "name": "doubleValue",
+      "type": "double"
+    },
+    {
+      "name": "text",
+      "type": "string"
+    },
+    {
+      "name": "payload",
+      "type": "bytes"
+    },
+    {
+      "name": "fixed",
+      "type": {
+        "type": "fixed",
+        "name": "Token",
+        "size": 3
+      }
+    },
+    {
+      "name": "suit",
+      "type": {
+        "type": "enum",
+        "name": "Suit",
+        "symbols": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    {
+      "name": "optional",
+      "type": [
+        "long",
+        "null"
+      ]
+    },
+    {
+      "name": "choice",
+      "type": [
+        "null",
+        "string",
+        "int",
+        "bytes",
+        {
+          "type": "array",
+          "items": "int"
+        },
+        {
+          "type": "map",
+          "values": "long"
+        },
+        "Token",
+        "Suit"
+      ]
+    },
+    {
+      "name": "children",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Node",
+          "fields": [
+            {
+              "name": "number",
+              "type": "int"
+            },
+            {
+              "name": "children",
+              "type": {
+                "type": "array",
+                "items": "Node"
+              }
+            },
+            {
+              "name": "next",
+              "type": [
+                "null",
+                "Node"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nested",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": {
+            "type": "array",
+            "items": [
+              "null",
+              "bytes"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "enums",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            "Suit"
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "type": {
+        "type": "record",
+        "name": "Empty",
+        "fields": []
+      }
+    },
+    {
+      "name": "type",
+      "type": "int"
+    },
+    {
+      "name": "out",
+      "type": "string"
+    },
+    {
+      "name": "uuid",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "uuid_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "string",
+              "logicalType": "uuid"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "date",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "date_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "int",
+              "logicalType": "date"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "time_millis",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      }
+    },
+    {
+      "name": "time_millis_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "int",
+              "logicalType": "time-millis"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "time_micros",
+      "type": {
+        "type": "long",
+        "logicalType": "time-micros"
+      }
+    },
+    {
+      "name": "time_micros_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "long",
+              "logicalType": "time-micros"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "timestamp_millis",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "timestamp_millis_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "timestamp_micros",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    },
+    {
+      "name": "timestamp_micros_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "long",
+              "logicalType": "timestamp-micros"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "local_timestamp_millis",
+      "type": {
+        "type": "long",
+        "logicalType": "local-timestamp-millis"
+      }
+    },
+    {
+      "name": "local_timestamp_millis_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "long",
+              "logicalType": "local-timestamp-millis"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "local_timestamp_micros",
+      "type": {
+        "type": "long",
+        "logicalType": "local-timestamp-micros"
+      }
+    },
+    {
+      "name": "local_timestamp_micros_nested",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "long",
+              "logicalType": "local-timestamp-micros"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "decimal",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 9,
+        "scale": 2
+      }
+    },
+    {
+      "name": "node",
+      "type": "Node"
+    },
+    {
+      "name": "choiceNoNull",
+      "type": [
+        "string",
+        "long",
+        "bytes",
+        "Token",
+        "Suit"
+      ]
+    },
+    {
+      "name": "emptyEnum",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "NoSymbols",
+          "symbols": []
+        }
+      ]
+    },
+    {
+      "name": "rawFixed",
+      "type": {
+        "type": "fixed",
+        "name": "DecimalFixed",
+        "size": 4,
+        "logicalType": "decimal",
+        "precision": 9,
+        "scale": 2
+      }
+    }
+  ]
+}

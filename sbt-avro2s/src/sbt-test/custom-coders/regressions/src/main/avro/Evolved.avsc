@@ -1,0 +1,102 @@
+{
+  "type": "record",
+  "name": "Evolved",
+  "namespace": "example",
+  "aliases": [
+    "Old"
+  ],
+  "fields": [
+    {
+      "name": "added",
+      "type": {
+        "type": "array",
+        "items": "int"
+      },
+      "default": [
+        7,
+        8
+      ]
+    },
+    {
+      "name": "renamed",
+      "type": "long",
+      "aliases": [
+        "oldName"
+      ]
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "Status",
+        "symbols": [
+          "B",
+          "A",
+          "UNKNOWN"
+        ],
+        "default": "UNKNOWN"
+      }
+    },
+    {
+      "name": "number",
+      "type": "double"
+    },
+    {
+      "name": "choice",
+      "type": [
+        "string",
+        "null",
+        "long"
+      ]
+    },
+    {
+      "name": "child",
+      "type": {
+        "type": "record",
+        "name": "Child",
+        "fields": [
+          {
+            "name": "extra",
+            "type": "string",
+            "default": "default"
+          },
+          {
+            "name": "n",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text",
+      "type": "string"
+    },
+    {
+      "name": "payload",
+      "type": "bytes"
+    },
+    {
+      "name": "addedMap",
+      "type": {
+        "type": "map",
+        "values": "long"
+      },
+      "default": {
+        "x": 9
+      }
+    },
+    {
+      "name": "addedBytes",
+      "type": "bytes",
+      "default": "AB"
+    },
+    {
+      "name": "addedDate",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      },
+      "default": 1
+    }
+  ]
+}

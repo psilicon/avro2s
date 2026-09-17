@@ -6,4 +6,5 @@ case class GeneratorConfig(
   targetScalaVersion: ScalaVersion,
   logicalTypesEnabled: Boolean,
   enumType: EnumType = EnumType.JavaEnum,
+  customCodersEnabled: Boolean = false,
 )

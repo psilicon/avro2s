@@ -94,6 +94,61 @@ Limitations:
 
 Direct library users select `GeneratorConfig(targetScalaVersion, logicalTypesEnabled, EnumType.ScalaEnum)`; Java mode remains the default. Use ordinary Avro `SpecificDatumReader` and `SpecificDatumWriter` constructors. There are no generated `datumReader`/`datumWriter` factories to configure.
 
+#### Custom Avro coders (Scala 3, opt-in)
+
+Generate direct encoders and decoders with:
+
+```scala
+Compile / avro2sCustomCodersEnabled := true
+```
+
+The default is `false`. Direct generator users can set
+`GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled = true, customCodersEnabled = true)`.
+Enabling this option for a Scala 2 target is a configuration error.
+
+Generated records still extend Apache Avro's `SpecificRecordBase`, with the same
+field types, constructors, schemas, `get` and `put`. The additional
+`customEncode`, `customDecode` and `hasCustomCoders` overrides use Apache Avro's
+existing hooks. There is **no avro2s runtime dependency**. Arrays remain Scala
+`List`, maps remain immutable Scala `Map`, and bytes remain `Array[Byte]`.
+The custom methods access fields directly and build Scala collections without
+intermediate Java collections. Both Java and Scala-native enums are supported.
+Map entry order can differ between paths; decoded map contents are preserved.
+
+Generation and runtime activation are separate. Configure the actual
+`SpecificData` instance used by the reader/writer before using them, for example:
+
+```scala
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter}
+
+val model = new MyRecord().getSpecificData
+model.setCustomCoders(true)
+model.setFastReaderEnabled(true) // retain Avro's fast reader; use custom encoding
+
+val reader = new SpecificDatumReader[MyRecord](writerSchema, MyRecord.SCHEMA$, model)
+val writer = new SpecificDatumWriter[MyRecord](MyRecord.SCHEMA$, model)
+```
+
+Apache Avro's separate fast reader bypasses `customDecode`. The example keeps
+that reader while enabling custom writes. To select the generated decoder too,
+call `model.setFastReaderEnabled(false)` before constructing/using the reader.
+Benchmark that choice with your data: direct decoding can reduce collection and
+byte-copy allocation, but it is not uniformly faster than Avro's fast reader.
+In particular, scalar/empty records and large primitive arrays can read more slowly.
+
+If a library leaves custom coders disabled or uses the fast reader, the existing
+`get`/`put` path remains available. A library must expose suitable Avro
+configuration to receive the optimization. This is verified against Apache Avro
+1.12.1, the version used by this project's build.
+
+The decoder uses Avro's `ResolvingDecoder` for field reordering, defaults,
+aliases, promotions and union/enum resolution. It supports binary streams, JSON
+and Avro object container files. As with Avro's own generated custom coders,
+direct field access bypasses application overrides of `get`/`put`; logical
+conversions are the built-in conversions selected during generation, rather
+than runtime overrides registered on a custom `SpecificData` model. Keep the
+custom path disabled when relying on such overrides.
+
 #### Generated documentation
 
 Avro `doc` strings are emitted automatically as Scaladoc on generated records,

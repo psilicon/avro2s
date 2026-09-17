@@ -34,3 +34,24 @@ The session-only override enables the plugin JAR for local test publication; the
 
 - `ScaladocGeneratorTest` covers multiline and blank docs, field-only docs, reserved parameter names, comment escaping, records and nested fixed/enum types, and native enum aliases (including empty enums) on both output targets.
 - The documented fixtures under `test/docs` and the native enum fixtures compile as part of `sbt test`; source comparisons check that they match the current generator output.
+
+#### Custom coder verification (Scala 3)
+
+`custom-coders/regressions` compiles and runs standalone Scala 3 applications
+with Java/native enums and logical types enabled/disabled. Their only runtime
+libraries are Scala and Apache Avro. The tests check both wire directions
+against Apache Avro generic and specific readers/writers, forced custom paths
+that throw if `get`/`put` is called, the disabled/faster-reader fallback paths,
+record reuse, nested/recursive types, collection blocks, JSON, container files,
+schema evolution and rejected invalid input. Each application runs in a forked
+JVM so an uncaught exception fails the scripted test.
+
+```sh
+sbt 'project sbtAvro2s2_12' \
+  'set Compile / packageBin / publishArtifact := true' \
+  'scripted custom-coders/regressions'
+```
+
+`CustomCoderGeneratorTest` checks that the option defaults to off, that Scala 2
+targets reject it, that existing public declarations and schemas are unchanged,
+and that recursive schemas do not cause infinite source expansion.
