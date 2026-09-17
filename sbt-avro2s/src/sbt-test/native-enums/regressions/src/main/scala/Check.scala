@@ -25,6 +25,16 @@ object Check extends App {
   assert(LargeSupplementary.SCHEMA$.getDoc == "😀" * 11000)
   assert(LargeAscii.fromAvroSymbol("Array") eq LargeAscii.Array)
   assert(LargeAscii.fromAvroSymbol("org") eq LargeAscii.org)
+  val largeSymbols = LargeSymbolCount.values.toList
+  assert(largeSymbols.size >= 400)
+  assert(largeSymbols.size == LargeSymbolCount.SCHEMA$.getEnumSymbols.size())
+  largeSymbols.zipWithIndex.foreach { case (symbol, index) =>
+    val wrapped = LargeSymbolCount.toAvroSymbol$(symbol)
+    assert(wrapped.toString == s"S$index")
+    assert(wrapped.getSchema eq LargeSymbolCount.SCHEMA$)
+    assert(LargeSymbolCount.toAvroSymbol$(symbol) eq wrapped)
+  }
+  assert(LargeSymbolCount.toAvroSymbol$(null) == null)
   assert(cards.cards.Repeated.fromAvroSymbol("A") eq cards.cards.Repeated.A)
 
   assert(Empty.values.isEmpty)

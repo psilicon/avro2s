@@ -14,25 +14,35 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
-      case 0 => (if (suit == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, suit.toString)).asInstanceOf[AnyRef]
+      case 0 => _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(suit).asInstanceOf[AnyRef]
       case 1 => trump match {
         case None => null
-        case Some(x) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Some(x) => _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
       }
       case 2 => history match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[avro2s.test.adtenums.Suit]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(element$)
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = byPlayer.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         byPlayer.foreach { kvp =>
           val key = kvp._1
           val value = {
-            (if (kvp._2 == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, kvp._2.toString)).asInstanceOf[AnyRef]
+            _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(kvp._2).asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -40,21 +50,33 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
       }.asInstanceOf[AnyRef]
       case 4 => maybeHistory match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
-              case None => null
-              case Some(x) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[Option[avro2s.test.adtenums.Suit]]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  element$ match {
+                    case None => null
+                    case Some(x) => _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
+                  }
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
-      case 5 => (if (kw == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Kw.SCHEMA$, kw.toString)).asInstanceOf[AnyRef]
+      case 5 => _root_.avro2s.test.adtenums.Kw.toAvroSymbol$(kw).asInstanceOf[AnyRef]
       case 6 => maybeKw match {
         case None => null
-        case Some(x) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Kw.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Some(x) => _root_.avro2s.test.adtenums.Kw.toAvroSymbol$(x).asInstanceOf[AnyRef]
       }
       case 7 => cp match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => (if (x == null) null else new _root_.org.apache.avro.generic.GenericData.EnumSymbol(_root_.avro2s.test.adtenums.Suit.SCHEMA$, x.toString)).asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => _root_.avro2s.test.adtenums.Suit.toAvroSymbol$(x).asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
@@ -83,12 +105,14 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
       case 3 => this.byPlayer = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.adtenums.Suit] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
+                })
+              }.toMap
             }
           }
         }

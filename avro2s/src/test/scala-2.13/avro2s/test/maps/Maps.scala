@@ -15,11 +15,11 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_maps.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_maps.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = kvp._2.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
@@ -34,7 +34,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 1 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_union.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -49,7 +49,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 2 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_union_of_map_of_union.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_union_of_map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -58,11 +58,11 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inr(Inl(x)))) =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = x.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                 x.foreach { kvp =>
                   val key = kvp._1
                   val value = {
-                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = kvp._2.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
                     kvp._2.foreach { kvp =>
                       val key = kvp._1
                       val value = {
@@ -91,49 +91,55 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_arrays.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_arrays.foreach { kvp =>
           val key = kvp._1
           val value = {
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              kvp._2.map { x =>
-                x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava
+            if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
           }
           map.put(key, value)
         }
         map
       }.asInstanceOf[AnyRef]
       case 4 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_arrays_of_maps.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_arrays_of_maps.foreach { kvp =>
           val key = kvp._1
           val value = {
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              kvp._2.map { m =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
-                m.foreach { kvp =>
-                  val key = kvp._1
-                  val value = {
-                    kvp._2.asInstanceOf[AnyRef]
-                  }
-                  map.put(key, value)
+            {
+              def toJavaArray$(input$: List[Map[String, Boolean]]): java.util.ArrayList[AnyRef] = {
+                var remaining$ = input$
+                val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+                while (remaining$.nonEmpty) {
+                  val element$ = remaining$.head
+                  result$.add({
+                    val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = element$.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
+                    element$.foreach { kvp =>
+                      val key = kvp._1
+                      val value = {
+                        kvp._2.asInstanceOf[AnyRef]
+                      }
+                      map.put(key, value)
+                    }
+                    map
+                  })
+                  remaining$ = remaining$.tail
                 }
-                map
+                result$
               }
-            }.toBuffer).asJava
+              toJavaArray$(kvp._2)
+            }
           }
           map.put(key, value)
         }
         map
       }.asInstanceOf[AnyRef]
       case 5 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_map_of_union.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_map_of_union.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = kvp._2.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
@@ -155,19 +161,15 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 6 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_map_of_arrays.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_map_of_arrays.foreach { kvp =>
           val key = kvp._1
           val value = {
-            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+            val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = kvp._2.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
-                scala.jdk.CollectionConverters.BufferHasAsJava({
-                  kvp._2.map { x =>
-                    x.asInstanceOf[AnyRef]
-                  }
-                }.toBuffer).asJava
+                if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
               }
               map.put(key, value)
             }
@@ -178,7 +180,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 7 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_fixed.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_fixed.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -189,7 +191,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 8 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_enum.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_enum.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -200,7 +202,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 9 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_record.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -211,7 +213,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 10 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_union_of_record.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_union_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -227,7 +229,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 11 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_bytes.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_bytes.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -238,7 +240,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 12 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_string.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_string.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -249,7 +251,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 13 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_int.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_int.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -260,7 +262,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 14 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_long.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_long.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -271,7 +273,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 15 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_float.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_float.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -282,7 +284,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 16 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_double.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_double.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -293,7 +295,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 17 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_boolean.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_boolean.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -304,7 +306,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 18 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_null.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_null.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -315,16 +317,13 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         map
       }.asInstanceOf[AnyRef]
       case 19 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_union_of_array.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_union_of_array.foreach { kvp =>
           val key = kvp._1
           val value = {
             kvp._2 match {
               case Inl(x) =>
-              scala.jdk.CollectionConverters.BufferHasAsJava({
-                x.map { x =>x.asInstanceOf[AnyRef]
-                }
-              }.toBuffer).asJava.asInstanceOf[AnyRef]
+                if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")
@@ -343,22 +342,26 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 0 => this._map_of_maps = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case map: java.util.Map[_,_] => {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case map: java.util.Map[_,_] => {
+                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                          val key = kvp._1.toString
+                          val value = kvp._2
+                          (key, {
+                            value.toString
+                          })
+                        }.toMap
+                      }
                     }
                   }
-                }
-              })
+                })
+              }.toMap
             }
           }
         }
@@ -366,16 +369,18 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 1 => this._map_of_union = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
-                  case x: Int => Coproduct[String :+: Int :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Int :+: CNil] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
+                    case x: Int => Coproduct[String :+: Int :+: CNil](x)
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                })
+              }.toMap
             }
           }
         }
@@ -383,44 +388,50 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 2 => this._map_of_union_of_map_of_union = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
-                  case x: Long => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-                  case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-                  case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]{
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value match {
-                          case map: java.util.Map[_,_] => {
-                            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                              val key = kvp._1.toString
-                              val value = kvp._2
-                              (key, {
-                                value match {
-                                  case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
-                                  case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                                  case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                                  case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                                  case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
+                    case x: Long => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
+                    case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
+                    case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]{
+                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] else {
+                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                          val key = kvp._1.toString
+                          val value = kvp._2
+                          (key, {
+                            value match {
+                              case map: java.util.Map[_,_] => {
+                                if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil] else {
+                                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                                    val key = kvp._1.toString
+                                    val value = kvp._2
+                                    (key, {
+                                      value match {
+                                        case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                                        case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                                        case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                                        case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                                        case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                                        case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                                      }
+                                    })
+                                  }.toMap
                                 }
-                              })
+                              }
                             }
-                          }
-                        }
-                      })
+                          })
+                        }.toMap
+                      }
                     }
+                    case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                  case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              })
+                })
+              }.toMap
             }
           }
         }
@@ -428,17 +439,19 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 3 => this._map_of_arrays = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value.toString
-                    }).toList
-                  }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case array: java.util.List[_] =>
+                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                        value.toString
+                      }).toList
+                    }
+                })
+              }.toMap
             }
           }
         }
@@ -446,27 +459,31 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 4 => this._map_of_arrays_of_maps = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value match {
-                        case map: java.util.Map[_,_] => {
-                          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                            val key = kvp._1.toString
-                            val value = kvp._2
-                            (key, {
-                              value.asInstanceOf[Boolean]
-                            })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Map[String, Boolean]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case array: java.util.List[_] =>
+                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                        value match {
+                          case map: java.util.Map[_,_] => {
+                            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Boolean] else {
+                              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                                val key = kvp._1.toString
+                                val value = kvp._2
+                                (key, {
+                                  value.asInstanceOf[Boolean]
+                                })
+                              }.toMap
+                            }
                           }
                         }
-                      }
-                    }).toList
-                  }
-              })
+                      }).toList
+                    }
+                })
+              }.toMap
             }
           }
         }
@@ -474,29 +491,33 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 5 => this._map_of_map_of_union = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case map: java.util.Map[_,_] => {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value match {
-                          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
-                          case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                        }
-                      })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case map: java.util.Map[_,_] => {
+                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil] else {
+                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                          val key = kvp._1.toString
+                          val value = kvp._2
+                          (key, {
+                            value match {
+                              case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                              case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                            }
+                          })
+                        }.toMap
+                      }
                     }
                   }
-                }
-              })
+                })
+              }.toMap
             }
           }
         }
@@ -504,27 +525,31 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 6 => this._map_of_map_of_arrays = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case map: java.util.Map[_,_] => {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value match {
-                          case array: java.util.List[_] =>
-                            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                              value.toString
-                            }).toList
-                          }
-                      })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, List[String]]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case map: java.util.Map[_,_] => {
+                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
+                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                          val key = kvp._1.toString
+                          val value = kvp._2
+                          (key, {
+                            value match {
+                              case array: java.util.List[_] =>
+                                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                                  value.toString
+                                }).toList
+                              }
+                          })
+                        }.toMap
+                      }
                     }
                   }
-                }
-              })
+                })
+              }.toMap
             }
           }
         }
@@ -532,12 +557,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 7 => this._map_of_fixed = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[avro2s.test.maps.Fixed]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Fixed] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[avro2s.test.maps.Fixed]
+                })
+              }.toMap
             }
           }
         }
@@ -545,12 +572,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 8 => this._map_of_enum = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[avro2s.test.maps.Enum]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Enum] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[avro2s.test.maps.Enum]
+                })
+              }.toMap
             }
           }
         }
@@ -558,12 +587,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 9 => this._map_of_record = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[avro2s.test.maps.Record]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Record] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[avro2s.test.maps.Record]
+                })
+              }.toMap
             }
           }
         }
@@ -571,17 +602,19 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 10 => this._map_of_union_of_record = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: avro2s.test.maps.Record => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
-                  case x: Int => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
-                  case x @ null => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case x: avro2s.test.maps.Record => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
+                    case x: Int => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
+                    case x @ null => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                })
+              }.toMap
             }
           }
         }
@@ -589,14 +622,16 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 11 => this._map_of_bytes = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-                }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Array[Byte]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+                  }
+                })
+              }.toMap
             }
           }
         }
@@ -604,12 +639,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 12 => this._map_of_string = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.toString
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.toString
+                })
+              }.toMap
             }
           }
         }
@@ -617,12 +654,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 13 => this._map_of_int = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Int]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Int] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[Int]
+                })
+              }.toMap
             }
           }
         }
@@ -630,12 +669,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 14 => this._map_of_long = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Long]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[Long]
+                })
+              }.toMap
             }
           }
         }
@@ -643,12 +684,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 15 => this._map_of_float = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Float]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Float] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[Float]
+                })
+              }.toMap
             }
           }
         }
@@ -656,12 +699,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 16 => this._map_of_double = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Double]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Double] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[Double]
+                })
+              }.toMap
             }
           }
         }
@@ -669,12 +714,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 17 => this._map_of_boolean = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[Boolean]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Boolean] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[Boolean]
+                })
+              }.toMap
             }
           }
         }
@@ -682,12 +729,14 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 18 => this._map_of_null = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.asInstanceOf[scala.Null]
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, scala.Null] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value.asInstanceOf[scala.Null]
+                })
+              }.toMap
             }
           }
         }
@@ -695,24 +744,26 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 19 => this._map_of_union_of_array = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case x: java.util.List[_] => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil]({
-                    x match {
-                      case array: java.util.List[_] =>
-                        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                          value.toString
-                        }).toList
-                      }
-                  }.toList)
-                  case x: Int => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
-                  case x @ null => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String] :+: Int :+: scala.Null :+: CNil] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case x: java.util.List[_] => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil]({
+                      x match {
+                        case array: java.util.List[_] =>
+                          scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
+                            value.toString
+                          }).toList
+                        }
+                    }.toList)
+                    case x: Int => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
+                    case x @ null => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                })
+              }.toMap
             }
           }
         }

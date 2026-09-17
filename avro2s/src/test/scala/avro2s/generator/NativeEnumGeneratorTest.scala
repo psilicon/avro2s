@@ -54,6 +54,58 @@ class NativeEnumGeneratorTest extends AnyFunSuite with Matchers {
       a[ConfigError] should be thrownBy CodeGenerator.generateCode(List(schema), config)
     }
 
+    test(s"Scala $version enum cache members cannot collide with schema symbols") {
+      val collisionSymbols = List("toAvroSymbol", "avroSymbol0", "avroSymbols", "values")
+      for (padding <- List(0, 32)) {
+        val symbols = (collisionSymbols ++ (0 until padding).map(index => s"S$index"))
+          .map(symbol => "\"" + symbol + "\"").mkString(",")
+        val schema = new Schema.Parser().parse(s"""{"type":"enum","name":"Symbols","namespace":"cards","symbols":[$symbols]}""")
+        val code = CodeGenerator.generateCode(List(schema), config).find(_.path.endsWith("/Symbols.scala")).get.code
+        code should include("def toAvroSymbol$(value:")
+        code should include(if (padding == 0) "private val avroSymbol$0:" else "private val avroSymbols$:")
+        code should include("case \"toAvroSymbol\" => _root_.cards.internal.Symbols.toAvroSymbol")
+        code should include("case \"avroSymbol0\" => _root_.cards.internal.Symbols.avroSymbol0")
+        code should include("case \"avroSymbols\" => _root_.cards.internal.Symbols.avroSymbols")
+        code should include("case \"values\" => _root_.cards.internal.Symbols.values$avro")
+      }
+    }
+
+    test(s"Scala $version empty enums keep a null-safe wrapper helper") {
+      val schema = new Schema.Parser().parse("""{"type":"enum","name":"Empty","namespace":"cards","symbols":[]}""")
+      val code = CodeGenerator.generateCode(List(schema), config).find(_.path.endsWith("/Empty.scala")).get.code
+      code should include("def toAvroSymbol$(value: _root_.cards.internal.Empty)")
+      code should include("if (value == null) null")
+      code should not include "private val avroSymbol"
+      code should not include "val symbols$ = SCHEMA$.getEnumSymbols.iterator()"
+    }
+
+    test(s"Scala $version enum wrapper caching stays bounded as the symbol count grows") {
+      def enumCode(size: Int): String = {
+        val symbols = (0 until size).map(index => "\"S" + index + "\"").mkString(",")
+        val schema = new Schema.Parser().parse(s"""{"type":"enum","name":"Many","namespace":"cards","symbols":[$symbols]}""")
+        CodeGenerator.generateCode(List(schema), config).find(_.path.endsWith("/Many.scala")).get.code
+      }
+
+      val small = enumCode(32)
+      small should include("private val avroSymbol$31:")
+      small should include("case \"S31\" => avroSymbol$31")
+      small should not include "private val avroSymbols$:"
+
+      def cacheCode(size: Int): String = {
+        val code = enumCode(size)
+        code should include("val symbols$ = SCHEMA$.getEnumSymbols.iterator()")
+        code should include("val cached$ = avroSymbols$.get(symbol$)")
+        code should not include "private val avroSymbol$0:"
+        // The schema and case definitions must grow, but the runtime cache must not
+        // add initialization statements or lookup branches for every symbol.
+        code.substring(code.indexOf("private val avroSymbols$"), code.indexOf("def fromAvroSymbol("))
+      }
+
+      val large = cacheCode(33)
+      cacheCode(400) shouldBe large
+      cacheCode(2450) shouldBe large
+    }
+
     test(s"Scala $version rejects a default-package enum referenced from a named package") {
       val schema = new Schema.Parser().parse("""{"type":"record","name":"Hand","namespace":"cards","fields":[
         {"name":"suit","type":{"type":"enum","name":"Suit","namespace":"","symbols":["A"]}}]}""")

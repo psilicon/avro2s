@@ -18,22 +18,31 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => _optional_array match {
         case None => null
         case Some(x) =>
-        scala.jdk.CollectionConverters.BufferHasAsJava({
-          x.map { x =>x.asInstanceOf[AnyRef]
-          }
-        }.toBuffer).asJava.asInstanceOf[AnyRef]
+          if (x.isEmpty) new java.util.ArrayList[Boolean](0) else new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
       }
       case 2 => _array_of_options match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map {
-              case None => null
-              case Some(x) => x.asInstanceOf[AnyRef]
+          {
+            def toJavaArray$(input$: List[Option[String]]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](remaining$.size)
+              while (remaining$.nonEmpty) {
+                val element$ = remaining$.head
+                result$.add({
+                  element$ match {
+                    case None => null
+                    case Some(x) => x.asInstanceOf[AnyRef]
+                  }
+                })
+                remaining$ = remaining$.tail
+              }
+              result$
             }
-          }.toBuffer).asJava
+            toJavaArray$(array)
+          }
         }
       case 3 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map_of_options.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map_of_options.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -85,15 +94,17 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 3 => this._map_of_options = {
         value match {
           case map: java.util.Map[_,_] => {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value match {
-                  case null => None
-                  case x: org.apache.avro.util.Utf8 => Some(x.toString)
-                }
-              })
+            if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
+              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+                val key = kvp._1.toString
+                val value = kvp._2
+                (key, {
+                  value match {
+                    case null => None
+                    case x: org.apache.avro.util.Utf8 => Some(x.toString)
+                  }
+                })
+              }.toMap
             }
           }
         }

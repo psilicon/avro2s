@@ -27,6 +27,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     val distinctConversions =
       if (!generatorConfig.logicalTypesEnabled) Nil
       else fields.flatMap(f => ltc.collectConversionClasses(f.schema())).distinct
+    val (constructor, defaultValues) = toThis(name, fields)
 
     val functionalPrinter = new FunctionalPrinter()
 
@@ -40,7 +41,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .call(Scaladoc.print(_, schema.getDoc, fields.map(f => f.name() -> f.doc())))
       .add(s"case class $name(${fieldsToParams(fields)}) extends org.apache.avro.specific.SpecificRecordBase {")
       .indent
-      .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
+      .when(fields.nonEmpty)(_.add(constructor))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
       .when(distinctConversions.nonEmpty)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
@@ -78,6 +79,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .indent
       .add(s"${if (scalaEnums) "@scala.annotation.static " else ""}val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .call(printConversionInfrastructure(_, distinctConversions))
+      .add(defaultValues: _*)
       .outdent
       .add("}")
 
@@ -137,12 +139,14 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     }.mkString(", ")
   }
 
-  private def toThis(fields: List[Schema.Field]): String = {
+  private def toThis(name: String, fields: List[Schema.Field]): (String, List[String]) = {
+    val cachedDefaults = scala.collection.mutable.LinkedHashMap.empty[(String, String), String]
+
     def defaultForType(schema: Schema): String = schema.getType match {
       case INT | LONG | FLOAT | DOUBLE => "0"
       case BOOLEAN => "false"
       case STRING => "\"\""
-      case BYTES => "Array[Byte]()"
+      case BYTES => "_root_.scala.Array.emptyByteArray"
       case RECORD | FIXED => s"new ${schema.getFullName}()"
       case ARRAY => "List.empty"
       case MAP => "Map.empty"
@@ -155,10 +159,22 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
 
     def logical(schema: Schema): Option[String] = {
       if (ltc.logicalTypeInUse(schema)) {
-        Some(ltc.getDefault(schema))
+        val value = ltc.getDefault(schema)
+        val scalaType = ltc.getType(schema, "")
+        // Only immutable logical values may be shared by different record instances.
+        Some(scalaType match {
+          case "java.util.UUID" | "java.time.LocalDate" | "java.time.LocalTime" | "java.time.Instant" | "java.time.LocalDateTime" =>
+            val member = cachedDefaults.getOrElseUpdate((scalaType, value), s"${dollar}default$dollar${cachedDefaults.size}")
+            s"$name.$member"
+          case _ => value
+        })
       } else None
     }
 
-    s"def this() = this(${fields.map(f => logical(f.schema()).getOrElse(defaultForType(f.schema()))).mkString(", ")})"
+    val constructor = s"def this() = this(${fields.map(f => logical(f.schema()).getOrElse(defaultForType(f.schema()))).mkString(", ")})"
+    val defaultValues = cachedDefaults.iterator.map { case ((scalaType, value), member) =>
+      s"private val $member: $scalaType = $value"
+    }.toList
+    (constructor, defaultValues)
   }
 }

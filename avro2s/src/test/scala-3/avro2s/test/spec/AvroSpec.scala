@@ -5,7 +5,7 @@ package avro2s.test.spec
 import scala.annotation.switch
 
 case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String | Int, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(null, false, 0, 0, 0, 0, Array[Byte](), "", null, List.empty, Map.empty, None, "", new avro2s.test.spec.md5())
+  def this() = this(null, false, 0, 0, 0, 0, _root_.scala.Array.emptyByteArray, "", null, List.empty, Map.empty, None, "", new avro2s.test.spec.md5())
 
   override def getSchema: org.apache.avro.Schema = AvroSpec.SCHEMA$
 
@@ -22,14 +22,10 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 8 => _enum.asInstanceOf[AnyRef]
       case 9 => _array match {
         case array =>
-          scala.jdk.CollectionConverters.BufferHasAsJava({
-            array.map { x =>
-              x.asInstanceOf[AnyRef]
-            }
-          }.toBuffer).asJava
+          if (array.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
         }
       case 10 => {
-        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+        val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })
         _map.foreach { kvp =>
           val key = kvp._1
           val value = {
@@ -90,12 +86,14 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       }
       case 10 => this._map = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
-        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-          val key = kvp._1.toString
-          val value = kvp._2
-          (key, {
-            value.asInstanceOf[Long]
-          })
+        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
+          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
+            val key = kvp._1.toString
+            val value = kvp._2
+            (key, {
+              value.asInstanceOf[Long]
+            })
+          }.toMap
         }
       }
       case 11 => this._union_nullable = {

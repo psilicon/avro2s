@@ -39,7 +39,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     printer
       .add(s"case $index => {")
       .indent
-      .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
+      .add(s"val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](${mapCapacity(field.safeName)})")
       .add(s"${field.safeName}.foreach { kvp =>")
       .indent
       .add("val key = kvp._1")
@@ -81,54 +81,66 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     }
 
   private def printArrayValue(printer: FunctionalPrinter, schema: Schema, input: String): FunctionalPrinter = {
+    val element = schema.getElementType
+    val needsConversion = element.getType match {
+      case UNION | ARRAY | MAP => true
+      case BYTES => !ltc.logicalTypeInUse(element)
+      case ENUM => scalaEnums
+      case _ => false
+    }
+    val elementType = schemaToScalaType(element, useLogical = true)
+    if (!needsConversion) {
+      // The collection constructor preserves existing boxes and keeps large identity copies efficient.
+      return printer.add(s"if ($input.isEmpty) new java.util.ArrayList[$elementType](0) else new java.util.ArrayList[$elementType](scala.jdk.CollectionConverters.SeqHasAsJava($input).asJava)")
+    }
+    // Avro clears collections returned by get when reusing records, so return a detached mutable copy.
+    // A capture-free local method keeps collection loops out of the record's get method for the JIT.
     printer
-      .add("scala.jdk.CollectionConverters.BufferHasAsJava({")
+      .add("{")
       .indent
-      .call(printer => {
-        schema.getElementType.getType match {
+      .add(s"def toJavaArray$$(input$$: List[$elementType]): java.util.ArrayList[AnyRef] = {")
+      .indent
+      .add("var remaining$ = input$")
+      .add("val result$ = new java.util.ArrayList[AnyRef](remaining$.size)")
+      .add("while (remaining$.nonEmpty) {")
+      .indent
+      .add("val element$ = remaining$.head")
+      .add("result$.add({")
+      .indent
+      .call { printer =>
+        element.getType match {
           case UNION =>
             printer
-              .add(s"$input.map {")
+              .add("element$ match {")
               .indent
-              .call(printUnionPatternMatch(_, TypeUnion(schemas(schema.getElementType))))
-          case ARRAY =>
-            printer
-              .add(s"$input.map { array =>")
-              .indent
-              .call(printArrayValue(_, schema.getElementType, "array"))
-          case MAP =>
-            printer
-              .add(s"$input.map { m =>")
-              .indent
-              .call(printMapValue(_, schema.getElementType, "m"))
-          case BYTES if !ltc.logicalTypeInUse(schema.getElementType) =>
-            printer
-              .add(s"$input.map { bytes =>")
-              .indent
-              .add("java.nio.ByteBuffer.wrap(bytes)")
-          case ENUM if scalaEnums =>
-            printer
-              .add(s"$input.map { x =>")
-              .indent
-              .add(s"${ScalaEnumSupport.wrapExpression("x", schema.getElementType)}.asInstanceOf[AnyRef]")
-          case _ =>
-            printer
-              .add(s"$input.map { x =>")
-              .indent
-              .add(s"x.asInstanceOf[AnyRef]")
+              .call(printUnionPatternMatch(_, TypeUnion(schemas(element))))
+              .outdent
+              .add("}")
+          case ARRAY => printer.call(printArrayValue(_, element, "element$"))
+          case MAP => printer.call(printMapValue(_, element, "element$"))
+          case BYTES if !ltc.logicalTypeInUse(element) => printer.add("java.nio.ByteBuffer.wrap(element$)")
+          case ENUM if scalaEnums => printer.add(ScalaEnumSupport.wrapExpression("element$", element))
+          case _ => printer.add("element$")
         }
-      })
+      }
+      .outdent
+      .add("})")
+      .add("remaining$ = remaining$.tail")
       .outdent
       .add("}")
+      .add("result$")
       .outdent
-      .add("}.toBuffer).asJava")
+      .add("}")
+      .add(s"toJavaArray$$($input)")
+      .outdent
+      .add("}")
   }
 
   private def printMapValue(printer: FunctionalPrinter, schema: Schema, input: String): FunctionalPrinter = {
     schema.getType match {
       case MAP =>
         printer
-          .add("val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]")
+          .add(s"val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any](${mapCapacity(input)})")
           .add(s"$input.foreach { kvp =>")
           .indent
           .add("val key = kvp._1")
@@ -150,7 +162,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           .add("}")
       case ARRAY =>
         printer
-          .call(printArrayValue(_, schema, "kvp._2"))
+          .call(printArrayValue(_, schema, input))
       case BYTES if !ltc.logicalTypeInUse(schema) =>
         printer
           .add(s"java.nio.ByteBuffer.wrap($input)")
@@ -163,13 +175,17 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     }
   }
 
+  // Keep small maps on an integer-only fast path, using HashMap's default load factor above 12 entries.
+  // Double.toInt saturates for very large sizes instead of overflowing to a negative capacity.
+  private def mapCapacity(input: String): String =
+    s"{ val size$$ = $input.size; if (size$$ <= 12) 16 else _root_.scala.math.ceil(size$$ / 0.75d).toInt }"
+
   private def printUnionPatternMatch(printer: FunctionalPrinter, union: TypeUnion): FunctionalPrinter = {
     def x(schema: Schema): String = {
       schema.getType match {
         case MAP => s"\n${printMapValue(new FunctionalPrinter(indentLevel = 1), schema, "x").result()}"
         case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), TypeUnion(schemas(schema))).result()}"
-        case ARRAY if schema.getElementType.isUnion => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map {${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
-        case ARRAY => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map { x =>${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
+        case ARRAY => s"\n${printArrayValue(new FunctionalPrinter(indentLevel = 1), schema, "x").result()}"
         case BYTES if !ltc.logicalTypeInUse(schema) => s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]"
         case ENUM if scalaEnums => s"${ScalaEnumSupport.wrapExpression("x", schema)}.asInstanceOf[AnyRef]"
         case _ => s"x.asInstanceOf[AnyRef]"

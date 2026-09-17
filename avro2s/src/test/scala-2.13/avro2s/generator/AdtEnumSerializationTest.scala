@@ -2,6 +2,7 @@ package avro2s.generator
 
 import avro2s.serialization.SerializationHelpers._
 import avro2s.test.adtenums.{Card, Kw, Suit}
+import org.apache.avro.generic.GenericEnumSymbol
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import shapeless.{:+:, CNil, Coproduct}
@@ -42,6 +43,52 @@ class AdtEnumSerializationTest extends AnyFunSuite with Matchers {
     back shouldBe card
     back.suit should be theSameInstanceAs Suit.DIAMONDS
     back.kw should be theSameInstanceAs Kw.`new`
+  }
+
+  test("enum getters share immutable wrappers across records and containers") {
+    val c = card
+    val other = card
+    Suit.values.foreach { symbol =>
+      c.suit = symbol
+      other.suit = symbol
+      c.trump = Some(symbol)
+      c.history = List(symbol, symbol)
+      c.byPlayer = Map("p1" -> symbol)
+      c.maybeHistory = List(Some(symbol), None)
+      c.cp = Coproduct[CpUnion](symbol)
+
+      val wrapped = c.get(0).asInstanceOf[GenericEnumSymbol[_]]
+      wrapped.getSchema should be theSameInstanceAs Suit.SCHEMA$
+      wrapped.toString shouldBe symbol.toString
+      c.get(0) should be theSameInstanceAs wrapped
+      other.get(0) should be theSameInstanceAs wrapped
+      c.get(1) should be theSameInstanceAs wrapped
+      val history = c.get(2).asInstanceOf[java.util.List[AnyRef]]
+      history.get(0) should be theSameInstanceAs wrapped
+      history.get(1) should be theSameInstanceAs wrapped
+      c.get(3).asInstanceOf[java.util.Map[String, AnyRef]].get("p1") should be theSameInstanceAs wrapped
+      val maybeHistory = c.get(4).asInstanceOf[java.util.List[AnyRef]]
+      maybeHistory.get(0) should be theSameInstanceAs wrapped
+      maybeHistory.get(1) shouldBe null
+      c.get(7) should be theSameInstanceAs wrapped
+
+      deserialize[Card](serialize(c), Card.SCHEMA$) shouldBe c
+    }
+  }
+
+  test("cached enum getters preserve null values") {
+    val c = card
+    c.suit = null
+    c.trump = Some(null)
+    c.history = List(null)
+    c.byPlayer = Map("p1" -> null)
+    c.maybeHistory = List(Some(null))
+
+    c.get(0) shouldBe null
+    c.get(1) shouldBe null
+    c.get(2).asInstanceOf[java.util.List[AnyRef]].get(0) shouldBe null
+    c.get(3).asInstanceOf[java.util.Map[String, AnyRef]].get("p1") shouldBe null
+    c.get(4).asInstanceOf[java.util.List[AnyRef]].get(0) shouldBe null
   }
 
   test("round-trip with None union branches") {
