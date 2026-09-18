@@ -1,7 +1,6 @@
 lazy val common = Seq(
   scalaVersion := "3.3.6",
   Compile / fork := true,
-  Compile / avro2sCustomCodersEnabled := true,
   Compile / avro2sSchemaSource := (LocalRootProject / baseDirectory).value / "src" / "main" / "avro",
   Compile / unmanagedSourceDirectories := Seq((LocalRootProject / baseDirectory).value / "src" / "main" / "scala"),
   Compile / sourceGenerators += (Compile / avro2sGenerate).taskValue,

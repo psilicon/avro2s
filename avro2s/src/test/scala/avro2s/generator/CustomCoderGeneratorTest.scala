@@ -11,22 +11,24 @@ class CustomCoderGeneratorTest extends AnyFunSuite with Matchers {
     {"name":"children","type":{"type":"map","values":"Tree"}}
   ]}""")
 
-  test("custom coders reject Scala 2 targets without changing their default output") {
+  test("the custom coder setting does not affect Scala 2 output") {
     val config = GeneratorConfig(ScalaVersion.Scala_2_13, logicalTypesEnabled = true)
-    CodeGenerator.generateCode(List(schema), config).head.code should not include "def customEncode"
-    val error = intercept[avro2s.error.Error.ConfigError] {
-      CodeGenerator.generateCode(List(schema), config.copy(customCodersEnabled = true))
-    }
-    error.getMessage should include("Scala 3")
+    val enabled = CodeGenerator.generateCode(List(schema), config).head.code
+    val disabled = CodeGenerator.generateCode(List(schema), config.copy(customCodersEnabled = false)).head.code
+    enabled shouldBe disabled
+    enabled should not include "def customEncode"
+    enabled should not include "def customDecode"
   }
 
   locally {
     val target = ScalaVersion.Scala_3
-    test(s"custom coders are opt-in and preserve the existing API for $target") {
+    test(s"custom coders default on and preserve the existing API for $target") {
       val config = GeneratorConfig(target, logicalTypesEnabled = true)
-      config.customCodersEnabled shouldBe false
-      val standard = CodeGenerator.generateCode(List(schema), config).head.code
-      val custom = CodeGenerator.generateCode(List(schema), config.copy(customCodersEnabled = true)).head.code
+      config.customCodersEnabled shouldBe true
+      GeneratorConfig(target, true, EnumType.ScalaEnum).customCodersEnabled shouldBe true
+      new GeneratorConfig(target, true).customCodersEnabled shouldBe true
+      val standard = CodeGenerator.generateCode(List(schema), config.copy(customCodersEnabled = false)).head.code
+      val custom = CodeGenerator.generateCode(List(schema), config).head.code
       standard should not include "def customEncode"
       standard should not include "def customDecode"
       custom should include("override protected def hasCustomCoders(): Boolean = true")

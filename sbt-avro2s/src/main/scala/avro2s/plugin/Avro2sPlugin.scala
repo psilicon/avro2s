@@ -20,7 +20,7 @@ object Avro2sPlugin extends AutoPlugin {
     lazy val avro2sGeneratedAvscTarget  = settingKey[File]("Target for storing 'avsc' files generated from avro2sSchemaSource 'avdl' files")
     lazy val avro2sLogicalTypesEnabled = settingKey[Boolean]("Whether to enable avro2s logical types")
     lazy val avro2sEnumType = settingKey[String]("Enum representation: java (default) or scala (native Scala enums)")
-    lazy val avro2sCustomCodersEnabled = settingKey[Boolean]("Generate Apache Avro custom encoders and decoders for Scala 3 (default: false)")
+    lazy val avro2sCustomCodersEnabled = settingKey[Boolean]("Generate Apache Avro custom encoders and decoders for Scala 3 (default: true; ignored for Scala 2)")
 
     lazy val defaultSettings: Seq[Setting[?]] = Seq(
       avro2sSchemaSource := sourceDirectory.value / "avro",
@@ -28,7 +28,7 @@ object Avro2sPlugin extends AutoPlugin {
       avro2sGeneratedScalaTarget := (Compile / sourceManaged).value / "compiled_avro",
       avro2sLogicalTypesEnabled := true,
       avro2sEnumType := "java",
-      avro2sCustomCodersEnabled := false
+      avro2sCustomCodersEnabled := true
     )
   }
 

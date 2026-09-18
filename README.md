@@ -94,17 +94,17 @@ Limitations:
 
 Direct library users select `GeneratorConfig(targetScalaVersion, logicalTypesEnabled, EnumType.ScalaEnum)`; Java mode remains the default. Use ordinary Avro `SpecificDatumReader` and `SpecificDatumWriter` constructors. There are no generated `datumReader`/`datumWriter` factories to configure.
 
-#### Custom Avro coders (Scala 3, opt-in)
+#### Custom Avro coders (Scala 3)
 
-Generate direct encoders and decoders with:
+Scala 3 records include direct encoders and decoders by default. To disable generation:
 
 ```scala
-Compile / avro2sCustomCodersEnabled := true
+Compile / avro2sCustomCodersEnabled := false
 ```
 
-The default is `false`. Direct generator users can set
-`GeneratorConfig(ScalaVersion.Scala_3, logicalTypesEnabled = true, customCodersEnabled = true)`.
-Enabling this option for a Scala 2 target is a configuration error.
+The default is `true`, both in the plugin and in `GeneratorConfig`. Direct
+generator users can set `customCodersEnabled = false` to disable it. This option
+applies only to Scala 3 output; Scala 2 generation ignores it.
 
 Generated records still extend Apache Avro's `SpecificRecordBase`, with the same
 field types, constructors, schemas, `get` and `put`. The additional

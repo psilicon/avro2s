@@ -201,6 +201,553 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
+
+  override protected def hasCustomCoders(): Boolean = true
+  override def customEncode(out$: _root_.org.apache.avro.io.Encoder): Unit = encode$0(this, out$)
+  override def customDecode(in$: _root_.org.apache.avro.io.ResolvingDecoder): Unit = decodeRecord$0(this, in$)
+
+  private def encode$0(value$: _root_.avro2s.test.reserved.ReservedScala3, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    encode$1(value$.`abstract`, out$)
+    encode$2(value$.`case`, out$)
+    encode$3(value$.`catch`, out$)
+    encode$4(value$.`class`, out$)
+    encode$5(value$.`def`, out$)
+    encode$6(value$.`do`, out$)
+    encode$7(value$.`else`, out$)
+    encode$8(value$.`extends`, out$)
+    encode$9(value$.`false`, out$)
+    encode$10(value$.`final`, out$)
+    encode$11(value$.`finally`, out$)
+    encode$12(value$.`for`, out$)
+    encode$13(value$.`forSome`, out$)
+    encode$14(value$.`if`, out$)
+    encode$15(value$.`implicit`, out$)
+    encode$16(value$.`import`, out$)
+    encode$17(value$.`lazy`, out$)
+    encode$18(value$.`macro`, out$)
+    encode$19(value$.`match`, out$)
+    encode$20(value$.`new`, out$)
+    encode$21(value$.`null`, out$)
+    encode$22(value$.`object`, out$)
+    encode$23(value$.`override`, out$)
+    encode$24(value$.`package`, out$)
+    encode$25(value$.`private`, out$)
+    encode$26(value$.`protected`, out$)
+    encode$27(value$.`return`, out$)
+    encode$28(value$.`sealed`, out$)
+    encode$29(value$.`super`, out$)
+    encode$30(value$.`this`, out$)
+    encode$31(value$.`throw`, out$)
+    encode$32(value$.`trait`, out$)
+    encode$33(value$.`try`, out$)
+    encode$34(value$.`true`, out$)
+    encode$35(value$.`type`, out$)
+    encode$36(value$.`val`, out$)
+    encode$37(value$.`var`, out$)
+    encode$38(value$.`while`, out$)
+    encode$39(value$.`with`, out$)
+    encode$40(value$.`yield`, out$)
+    encode$41(value$.`enum`, out$)
+    encode$42(value$.`export`, out$)
+    encode$43(value$.`given`, out$)
+    encode$44(value$.`then`, out$)
+  }
+
+  private def decode$0(in$: _root_.org.apache.avro.io.ResolvingDecoder, reuse$: _root_.avro2s.test.reserved.ReservedScala3): _root_.avro2s.test.reserved.ReservedScala3 = {
+    val result$ = if (reuse$ == null) new _root_.avro2s.test.reserved.ReservedScala3() else reuse$
+    decodeRecord$0(result$, in$)
+    result$
+  }
+
+  private def decodeRecord$0(value$: _root_.avro2s.test.reserved.ReservedScala3, in$: _root_.org.apache.avro.io.ResolvingDecoder): Unit = {
+    val order$ = in$.readFieldOrderIfDiff()
+    if (order$ == null) {
+      value$.`abstract` = decode$1(in$)
+      value$.`case` = decode$2(in$)
+      value$.`catch` = decode$3(in$)
+      value$.`class` = decode$4(in$)
+      value$.`def` = decode$5(in$)
+      value$.`do` = decode$6(in$)
+      value$.`else` = decode$7(in$)
+      value$.`extends` = decode$8(in$)
+      value$.`false` = decode$9(in$)
+      value$.`final` = decode$10(in$)
+      value$.`finally` = decode$11(in$)
+      value$.`for` = decode$12(in$)
+      value$.`forSome` = decode$13(in$)
+      value$.`if` = decode$14(in$)
+      value$.`implicit` = decode$15(in$)
+      value$.`import` = decode$16(in$)
+      value$.`lazy` = decode$17(in$)
+      value$.`macro` = decode$18(in$)
+      value$.`match` = decode$19(in$)
+      value$.`new` = decode$20(in$)
+      value$.`null` = decode$21(in$)
+      value$.`object` = decode$22(in$)
+      value$.`override` = decode$23(in$)
+      value$.`package` = decode$24(in$)
+      value$.`private` = decode$25(in$)
+      value$.`protected` = decode$26(in$)
+      value$.`return` = decode$27(in$)
+      value$.`sealed` = decode$28(in$)
+      value$.`super` = decode$29(in$)
+      value$.`this` = decode$30(in$)
+      value$.`throw` = decode$31(in$)
+      value$.`trait` = decode$32(in$)
+      value$.`try` = decode$33(in$)
+      value$.`true` = decode$34(in$)
+      value$.`type` = decode$35(in$)
+      value$.`val` = decode$36(in$)
+      value$.`var` = decode$37(in$)
+      value$.`while` = decode$38(in$)
+      value$.`with` = decode$39(in$)
+      value$.`yield` = decode$40(in$)
+      value$.`enum` = decode$41(in$)
+      value$.`export` = decode$42(in$)
+      value$.`given` = decode$43(in$)
+      value$.`then` = decode$44(in$)
+    } else {
+      var i$ = 0
+      while (i$ < order$.length) {
+        (order$(i$).pos(): @_root_.scala.annotation.switch) match {
+          case 0 => value$.`abstract` = decode$1(in$)
+          case 1 => value$.`case` = decode$2(in$)
+          case 2 => value$.`catch` = decode$3(in$)
+          case 3 => value$.`class` = decode$4(in$)
+          case 4 => value$.`def` = decode$5(in$)
+          case 5 => value$.`do` = decode$6(in$)
+          case 6 => value$.`else` = decode$7(in$)
+          case 7 => value$.`extends` = decode$8(in$)
+          case 8 => value$.`false` = decode$9(in$)
+          case 9 => value$.`final` = decode$10(in$)
+          case 10 => value$.`finally` = decode$11(in$)
+          case 11 => value$.`for` = decode$12(in$)
+          case 12 => value$.`forSome` = decode$13(in$)
+          case 13 => value$.`if` = decode$14(in$)
+          case 14 => value$.`implicit` = decode$15(in$)
+          case 15 => value$.`import` = decode$16(in$)
+          case 16 => value$.`lazy` = decode$17(in$)
+          case 17 => value$.`macro` = decode$18(in$)
+          case 18 => value$.`match` = decode$19(in$)
+          case 19 => value$.`new` = decode$20(in$)
+          case 20 => value$.`null` = decode$21(in$)
+          case 21 => value$.`object` = decode$22(in$)
+          case 22 => value$.`override` = decode$23(in$)
+          case 23 => value$.`package` = decode$24(in$)
+          case 24 => value$.`private` = decode$25(in$)
+          case 25 => value$.`protected` = decode$26(in$)
+          case 26 => value$.`return` = decode$27(in$)
+          case 27 => value$.`sealed` = decode$28(in$)
+          case 28 => value$.`super` = decode$29(in$)
+          case 29 => value$.`this` = decode$30(in$)
+          case 30 => value$.`throw` = decode$31(in$)
+          case 31 => value$.`trait` = decode$32(in$)
+          case 32 => value$.`try` = decode$33(in$)
+          case 33 => value$.`true` = decode$34(in$)
+          case 34 => value$.`type` = decode$35(in$)
+          case 35 => value$.`val` = decode$36(in$)
+          case 36 => value$.`var` = decode$37(in$)
+          case 37 => value$.`while` = decode$38(in$)
+          case 38 => value$.`with` = decode$39(in$)
+          case 39 => value$.`yield` = decode$40(in$)
+          case 40 => value$.`enum` = decode$41(in$)
+          case 41 => value$.`export` = decode$42(in$)
+          case 42 => value$.`given` = decode$43(in$)
+          case 43 => value$.`then` = decode$44(in$)
+          case index$ => throw new _root_.org.apache.avro.AvroTypeException("Invalid field index: " + index$)
+        }
+        i$ += 1
+      }
+    }
+  }
+
+  private def encode$1(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$1(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$2(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$2(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$3(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$3(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$4(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$4(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
+
+  private def encode$5(value$: _root_.scala.Float, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeFloat(value$)
+  }
+
+  private def decode$5(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Float = {
+    in$.readFloat()
+  }
+
+  private def encode$6(value$: _root_.scala.Double, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeDouble(value$)
+  }
+
+  private def decode$6(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Double = {
+    in$.readDouble()
+  }
+
+  private def encode$7(value$: _root_.scala.Array[_root_.scala.Byte], out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBytes(value$)
+  }
+
+  private def decode$7(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Array[_root_.scala.Byte] = {
+    val buffer$ = in$.readBytes(null)
+    if (buffer$.hasArray && buffer$.arrayOffset() == 0 && buffer$.position() == 0 && buffer$.remaining() == buffer$.array().length) buffer$.array()
+    else {
+      val bytes$ = new _root_.scala.Array[Byte](buffer$.remaining())
+      buffer$.get(bytes$)
+      bytes$
+    }
+  }
+
+  private def encode$8(value$: _root_.java.lang.String, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeString(value$)
+  }
+
+  private def decode$8(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.java.lang.String = {
+    in$.readString()
+  }
+
+  private def encode$9(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$9(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$10(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$10(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$11(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$11(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$12(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$12(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
+
+  private def encode$13(value$: _root_.scala.Float, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeFloat(value$)
+  }
+
+  private def decode$13(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Float = {
+    in$.readFloat()
+  }
+
+  private def encode$14(value$: _root_.scala.Double, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeDouble(value$)
+  }
+
+  private def decode$14(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Double = {
+    in$.readDouble()
+  }
+
+  private def encode$15(value$: _root_.scala.Array[_root_.scala.Byte], out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBytes(value$)
+  }
+
+  private def decode$15(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Array[_root_.scala.Byte] = {
+    val buffer$ = in$.readBytes(null)
+    if (buffer$.hasArray && buffer$.arrayOffset() == 0 && buffer$.position() == 0 && buffer$.remaining() == buffer$.array().length) buffer$.array()
+    else {
+      val bytes$ = new _root_.scala.Array[Byte](buffer$.remaining())
+      buffer$.get(bytes$)
+      bytes$
+    }
+  }
+
+  private def encode$16(value$: _root_.java.lang.String, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeString(value$)
+  }
+
+  private def decode$16(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.java.lang.String = {
+    in$.readString()
+  }
+
+  private def encode$17(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$17(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$18(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$18(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$19(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$19(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$20(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$20(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
+
+  private def encode$21(value$: _root_.scala.Float, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeFloat(value$)
+  }
+
+  private def decode$21(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Float = {
+    in$.readFloat()
+  }
+
+  private def encode$22(value$: _root_.scala.Double, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeDouble(value$)
+  }
+
+  private def decode$22(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Double = {
+    in$.readDouble()
+  }
+
+  private def encode$23(value$: _root_.scala.Array[_root_.scala.Byte], out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBytes(value$)
+  }
+
+  private def decode$23(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Array[_root_.scala.Byte] = {
+    val buffer$ = in$.readBytes(null)
+    if (buffer$.hasArray && buffer$.arrayOffset() == 0 && buffer$.position() == 0 && buffer$.remaining() == buffer$.array().length) buffer$.array()
+    else {
+      val bytes$ = new _root_.scala.Array[Byte](buffer$.remaining())
+      buffer$.get(bytes$)
+      bytes$
+    }
+  }
+
+  private def encode$24(value$: _root_.java.lang.String, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeString(value$)
+  }
+
+  private def decode$24(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.java.lang.String = {
+    in$.readString()
+  }
+
+  private def encode$25(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$25(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$26(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$26(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$27(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$27(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$28(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$28(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
+
+  private def encode$29(value$: _root_.scala.Float, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeFloat(value$)
+  }
+
+  private def decode$29(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Float = {
+    in$.readFloat()
+  }
+
+  private def encode$30(value$: _root_.scala.Double, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeDouble(value$)
+  }
+
+  private def decode$30(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Double = {
+    in$.readDouble()
+  }
+
+  private def encode$31(value$: _root_.scala.Array[_root_.scala.Byte], out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBytes(value$)
+  }
+
+  private def decode$31(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Array[_root_.scala.Byte] = {
+    val buffer$ = in$.readBytes(null)
+    if (buffer$.hasArray && buffer$.arrayOffset() == 0 && buffer$.position() == 0 && buffer$.remaining() == buffer$.array().length) buffer$.array()
+    else {
+      val bytes$ = new _root_.scala.Array[Byte](buffer$.remaining())
+      buffer$.get(bytes$)
+      bytes$
+    }
+  }
+
+  private def encode$32(value$: _root_.java.lang.String, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeString(value$)
+  }
+
+  private def decode$32(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.java.lang.String = {
+    in$.readString()
+  }
+
+  private def encode$33(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$33(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$34(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$34(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$35(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$35(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$36(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$36(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
+
+  private def encode$37(value$: _root_.scala.Float, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeFloat(value$)
+  }
+
+  private def decode$37(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Float = {
+    in$.readFloat()
+  }
+
+  private def encode$38(value$: _root_.scala.Double, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeDouble(value$)
+  }
+
+  private def decode$38(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Double = {
+    in$.readDouble()
+  }
+
+  private def encode$39(value$: _root_.scala.Array[_root_.scala.Byte], out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBytes(value$)
+  }
+
+  private def decode$39(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Array[_root_.scala.Byte] = {
+    val buffer$ = in$.readBytes(null)
+    if (buffer$.hasArray && buffer$.arrayOffset() == 0 && buffer$.position() == 0 && buffer$.remaining() == buffer$.array().length) buffer$.array()
+    else {
+      val bytes$ = new _root_.scala.Array[Byte](buffer$.remaining())
+      buffer$.get(bytes$)
+      bytes$
+    }
+  }
+
+  private def encode$40(value$: _root_.java.lang.String, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeString(value$)
+  }
+
+  private def decode$40(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.java.lang.String = {
+    in$.readString()
+  }
+
+  private def encode$41(value$: _root_.scala.Null, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeNull()
+  }
+
+  private def decode$41(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Null = {
+    in$.readNull()
+    null
+  }
+
+  private def encode$42(value$: _root_.scala.Boolean, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeBoolean(value$)
+  }
+
+  private def decode$42(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Boolean = {
+    in$.readBoolean()
+  }
+
+  private def encode$43(value$: _root_.scala.Int, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeInt(value$)
+  }
+
+  private def decode$43(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Int = {
+    in$.readInt()
+  }
+
+  private def encode$44(value$: _root_.scala.Long, out$: _root_.org.apache.avro.io.Encoder): Unit = {
+    out$.writeLong(value$)
+  }
+
+  private def decode$44(in$: _root_.org.apache.avro.io.ResolvingDecoder): _root_.scala.Long = {
+    in$.readLong()
+  }
 }
 
 object ReservedScala3 {

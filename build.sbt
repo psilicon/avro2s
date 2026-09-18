@@ -45,6 +45,17 @@ lazy val root = (project in file("."))
 lazy val avro2s = (projectMatrix in file("avro2s"))
   .settings(
     name := "avro2s",
+    // Exercise generated customEncode/customDecode throughout the Scala 3 runtime suites.
+    // Fork to isolate Avro's JVM-wide switches from the Scala 2 tests.
+    Test / fork := scalaBinaryVersion.value == "3",
+    Test / forkOptions := (Test / forkOptions).value
+      .withWorkingDirectory((LocalRootProject / baseDirectory).value),
+    Test / javaOptions ++= {
+      if (scalaBinaryVersion.value == "3") Seq(
+        "-Dorg.apache.avro.specific.use_custom_coders=true",
+        "-Dorg.apache.avro.fastread=false"
+      ) else Nil
+    },
     libraryDependencies ++= Seq(
       "org.apache.avro" % "avro" % versions.avro,
       "org.apache.avro" % "avro-compiler" % versions.avro,
