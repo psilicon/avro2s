@@ -9,6 +9,13 @@ import scala.jdk.CollectionConverters._
 
 object Check {
   def main(args: Array[String]): Unit = {
+    val official = new OfficialAvro
+    val legacy = new OfficialAvro("avro2s.test.legacyClasses")
+    try check(official, legacy)
+    finally { legacy.close(); official.close() }
+  }
+
+  private def check(official: OfficialAvro, legacy: OfficialAvro): Unit = {
     val schema = example.All.SCHEMA$
     val generic = GenericData.get()
 
@@ -47,7 +54,7 @@ object Check {
           result
         case MAP =>
           val result = new java.util.LinkedHashMap[String, AnyRef]()
-          if (depth < 6) (0 until seed % 4).foreach(i => result.put("key-" + i, sample(s.getValueType, seed + i, depth + 1)))
+          if (depth < 6) (0 until seed % 4).foreach(i => result.put(List("", "clé-界", "🚀")(i), sample(s.getValueType, seed + i, depth + 1)))
           result
         case UNION =>
           val emptyEnum = s.getTypes.asScala.exists(t => t.getType == ENUM && t.getEnumSymbols.isEmpty)
@@ -82,7 +89,8 @@ object Check {
           value.asInstanceOf[java.util.Map[String, AnyRef]].asScala.foreach { case (key, v) =>
             // Duplicate map keys are legal on the wire; both readers must retain the last value.
             out.setItemCount(2L)
-            out.startItem(); out.writeString(key); writeChunks(s.getValueType, v, out)
+            val first = if (s.getValueType.getType == LONG) Long.box(v.asInstanceOf[java.lang.Long].longValue() + 1) else v
+            out.startItem(); out.writeString(key); writeChunks(s.getValueType, first, out)
             out.startItem(); out.writeString(key); writeChunks(s.getValueType, v, out)
           }
           out.writeMapEnd()
@@ -94,21 +102,62 @@ object Check {
       }
     }
 
-    def read(s: Schema, bytes: Array[Byte], custom: Boolean, reuse: SpecificRecordBase = null, writer: Schema = null): SpecificRecordBase = {
-      val reader = new SpecificDatumReader[SpecificRecordBase](if (writer == null) s else writer, s, model(s, custom))
-      reader.read(reuse, DecoderFactory.get().binaryDecoder(bytes, null))
+    def read(s: Schema, bytes: Array[Byte], custom: Boolean, reuse: SpecificRecordBase = null,
+             writer: Schema = null, format: String = "binary"): SpecificRecordBase = {
+      val writerSchema = if (writer == null) s else writer
+      val reader = new SpecificDatumReader[SpecificRecordBase](writerSchema, s, model(s, custom))
+      format match {
+        case "container" =>
+          val stream = new DataFileStream[SpecificRecordBase](new ByteArrayInputStream(bytes), reader)
+          try { val value = stream.next(reuse); assert(!stream.hasNext); value } finally stream.close()
+        case "json" => reader.read(reuse, DecoderFactory.get().jsonDecoder(writerSchema, new ByteArrayInputStream(bytes)))
+        case _ => reader.read(reuse, DecoderFactory.get().binaryDecoder(bytes, null))
+      }
     }
 
-    def write(value: SpecificRecordBase, custom: Boolean): Array[Byte] = {
+    def write(value: SpecificRecordBase, custom: Boolean, format: String = "binary"): Array[Byte] = {
       val output = new ByteArrayOutputStream()
-      val out = EncoderFactory.get().binaryEncoder(output, null)
-      new SpecificDatumWriter[SpecificRecordBase](value.getSchema, model(value.getSchema, custom)).write(value, out)
-      out.flush()
+      val writer = new SpecificDatumWriter[SpecificRecordBase](value.getSchema, model(value.getSchema, custom))
+      if (format == "container") {
+        val stream = new DataFileWriter[SpecificRecordBase](writer)
+        try { stream.create(value.getSchema, output); stream.append(value) } finally stream.close()
+      } else {
+        val out = format match {
+          case "json" => EncoderFactory.get().jsonEncoder(value.getSchema, output)
+          case "blocking" => new EncoderFactory().configureBlockSize(64).blockingBinaryEncoder(output, null)
+          case _ => EncoderFactory.get().binaryEncoder(output, null)
+        }
+        writer.write(value, out)
+        out.flush()
+      }
       output.toByteArray
     }
 
     def asGeneric(s: Schema, bytes: Array[Byte], writer: Schema = null): AnyRef =
       new GenericDatumReader[AnyRef](if (writer == null) s else writer, s).read(null, DecoderFactory.get().binaryDecoder(bytes, null))
+
+    def javaRoundTrips(s: Schema, seedBytes: Array[Byte], format: String,
+                       reuse: SpecificRecordBase = null): Unit = {
+      val expected = asGeneric(s, seedBytes)
+      val javaInput = official.read(s, seedBytes)
+      // Populate each implementation independently of the other's custom decoder.
+      val scalaInput = read(s, seedBytes, custom = false)
+
+      // avro2s custom encoder -> official generated Java record -> avro2s custom decoder.
+      val javaResult = official.read(s, write(scalaInput, custom = true, format = format), format)
+      // Java GenericData.Array.equals cannot resolve nested UUID values. Compare
+      // independent raw Avro values instead, also ignoring JVM representation differences.
+      val javaActual = asGeneric(s, official.write(javaResult))
+      assert(javaActual == expected, s"Scala -> Java ${s.getName}/$format: $javaActual != $expected")
+      val scalaBack = read(s, official.write(javaResult, format), custom = true, format = format)
+      assert(asGeneric(s, write(scalaBack, custom = false)) == expected, s"Scala -> Java -> Scala ${s.getName}/$format")
+
+      // Official Java encoder -> avro2s custom decoder -> official generated Java record.
+      val scalaResult = read(s, official.write(javaInput, format), custom = true, reuse = reuse, format = format)
+      if (reuse != null) assert(scalaResult eq reuse)
+      val javaBack = official.read(s, write(scalaResult, custom = true, format = format), format, reuse = javaInput)
+      assert(asGeneric(s, official.write(javaBack)) == expected, s"Java round trip oracle ${s.getName}/$format")
+    }
 
     // Fail immediately if a supposedly custom path accidentally falls back to get/put.
     val guarded = new example.All() {
@@ -128,6 +177,61 @@ object Check {
       assert(guarded.node eq previousNode, "direct nested record was not reused")
       assert(asGeneric(schema, write(guarded, custom = true)) == expected, s"custom reuse seed=$seed")
     }
+
+    for (seed <- 0 until 24; format <- List("binary", "blocking", "json", "container")) {
+      val input = sample(schema, seed).asInstanceOf[GenericRecord]
+      input.put("count", Int.box(if (seed % 2 == 0) Int.MinValue else Int.MaxValue))
+      input.put("longValue", Long.box(if (seed % 2 == 0) Long.MinValue else Long.MaxValue))
+      // Avro's JsonEncoder.writeFloat adds 0d (losing negative zero), and its JSON
+      // decoder cannot read nonfinite numbers. Test those values in binary formats.
+      if (format != "json") {
+        input.put("floatValue", Float.box(List(0.0f, -0.0f, Float.MinPositiveValue, Float.MaxValue,
+          Float.PositiveInfinity, Float.NegativeInfinity, Float.NaN)(seed % 7)))
+        input.put("doubleValue", Double.box(List(0.0d, -0.0d, Double.MinPositiveValue, Double.MaxValue,
+          Double.PositiveInfinity, Double.NegativeInfinity, Double.NaN)(seed % 7)))
+      }
+      javaRoundTrips(schema, genericBytes(schema, input), format, guarded)
+    }
+    val choices = example.Choices.SCHEMA$
+    val choiceGuard = new example.Choices() {
+      override def get(index: Int): AnyRef = throw new AssertionError("custom union write called get")
+      override def put(index: Int, value: Any): Unit = throw new AssertionError("custom union read called put")
+    }
+    for (seed <- 0 until 20; format <- List("binary", "blocking", "json", "container")) {
+      javaRoundTrips(choices, genericBytes(choices, sample(choices, seed)), format, choiceGuard)
+    }
+
+    // The Decoder contract permits ByteBuffers with offsets, spare capacity or no
+    // accessible backing array. BinaryDecoder normally returns only the exact shape.
+    val buffers = example.Buffers.SCHEMA$
+    for (size <- List(0, 1, 257); shape <- List("exact", "offset", "position", "capacity", "readonly", "direct")) {
+      val input = sample(buffers, size).asInstanceOf[GenericRecord]
+      input.put("data", ByteBuffer.wrap(Array.tabulate[Byte](size)(_.toByte)))
+      val bytes = genericBytes(buffers, input)
+      val decoder = new org.apache.avro.io.EdgeCaseResolvingDecoder(buffers, bytes, shape, false)
+      val decoded = new example.Buffers()
+      decoded.customDecode(decoder)
+      decoder.drain()
+      assert(asGeneric(buffers, write(decoded, false)) == asGeneric(buffers, bytes), s"bytes size=$size shape=$shape")
+      javaRoundTrips(buffers, bytes, "binary")
+    }
+    def rejectsUnion(body: => Unit): Unit = {
+      try { body; sys.error("invalid union unexpectedly accepted") }
+      catch { case _: AvroTypeException => () }
+    }
+    rejectsUnion {
+      val bytes = genericBytes(buffers, sample(buffers, 1))
+      new example.Buffers().customDecode(new org.apache.avro.io.EdgeCaseResolvingDecoder(buffers, bytes, "exact", true))
+    }
+    for (invalid <- List(null, Some(null))) {
+      val value = new example.Buffers()
+      value.data = Array.emptyByteArray
+      value.choice = invalid
+      rejectsUnion { write(value, custom = true); () }
+    }
+    val invalidChoice = read(choices, genericBytes(choices, sample(choices, 1)), false).asInstanceOf[example.Choices]
+    invalidChoice.record = null
+    rejectsUnion { write(invalidChoice, custom = true); () }
 
     // Exercise primitive arrays across small and large blocks, including boundary-sized arrays.
     // Keep this schema separate so existing fixture fields and public types stay unchanged.
@@ -185,8 +289,7 @@ object Check {
     }
 
     // Promote array items through the official resolving decoder, including nested arrays.
-    val oldArrays = new Schema.Parser().parse(arrays.toString
-      .replace("\"long\"", "\"int\"").replace("\"double\"", "\"float\""))
+    val oldArrays = legacy.schema("example.ArrayValues")
     val arrayGuard = new example.ArrayValues() {
       override def get(index: Int): AnyRef = throw new AssertionError("custom array write called get")
       override def put(index: Int, value: Any): Unit = throw new AssertionError("custom array read called put")
@@ -199,6 +302,19 @@ object Check {
         arrayBlocks(writer, input, List(1, 33, 65)),
         arrayBlocks(writer, input, List(33, 1, 64))
       )
+      if (writer == arrays) {
+        for (format <- List("binary", "blocking"))
+          javaRoundTrips(arrays, genericBytes(arrays, input), format, arrayGuard)
+      } else {
+        val javaInput = legacy.read(writer, genericBytes(writer, input))
+        for (format <- List("binary", "blocking", "json", "container")) {
+          val bytes = legacy.write(javaInput, format)
+          val decoded = read(arrays, bytes, true, reuse = arrayGuard, writer = writer, format = format)
+          val javaBack = official.read(arrays, write(decoded, true, format), format)
+          assert(asGeneric(arrays, official.write(javaBack)) == asGeneric(arrays, genericBytes(writer, input), writer),
+            s"Java array item promotion size=$size/$format")
+        }
+      }
       for (bytes <- encodings) {
         val expected = asGeneric(arrays, bytes, writer)
         val decoded = read(arrays, bytes, custom = true, writer = writer).asInstanceOf[example.ArrayValues]
@@ -261,23 +377,24 @@ object Check {
     // ResolvingDecoder must handle aliases, reordering, removed fields, defaults, promotions,
     // union index remapping, nested resolution and enum symbol/default remapping.
     val evolved = example.Evolved.SCHEMA$
-    val old = new Schema.Parser().parse("""{"type":"record","name":"Old","namespace":"example","fields":[
-      {"name":"removed","type":{"type":"array","items":"string"}},
-      {"name":"child","type":{"type":"record","name":"Child","fields":[{"name":"n","type":"int"}]}},
-      {"name":"choice","type":["null","int","string"]},
-      {"name":"number","type":"float"},
-      {"name":"status","type":{"type":"enum","name":"Status","symbols":["A","B","OTHER"]}},
-      {"name":"oldName","type":"int"},
-      {"name":"trailing","type":"bytes"},
-      {"name":"text","type":"bytes"},
-      {"name":"payload","type":"string"}
-    ]}""")
+    val old = legacy.schema("example.Old")
     for (seed <- 0 until 6) {
       val input = sample(old, seed).asInstanceOf[GenericRecord]
       // Bytes promoted to string must contain valid UTF-8.
       input.put("text", ByteBuffer.wrap("héllo-界".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
       val bytes = genericBytes(old, input, chunks = true)
       val expected = asGeneric(evolved, bytes, old)
+      val javaInput = legacy.read(old, bytes)
+      for (format <- List("binary", "blocking", "json", "container")) {
+        val javaBytes = legacy.write(javaInput, format)
+        val decoded = read(evolved, javaBytes, true, writer = old, format = format)
+        val javaBack = official.read(evolved, write(decoded, true, format), format)
+        assert(asGeneric(evolved, official.write(javaBack)) == expected, s"Java schema resolution seed=$seed/$format")
+        // The official Java reader independently resolves the same old writer schema.
+        val javaResolved = official.read(evolved, javaBytes, format, writer = old)
+        val scalaBack = read(evolved, official.write(javaResolved, format), true, format = format)
+        assert(asGeneric(evolved, write(scalaBack, false)) == expected, s"Java resolved round trip seed=$seed/$format")
+      }
       for (custom <- List(false, true)) {
         val decoded = read(evolved, bytes, custom, writer = old)
         val actual = asGeneric(evolved, write(decoded, custom))
@@ -299,6 +416,6 @@ object Check {
       read(schema, complete.take(complete.length / 2), custom = true)
       sys.error("truncated data unexpectedly accepted")
     } catch { case _: java.io.IOException => () }
-    println("Custom coders: runtime independence, fallback, both wire directions, reuse, blocks, JSON, containers and schema evolution passed")
+    println("Custom coders: official generated Java <-> avro2s round trips, generic oracles, reuse, blocks, JSON, containers and schema evolution passed")
   }
 }

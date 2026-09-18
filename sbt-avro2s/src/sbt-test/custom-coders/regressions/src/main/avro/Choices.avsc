@@ -1,0 +1,11 @@
+{
+  "type": "record", "name": "Choices", "namespace": "example",
+  "fields": [
+    {"name": "primitive", "type": ["boolean", "int", "long", "float", "double"]},
+    {"name": "collection", "type": [{"type":"array", "items":"int"}, {"type":"map", "values":"long"}]},
+    {"name": "record", "type": [
+      {"type":"record", "name":"Left", "fields":[{"name":"value", "type":"string"}]},
+      {"type":"record", "name":"Right", "fields":[{"name":"value", "type":"long"}]}
+    ]}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "type": "record", "name": "Buffers", "namespace": "example",
+  "fields": [
+    {"name": "data", "type": "bytes"},
+    {"name": "choice", "type": ["null", "string"]}
+  ]
+}

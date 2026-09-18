@@ -1,0 +1,11 @@
+{"type":"record","name":"Old","namespace":"example","fields":[
+      {"name":"removed","type":{"type":"array","items":"string"}},
+      {"name":"child","type":{"type":"record","name":"Child","fields":[{"name":"n","type":"int"}]}},
+      {"name":"choice","type":["null","int","string"]},
+      {"name":"number","type":"float"},
+      {"name":"status","type":{"type":"enum","name":"Status","symbols":["A","B","OTHER"]}},
+      {"name":"oldName","type":"int"},
+      {"name":"trailing","type":"bytes"},
+      {"name":"text","type":"bytes"},
+      {"name":"payload","type":"string"}
+    ]}
