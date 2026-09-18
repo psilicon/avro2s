@@ -46,6 +46,12 @@ record reuse, nested/recursive types, collection blocks, JSON, container files,
 schema evolution and rejected invalid input. Each application runs in a forked
 JVM so an uncaught exception fails the scripted test.
 
+The separate `ArrayValues` fixture covers primitive/string arrays and nested
+arrays at sizes from 0 to 2,049 elements, including 31/32/33 and 63/64/65.
+It checks mixed block sizes, blocking encoders, numeric item promotion, ordering,
+immutable lists retained across record reuse, consecutive records, and truncation
+inside an array block as well as at the end of a record.
+
 ```sh
 sbt 'project sbtAvro2s2_12' \
   'set Compile / packageBin / publishArtifact := true' \

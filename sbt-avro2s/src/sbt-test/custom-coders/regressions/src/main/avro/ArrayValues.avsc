@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "ArrayValues",
+  "namespace": "example",
+  "fields": [
+    {"name": "longs", "type": {"type": "array", "items": "long"}},
+    {"name": "ints", "type": {"type": "array", "items": "int"}},
+    {"name": "floats", "type": {"type": "array", "items": "float"}},
+    {"name": "doubles", "type": {"type": "array", "items": "double"}},
+    {"name": "flags", "type": {"type": "array", "items": "boolean"}},
+    {"name": "strings", "type": {"type": "array", "items": "string"}},
+    {"name": "matrix", "type": {"type": "array", "items": {"type": "array", "items": "long"}}}
+  ]
+}

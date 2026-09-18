@@ -129,6 +129,105 @@ object Check {
       assert(asGeneric(schema, write(guarded, custom = true)) == expected, s"custom reuse seed=$seed")
     }
 
+    // Exercise primitive arrays across small and large blocks, including boundary-sized arrays.
+    // Keep this schema separate so existing fixture fields and public types stay unchanged.
+    val arrays = example.ArrayValues.SCHEMA$
+    def arraySample(s: Schema, size: Int): GenericRecord = {
+      def values(element: Schema, n: Int): java.util.List[AnyRef] =
+        (0 until n).map { i =>
+          val number = if (i % 2 == 0) 1000 + i else -1000 - i
+          element.getType match {
+            case Schema.Type.ARRAY => values(element.getElementType, size)
+            case Schema.Type.LONG => Long.box(number.toLong)
+            case Schema.Type.INT => Int.box(number)
+            case Schema.Type.FLOAT => Float.box(number.toFloat + 0.5f)
+            case Schema.Type.DOUBLE => Double.box(number.toDouble + 0.5d)
+            case Schema.Type.BOOLEAN => Boolean.box(i % 2 == 0)
+            case Schema.Type.STRING => s"héllo-界-$i"
+            case other => throw new AssertionError(s"Unexpected array element: $other")
+          }
+        }.toList.asJava
+      val record = new GenericData.Record(s)
+      s.getFields.asScala.foreach { f =>
+        val element = f.schema().getElementType
+        record.put(f.pos(), values(element, if (element.getType == Schema.Type.ARRAY) 2 else size))
+      }
+      record
+    }
+
+    def arrayBlocks(s: Schema, input: AnyRef, sizes: List[Int]): Array[Byte] = {
+      val output = new ByteArrayOutputStream()
+      val out = EncoderFactory.get().binaryEncoder(output, null)
+      def emit(s: Schema, value: AnyRef): Unit = s.getType match {
+        case Schema.Type.RECORD =>
+          s.getFields.asScala.foreach(f => emit(f.schema(), value.asInstanceOf[GenericRecord].get(f.pos())))
+        case Schema.Type.ARRAY =>
+          val values = value.asInstanceOf[java.util.List[AnyRef]]
+          out.writeArrayStart()
+          var index = 0
+          var block = 0
+          while (index < values.size()) {
+            val end = math.min(index + sizes(block % sizes.size), values.size())
+            out.setItemCount((end - index).toLong)
+            while (index < end) {
+              out.startItem()
+              emit(s.getElementType, values.get(index))
+              index += 1
+            }
+            block += 1
+          }
+          out.writeArrayEnd()
+        case _ => new GenericDatumWriter[AnyRef](s).write(value, out)
+      }
+      emit(s, input)
+      out.flush()
+      output.toByteArray
+    }
+
+    // Promote array items through the official resolving decoder, including nested arrays.
+    val oldArrays = new Schema.Parser().parse(arrays.toString
+      .replace("\"long\"", "\"int\"").replace("\"double\"", "\"float\""))
+    val arrayGuard = new example.ArrayValues() {
+      override def get(index: Int): AnyRef = throw new AssertionError("custom array write called get")
+      override def put(index: Int, value: Any): Unit = throw new AssertionError("custom array read called put")
+    }
+    for (size <- List(0, 1, 16, 31, 32, 33, 63, 64, 65, 1024, 2049); writer <- List(arrays, oldArrays)) {
+      val input = arraySample(writer, size)
+      val encodings = List(
+        genericBytes(writer, input),
+        genericBytes(writer, input, blocking = true),
+        arrayBlocks(writer, input, List(1, 33, 65)),
+        arrayBlocks(writer, input, List(33, 1, 64))
+      )
+      for (bytes <- encodings) {
+        val expected = asGeneric(arrays, bytes, writer)
+        val decoded = read(arrays, bytes, custom = true, writer = writer).asInstanceOf[example.ArrayValues]
+        assert(asGeneric(arrays, write(decoded, custom = false)) == expected, s"array fresh size=$size")
+        val previous = arrayGuard.longs
+        val snapshot = previous.toVector
+        assert(read(arrays, bytes, custom = true, reuse = arrayGuard, writer = writer) eq arrayGuard)
+        assert(previous.toVector == snapshot, "reusing a record mutated its previous immutable List")
+        assert(asGeneric(arrays, write(arrayGuard, custom = true)) == expected, s"array reuse size=$size")
+        val stream = DecoderFactory.get().binaryDecoder(bytes ++ bytes, null)
+        val reader = new SpecificDatumReader[SpecificRecordBase](writer, arrays, model(arrays, true))
+        (0 until 2).foreach(_ => assert(asGeneric(arrays, write(reader.read(null, stream), true)) == expected))
+        assert(stream.isEnd, "array decoding left data at the record boundary")
+      }
+      val truncated = genericBytes(writer, input).dropRight(1)
+      try {
+        read(arrays, truncated, custom = true, writer = writer)
+        sys.error("truncated array data unexpectedly accepted")
+      } catch { case _: java.io.IOException => () }
+      if (size >= 32) {
+        // Fail inside an array's element loop, not just on a missing final block marker.
+        val partialBlock = genericBytes(writer, input).take(20)
+        try {
+          read(arrays, partialBlock, custom = true, writer = writer)
+          sys.error("truncated array elements unexpectedly accepted")
+        } catch { case _: java.io.IOException => () }
+      }
+    }
+
     // Avro's independent fast reader bypasses customDecode; it must remain compatible.
     val fastModel = model(schema, true)
     fastModel.setFastReaderEnabled(true)
