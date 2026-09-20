@@ -1,0 +1,9 @@
+{"type":"record","name":"IdentityArrays","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"longs","type":{"type":"array","items":"long"}},
+  {"name":"ints","type":{"type":"array","items":"int"}},
+  {"name":"doubles","type":{"type":"array","items":"double"}},
+  {"name":"texts","type":{"type":"array","items":"string"}},
+  {"name":"records","type":{"type":"array","items":
+    {"type":"record","name":"ArrayLeaf","fields":[{"name":"id","type":"long"},{"name":"label","type":"string"}]}}},
+  {"name":"java_enums","type":{"type":"array","items":
+    {"type":"enum","name":"ArrayEnum","symbols":["A","B","C","D"]}}}]}

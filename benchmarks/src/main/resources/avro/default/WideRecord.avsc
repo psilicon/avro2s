@@ -1,0 +1,9 @@
+{"type":"record","name":"WideRecord","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"f01","type":"long"},{"name":"f02","type":"string"},{"name":"f03","type":"int"},
+  {"name":"f04","type":"double"},{"name":"f05","type":"boolean"},{"name":"f06","type":"long"},
+  {"name":"f07","type":"string"},{"name":"f08","type":"int"},{"name":"f09","type":"double"},
+  {"name":"f10","type":"boolean"},{"name":"f11","type":"long"},{"name":"f12","type":"string"},
+  {"name":"f13","type":"int"},{"name":"f14","type":"double"},{"name":"f15","type":"boolean"},
+  {"name":"f16","type":["null","string"]},{"name":"f17","type":{"type":"array","items":"long"}},
+  {"name":"f18","type":{"type":"map","values":"string"}},{"name":"f19","type":"bytes"},
+  {"name":"f20","type":"float"}]}

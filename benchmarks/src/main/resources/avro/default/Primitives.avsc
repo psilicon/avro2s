@@ -1,0 +1,4 @@
+{"type":"record","name":"Primitives","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"a","type":"int"},{"name":"b","type":"long"},{"name":"c","type":"float"},
+  {"name":"d","type":"double"},{"name":"e","type":"boolean"},{"name":"f","type":"int"},
+  {"name":"g","type":"long"},{"name":"h","type":"double"}]}

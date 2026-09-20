@@ -1,0 +1,6 @@
+{"type":"record","name":"Maps","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"small_map","type":{"type":"map","values":"long"}},
+  {"name":"large_map","type":{"type":"map","values":"long"}},
+  {"name":"text_map","type":{"type":"map","values":"string"}},
+  {"name":"nested_map","type":{"type":"map","values":{"type":"map","values":"long"}}},
+  {"name":"union_map","type":{"type":"map","values":["null","long"]}}]}

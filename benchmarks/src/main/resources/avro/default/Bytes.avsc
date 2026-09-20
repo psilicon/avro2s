@@ -1,0 +1,4 @@
+{"type":"record","name":"Bytes","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"empty_payload","type":"bytes"},{"name":"small_payload","type":"bytes"},
+  {"name":"large_payload","type":"bytes"},
+  {"name":"digest","type":{"type":"fixed","name":"Digest","size":16}}]}
