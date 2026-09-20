@@ -92,7 +92,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             {
               def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
                 var remaining$ = input$
-                val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                val result$ = if (input$.isEmpty) new java.util.ArrayList[AnyRef]() else new java.util.ArrayList[AnyRef](input$.size)
                 while (remaining$.nonEmpty) {
                   result$.add(remaining$.head)
                   remaining$ = remaining$.tail
@@ -176,7 +176,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                 {
                   def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
                     var remaining$ = input$
-                    val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                    val result$ = if (input$.isEmpty) new java.util.ArrayList[AnyRef]() else new java.util.ArrayList[AnyRef](input$.size)
                     while (remaining$.nonEmpty) {
                       result$.add(remaining$.head)
                       remaining$ = remaining$.tail
@@ -340,7 +340,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                 {
                   def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
                     var remaining$ = input$
-                    val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                    val result$ = if (input$.isEmpty) new java.util.ArrayList[AnyRef]() else new java.util.ArrayList[AnyRef](input$.size)
                     while (remaining$.nonEmpty) {
                       result$.add(remaining$.head)
                       remaining$ = remaining$.tail

@@ -15,7 +15,7 @@
 # Options:
 #   --against <rev>    Revision to compare against (default: main)
 #   --scala <list>     Comma-separated Scala versions: 2.13, 3 (default: 3,2.13)
-#   --profile <name>   smoke | fast | full (default: full)
+#   --profile <name>   smoke | fast | two | full (default: full)
 #                        smoke  one fork, 2 iterations: checks the harness runs, not for numbers
 #                        fast   one fork, 5 iterations: ballpark, minutes rather than hours
 #                        two    two forks, 6 iterations: a second fork catches JIT luck a
