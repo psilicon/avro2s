@@ -100,7 +100,11 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
         .add("def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {")
         .indent
         .add("var remaining$ = input$")
-        .add("val result$ = new java.util.ArrayList[AnyRef](input$.size)")
+        // Avro reuses the collection this returns when it decodes into a record, clearing it
+        // but keeping its capacity. Sizing an empty list to 0 therefore leaves a read growing
+        // the backing array from nothing on every field. The no-arg constructor allocates
+        // nothing here and gives a reused list room, so writes of empty arrays stay free.
+        .add("val result$ = if (input$.isEmpty) new java.util.ArrayList[AnyRef]() else new java.util.ArrayList[AnyRef](input$.size)")
         .add("while (remaining$.nonEmpty) {")
         .indent
         .add("result$.add(remaining$.head)")

@@ -20,7 +20,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           {
             def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
               var remaining$ = input$
-              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              val result$ = if (input$.isEmpty) new java.util.ArrayList[AnyRef]() else new java.util.ArrayList[AnyRef](input$.size)
               while (remaining$.nonEmpty) {
                 result$.add(remaining$.head)
                 remaining$ = remaining$.tail
