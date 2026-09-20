@@ -95,7 +95,18 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_arrays.foreach { kvp =>
           val key = kvp._1
           val value = {
-            if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+            {
+              def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                var remaining$ = input$
+                val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                while (remaining$.nonEmpty) {
+                  result$.add(remaining$.head)
+                  remaining$ = remaining$.tail
+                }
+                result$
+              }
+              toJavaArray$(kvp._2.asInstanceOf[List[AnyRef]])
+            }
           }
           map.put(key, value)
         }
@@ -169,7 +180,18 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
-                if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+                {
+                  def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                    var remaining$ = input$
+                    val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                    while (remaining$.nonEmpty) {
+                      result$.add(remaining$.head)
+                      remaining$ = remaining$.tail
+                    }
+                    result$
+                  }
+                  toJavaArray$(kvp._2.asInstanceOf[List[AnyRef]])
+                }
               }
               map.put(key, value)
             }
@@ -323,7 +345,18 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
           val value = {
             kvp._2 match {
               case Inl(x) =>
-                if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+                {
+                  def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                    var remaining$ = input$
+                    val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                    while (remaining$.nonEmpty) {
+                      result$.add(remaining$.head)
+                      remaining$ = remaining$.tail
+                    }
+                    result$
+                  }
+                  toJavaArray$(x.asInstanceOf[List[AnyRef]])
+                }
               case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
               case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
               case _ => throw new AvroRuntimeException("Invalid value")

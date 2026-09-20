@@ -22,7 +22,18 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 8 => _enum.asInstanceOf[AnyRef]
       case 9 => _array match {
         case array =>
-          if (array.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(array.asInstanceOf[List[AnyRef]])
+          }
         }
       case 10 => {
         val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]({ val size$ = _map.size; if (size$ <= 12) 16 else _root_.scala.math.ceil(size$ / 0.75d).toInt })

@@ -56,7 +56,18 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
             kvp._2 match {
               case None => null
               case Some(x) =>
-                if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+                {
+                  def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                    var remaining$ = input$
+                    val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                    while (remaining$.nonEmpty) {
+                      result$.add(remaining$.head)
+                      remaining$ = remaining$.tail
+                    }
+                    result$
+                  }
+                  toJavaArray$(x.asInstanceOf[List[AnyRef]])
+                }
             }
           }
           map.put(key, value)
@@ -126,7 +137,18 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                   element$ match {
                     case None => null
                     case Some(x) =>
-                      if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+                      {
+                        def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                          var remaining$ = input$
+                          val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                          while (remaining$.nonEmpty) {
+                            result$.add(remaining$.head)
+                            remaining$ = remaining$.tail
+                          }
+                          result$
+                        }
+                        toJavaArray$(x.asInstanceOf[List[AnyRef]])
+                      }
                   }
                 })
                 remaining$ = remaining$.tail

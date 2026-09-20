@@ -18,7 +18,18 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => _optional_array match {
         case None => null
         case Some(x) =>
-          if (x.isEmpty) new java.util.ArrayList[Boolean](0) else new java.util.ArrayList[Boolean](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(x.asInstanceOf[List[AnyRef]])
+          }
       }
       case 2 => _array_of_options match {
         case array =>

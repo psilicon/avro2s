@@ -287,7 +287,18 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       case 26 => _optional_array match {
         case None => null
         case Some(x) =>
-          if (x.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(x.asInstanceOf[List[AnyRef]])
+          }
       }
       case 27 => _optional_map_of_array match {
         case None => null
@@ -296,7 +307,18 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           x.foreach { kvp =>
             val key = kvp._1
             val value = {
-              if (kvp._2.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+              {
+                def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                  var remaining$ = input$
+                  val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                  while (remaining$.nonEmpty) {
+                    result$.add(remaining$.head)
+                    remaining$ = remaining$.tail
+                  }
+                  result$
+                }
+                toJavaArray$(kvp._2.asInstanceOf[List[AnyRef]])
+              }
             }
             map.put(key, value)
           }
@@ -360,7 +382,18 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               while (remaining$.nonEmpty) {
                 val element$ = remaining$.head
                 result$.add({
-                  if (element$.isEmpty) new java.util.ArrayList[String](0) else new java.util.ArrayList[String](scala.jdk.CollectionConverters.SeqHasAsJava(element$).asJava)
+                  {
+                    def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                      var remaining$ = input$
+                      val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                      while (remaining$.nonEmpty) {
+                        result$.add(remaining$.head)
+                        remaining$ = remaining$.tail
+                      }
+                      result$
+                    }
+                    toJavaArray$(element$.asInstanceOf[List[AnyRef]])
+                  }
                 })
                 remaining$ = remaining$.tail
               }

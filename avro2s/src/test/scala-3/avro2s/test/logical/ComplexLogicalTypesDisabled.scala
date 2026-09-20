@@ -24,7 +24,18 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       }.asInstanceOf[AnyRef]
       case 1 => _array match {
         case array =>
-          if (array.isEmpty) new java.util.ArrayList[Int](0) else new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(array.asInstanceOf[List[AnyRef]])
+          }
         }
       case 2 => _union match {
         case x: Int => x.asInstanceOf[AnyRef]
@@ -53,7 +64,18 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         _map_array.foreach { kvp =>
           val key = kvp._1
           val value = {
-            if (kvp._2.isEmpty) new java.util.ArrayList[Int](0) else new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+            {
+              def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                var remaining$ = input$
+                val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                while (remaining$.nonEmpty) {
+                  result$.add(remaining$.head)
+                  remaining$ = remaining$.tail
+                }
+                result$
+              }
+              toJavaArray$(kvp._2.asInstanceOf[List[AnyRef]])
+            }
           }
           map.put(key, value)
         }
@@ -75,7 +97,18 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 7 => _union_array match {
         case x: Int => x.asInstanceOf[AnyRef]
         case x: List[Int] =>
-          if (x.isEmpty) new java.util.ArrayList[Int](0) else new java.util.ArrayList[Int](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(x.asInstanceOf[List[AnyRef]])
+          }
       }
       case 8 => _array_map match {
         case array =>

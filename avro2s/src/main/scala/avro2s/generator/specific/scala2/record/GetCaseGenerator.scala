@@ -91,11 +91,35 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     }
     val elementType = schemaToScalaType(element, useLogical = true)
     if (!needsConversion) {
-      // The collection constructor preserves existing boxes and keeps large identity copies efficient.
-      return printer.add(s"if ($value.isEmpty) new java.util.ArrayList[$elementType](0) else new java.util.ArrayList[$elementType](scala.jdk.CollectionConverters.SeqHasAsJava($value).asJava)")
+      // Copying straight into the backing array allocates once. Going through asJava instead
+      // costs a wrapper, its iterator, an Object[] from toArray and a second Arrays.copyOf,
+      // because ArrayList only skips the copy for another ArrayList.
+      // AnyRef keeps the elements' existing boxes, so a List[Long] is not unboxed and reboxed.
+      return printer
+        .add("{")
+        .indent
+        .add("def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {")
+        .indent
+        .add("var remaining$ = input$")
+        .add("val result$ = new java.util.ArrayList[AnyRef](input$.size)")
+        .add("while (remaining$.nonEmpty) {")
+        .indent
+        .add("result$.add(remaining$.head)")
+        .add("remaining$ = remaining$.tail")
+        .outdent
+        .add("}")
+        .add("result$")
+        .outdent
+        .add("}")
+        .add(s"toJavaArray$$($value.asInstanceOf[List[AnyRef]])")
+        .outdent
+        .add("}")
     }
     // Avro clears collections returned by get when reusing records, so return a detached mutable copy.
     // A capture-free local method keeps collection loops out of the record's get method for the JIT.
+    // List is safe to hardcode here and above: TypeHelpers maps every Avro array to List, so head
+    // and tail are O(1). size is O(n) on a List, so both loops traverse twice in exchange for
+    // sizing the backing array exactly once and never growing it.
     printer
       .add("{")
       .indent

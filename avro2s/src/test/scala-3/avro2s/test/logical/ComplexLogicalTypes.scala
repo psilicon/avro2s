@@ -37,7 +37,18 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
       }.asInstanceOf[AnyRef]
       case 2 => _array match {
         case array =>
-          if (array.isEmpty) new java.util.ArrayList[java.time.LocalDate](0) else new java.util.ArrayList[java.time.LocalDate](scala.jdk.CollectionConverters.SeqHasAsJava(array).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(array.asInstanceOf[List[AnyRef]])
+          }
         }
       case 3 => _union match {
         case x: Int => x.asInstanceOf[AnyRef]
@@ -84,7 +95,18 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         _map_array.foreach { kvp =>
           val key = kvp._1
           val value = {
-            if (kvp._2.isEmpty) new java.util.ArrayList[java.time.LocalDate](0) else new java.util.ArrayList[java.time.LocalDate](scala.jdk.CollectionConverters.SeqHasAsJava(kvp._2).asJava)
+            {
+              def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+                var remaining$ = input$
+                val result$ = new java.util.ArrayList[AnyRef](input$.size)
+                while (remaining$.nonEmpty) {
+                  result$.add(remaining$.head)
+                  remaining$ = remaining$.tail
+                }
+                result$
+              }
+              toJavaArray$(kvp._2.asInstanceOf[List[AnyRef]])
+            }
           }
           map.put(key, value)
         }
@@ -119,7 +141,18 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
       case 11 => _union_array match {
         case x: Int => x.asInstanceOf[AnyRef]
         case x: List[java.time.LocalDate] =>
-          if (x.isEmpty) new java.util.ArrayList[java.time.LocalDate](0) else new java.util.ArrayList[java.time.LocalDate](scala.jdk.CollectionConverters.SeqHasAsJava(x).asJava)
+          {
+            def toJavaArray$(input$: List[AnyRef]): java.util.ArrayList[AnyRef] = {
+              var remaining$ = input$
+              val result$ = new java.util.ArrayList[AnyRef](input$.size)
+              while (remaining$.nonEmpty) {
+                result$.add(remaining$.head)
+                remaining$ = remaining$.tail
+              }
+              result$
+            }
+            toJavaArray$(x.asInstanceOf[List[AnyRef]])
+          }
       }
       case 12 => _array_map match {
         case array =>
