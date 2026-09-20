@@ -15,7 +15,11 @@
 # Options:
 #   --against <rev>    Revision to compare against (default: main)
 #   --scala <list>     Comma-separated Scala versions: 2.13, 3 (default: 3,2.13)
-#   --quick            Fewer iterations and one fork; for smoke-testing the harness, not for numbers
+#   --profile <name>   smoke | fast | full (default: full)
+#                        smoke  one fork, 2 iterations: checks the harness runs, not for numbers
+#                        fast   one fork, 5 iterations: ballpark, minutes rather than hours
+#                        full   two forks, 10 iterations: the profile to quote
+#   --sizes <list>     Comma-separated collectionSize values (default: the benchmarks' own sweep)
 #   --current-only     Skip the baseline arm entirely
 #   -h, --help         Show this message
 #
@@ -27,16 +31,18 @@ SBT="${AVRO2S_SBT:-sbt}"
 BASELINE_REVISION="main"
 SCALA_VERSIONS="3,2.13"
 FILTER=".*"
-QUICK=0
+PROFILE="full"
+SIZES=""
 CURRENT_ONLY=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --against) BASELINE_REVISION="$2"; shift 2 ;;
     --scala) SCALA_VERSIONS="$2"; shift 2 ;;
-    --quick) QUICK=1; shift ;;
+    --profile) PROFILE="$2"; shift 2 ;;
+    --sizes) SIZES="$2"; shift 2 ;;
     --current-only) CURRENT_ONLY=1; shift ;;
-    -h|--help) sed -n '2,25p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,30p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*) echo "Unknown option: $1" >&2; exit 2 ;;
     *) FILTER="$1"; shift ;;
   esac
@@ -112,10 +118,19 @@ else
   ARMS="current,baseline"
 fi
 
-if [[ "$QUICK" -eq 1 ]]; then
-  JMH_OPTIONS="-wi 1 -i 2 -r 1 -w 1 -f 1"
-else
-  JMH_OPTIONS="-wi 5 -i 5 -r 1 -w 1 -f 2"
+case "$PROFILE" in
+  smoke) JMH_OPTIONS="-wi 1 -i 2 -r 1 -w 1 -f 1" ;;
+  fast)  JMH_OPTIONS="-wi 2 -i 3 -r 1 -w 1 -f 1" ;;
+  full)  JMH_OPTIONS="-wi 5 -i 5 -r 1 -w 1 -f 2" ;;
+  *) echo "Unknown profile: $PROFILE (expected smoke, fast or full)" >&2; exit 2 ;;
+esac
+
+if [[ -n "$SIZES" ]]; then
+  JMH_OPTIONS="$JMH_OPTIONS -p collectionSize=$SIZES"
+fi
+
+if [[ "$PROFILE" != "full" ]]; then
+  echo "==> Profile '$PROFILE': indicative only. Use --profile full for numbers worth quoting."
 fi
 
 STATUS=0

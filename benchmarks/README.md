@@ -19,9 +19,22 @@ scripts/compare-benchmarks.sh --current-only
 # Against some other revision.
 scripts/compare-benchmarks.sh --against v0.29.0
 
-# Smoke-test the harness. Not valid numbers: one fork, two iterations.
-scripts/compare-benchmarks.sh --quick --scala 3 PrimitivesBenchmark.encode
+# Ballpark numbers in a couple of minutes rather than hours.
+scripts/compare-benchmarks.sh --profile fast --sizes 16 "(IdentityArrays|Maps)Benchmark.(encode|get)$"
+
+# Check the harness runs at all. Not numbers.
+scripts/compare-benchmarks.sh --profile smoke --scala 3 PrimitivesBenchmark.encode
 ```
+
+| Profile | Forks | Iterations | Use |
+| --- | --- | --- | --- |
+| `smoke` | 1 | 2 | Does the harness run |
+| `fast` | 1 | 5 | Ballpark while working on a change |
+| `full` (default) | 2 | 10 | Numbers worth quoting |
+
+`--sizes` narrows the `collectionSize` sweep, which is the other big lever on run time.
+A full unrestricted run takes hours; `--profile fast --sizes 16` over a few shapes takes
+minutes.
 
 Results are written to `benchmarks/results/`, which is not tracked. Nothing in this module
 is published; see the comment on `publish / skip` in `build.sbt`.
