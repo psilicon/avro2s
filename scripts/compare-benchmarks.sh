@@ -18,6 +18,8 @@
 #   --profile <name>   smoke | fast | full (default: full)
 #                        smoke  one fork, 2 iterations: checks the harness runs, not for numbers
 #                        fast   one fork, 5 iterations: ballpark, minutes rather than hours
+#                        two    two forks, 6 iterations: a second fork catches JIT luck a
+#                               single fork cannot; trustworthy for direction and magnitude
 #                        full   two forks, 10 iterations: the profile to quote
 #   --sizes <list>     Comma-separated collectionSize values (default: the benchmarks' own sweep)
 #   --current-only     Skip the baseline arm entirely
@@ -121,8 +123,9 @@ fi
 case "$PROFILE" in
   smoke) JMH_OPTIONS="-wi 1 -i 2 -r 1 -w 1 -f 1" ;;
   fast)  JMH_OPTIONS="-wi 2 -i 3 -r 1 -w 1 -f 1" ;;
+  two)   JMH_OPTIONS="-wi 3 -i 3 -r 1 -w 1 -f 2" ;;
   full)  JMH_OPTIONS="-wi 5 -i 5 -r 1 -w 1 -f 2" ;;
-  *) echo "Unknown profile: $PROFILE (expected smoke, fast or full)" >&2; exit 2 ;;
+  *) echo "Unknown profile: $PROFILE (expected smoke, fast, two or full)" >&2; exit 2 ;;
 esac
 
 if [[ -n "$SIZES" ]]; then

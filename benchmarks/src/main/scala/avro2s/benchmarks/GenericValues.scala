@@ -20,9 +20,12 @@ object GenericValues {
   def record(schema: Schema, size: Int): GenericData.Record =
     value(schema, new Random(seedFor(schema)), size, depth = 0).asInstanceOf[GenericData.Record]
 
-  // A stable seed derived from the schema's name keeps values identical across runs, JVMs and
-  // the revisions being compared, while still differing between schemas.
-  private def seedFor(schema: Schema): Long = schema.getFullName.hashCode.toLong
+  // A stable seed keeps values identical across runs, JVMs and the revisions being compared,
+  // while still differing between schemas. It must come from the simple name, never the full
+  // name: the namespace is exactly what differs between the arms of a comparison, so seeding on
+  // it would hand each arm different data - different union branches above all - and the two
+  // would no longer be measuring the same work.
+  private def seedFor(schema: Schema): Long = schema.getName.hashCode.toLong
 
   // Nested collections multiply out, so only the outermost level uses the requested size.
   private def sizeAt(size: Int, depth: Int): Int =
@@ -36,6 +39,28 @@ object GenericValues {
       index += 1
     }
     builder.toString
+  }
+
+  private val millisPerDay = 86400000
+  // Roughly fifty years either side of the epoch: wide enough to be representative, narrow
+  // enough that no unit overflows java.time.
+  private val millisRange = 1_600_000_000_000L
+
+  private def logicalInt(logicalType: String, random: Random): Int = logicalType match {
+    case "time-millis" => random.nextInt(millisPerDay)
+    case "date" => random.nextInt(40000) - 20000
+    case _ => random.nextInt(millisPerDay)
+  }
+
+  private def logicalLong(logicalType: String, random: Random): Long = {
+    def within(bound: Long): Long = math.floorMod(random.nextLong(), bound)
+    logicalType match {
+      case "time-micros" => within(millisPerDay.toLong * 1000L)
+      case "time-nanos" => within(millisPerDay.toLong * 1000000L)
+      case "timestamp-micros" | "local-timestamp-micros" => within(millisRange * 1000L) - (millisRange * 1000L / 2)
+      case "timestamp-nanos" | "local-timestamp-nanos" => within(millisRange) - (millisRange / 2)
+      case _ => within(millisRange) - (millisRange / 2)
+    }
   }
 
   private def isUuid(schema: Schema): Boolean =
@@ -88,6 +113,10 @@ object GenericValues {
       // Avro's own conversion parses it on read.
       case STRING if isUuid(schema) => new java.util.UUID(random.nextLong(), random.nextLong()).toString
       case STRING => text(random, math.max(4, size))
+      // An int or long carrying a logical type is not free to be any value: Avro's conversions
+      // reject a time outside a day, and a wild timestamp overflows java.time on read.
+      case INT if schema.getLogicalType != null => Int.box(logicalInt(schema.getLogicalType.getName, random))
+      case LONG if schema.getLogicalType != null => Long.box(logicalLong(schema.getLogicalType.getName, random))
       case INT => Int.box(random.nextInt())
       // Values beyond the JVM's small-integer cache, so boxing costs are measured honestly.
       case LONG => Long.box(random.nextInt().toLong + 1024L)

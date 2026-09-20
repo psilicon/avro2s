@@ -4,10 +4,12 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
 /**
- * Shared shape of every benchmark: one generated record, measured four ways.
+ * Shared shape of every benchmark: one generated record, written and read.
  *
- * get and put isolate the generated conversion code. encode and decode measure it in the place
- * it actually runs, driven by Avro's specific writer and reader.
+ * These are whole operations through Avro's specific writer and reader, which is where the
+ * generated get and put actually run. Measuring get and put on their own was tried and dropped:
+ * with the results unused, the JIT can eliminate allocations that a real write cannot, so the
+ * isolated numbers understated the work and did not reconcile with the write they belong to.
  *
  * JMH forks each benchmark/parameter combination separately, so a fork comparing arms only ever
  * loads one arm's class at these call sites. That keeps the SpecificRecord dispatch monomorphic
@@ -37,10 +39,8 @@ abstract class ShapeBenchmark {
     workload.verify()
   }
 
-  @Benchmark def get(): AnyRef = workload.get()
-  @Benchmark def put(): Any = workload.put()
-  @Benchmark def encode(): Int = workload.encode()
-  @Benchmark def decode(): Any = workload.decode()
+  @Benchmark def write(): Int = workload.write()
+  @Benchmark def read(): Any = workload.read()
 }
 
 class PrimitivesBenchmark extends ShapeBenchmark { protected val shape = "primitives" }

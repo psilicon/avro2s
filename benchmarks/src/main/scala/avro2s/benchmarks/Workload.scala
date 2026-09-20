@@ -23,12 +23,6 @@ final class Workload(val name: String, val recordClass: Class[_ <: SpecificRecor
   val record: SpecificRecord = Workload.decodeInto(recordClass, schema, Workload.encodeGeneric(schema, genericValue))
   private val model: SpecificData = record.asInstanceOf[SpecificRecordBase].getSpecificData
 
-  val fieldCount: Int = schema.getFields.size()
-
-  /** Exactly what get returns, so put is measured on the values it is really handed. */
-  private val fieldValues: Array[AnyRef] = Array.tabulate(fieldCount)(record.get)
-  private val scratch: SpecificRecord = recordClass.getDeclaredConstructor().newInstance()
-
   private val writer = new SpecificDatumWriter[SpecificRecord](schema, model)
   private val reader = new SpecificDatumReader[SpecificRecord](schema, schema, model)
   private val buffer = new ByteArrayOutputStream(1024)
@@ -43,29 +37,8 @@ final class Workload(val name: String, val recordClass: Class[_ <: SpecificRecor
     buffer.toByteArray
   }
 
-  /** The conversion work in the generated get, with no encoder involved. */
-  def get(): AnyRef = {
-    var result: AnyRef = null
-    var index = 0
-    while (index < fieldCount) {
-      result = record.get(index)
-      index += 1
-    }
-    result
-  }
-
-  /** The reverse conversion in the generated put, fed the values get produces. */
-  def put(): SpecificRecord = {
-    var index = 0
-    while (index < fieldCount) {
-      scratch.put(index, fieldValues(index))
-      index += 1
-    }
-    scratch
-  }
-
-  /** Full encode through Avro's specific writer, which drives get for every field. */
-  def encode(): Int = {
+  /** A write: Avro's specific writer, which drives the generated get for every field. */
+  def write(): Int = {
     buffer.reset()
     encoder = EncoderFactory.get().binaryEncoder(buffer, encoder)
     writer.write(record, encoder)
@@ -73,8 +46,8 @@ final class Workload(val name: String, val recordClass: Class[_ <: SpecificRecor
     buffer.size()
   }
 
-  /** Full decode through Avro's specific reader, which drives put for every field. */
-  def decode(): SpecificRecord = {
+  /** A read: Avro's specific reader, which drives the generated put for every field. */
+  def read(): SpecificRecord = {
     decoder = DecoderFactory.get().binaryDecoder(payload, decoder)
     reader.read(null, decoder)
   }
@@ -87,7 +60,7 @@ final class Workload(val name: String, val recordClass: Class[_ <: SpecificRecor
     val reencoded = {
       val output = new ByteArrayOutputStream(1024)
       val target = EncoderFactory.get().binaryEncoder(output, null)
-      writer.write(decode(), target)
+      writer.write(read(), target)
       target.flush()
       output.toByteArray
     }
