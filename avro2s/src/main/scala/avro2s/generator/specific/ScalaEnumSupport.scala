@@ -34,6 +34,9 @@ private[avro2s] object ScalaEnumSupport {
       .outdent
       .add("}")
 
+  // Unlike printFromAvroSymbol, this needs no caseName: it matches on value.toString, and both
+  // generators give every case a toString returning its original Avro symbol. Matching on the
+  // Scala case name instead would throw for every renamed symbol, such as "values$avro".
   def printAvroSymbolCache(printer: FunctionalPrinter, schema: Schema): FunctionalPrinter = {
     if (schema.getEnumSymbols.size() <= maxInlineCacheSymbols) printSmallAvroSymbolCache(printer, schema)
     else printLargeAvroSymbolCache(printer, schema)
