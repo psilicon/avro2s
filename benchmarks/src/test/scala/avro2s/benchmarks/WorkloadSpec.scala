@@ -38,6 +38,26 @@ class WorkloadSpec extends AnyWordSpec with Matchers {
     }
   }
 
+  "the generated data" should {
+    // The arms of a comparison differ only by namespace. If that changed the values, the two
+    // would be serialising different work and no comparison between them would mean anything.
+    "be identical for a schema and its namespace-rewritten twin" in {
+      Workloads.names.foreach { shape =>
+        List(0, 16).foreach { size =>
+          withClue(s"shape $shape at size $size: ") {
+            val current = Workloads(Workloads.currentArm, shape, size)
+            val renamed = new org.apache.avro.Schema.Parser().parse(
+              current.schema.toString.replace(Workloads.namespaceFor(Workloads.currentArm), "some.other.namespace")
+            )
+            val a = Workload.normalise(GenericValues.record(current.schema, size))
+            val b = Workload.normalise(GenericValues.record(renamed, size))
+            a shouldEqual b
+          }
+        }
+      }
+    }
+  }
+
   "the current arm" should {
     "expose a generated model for every shape" in {
       Workloads.available(Workloads.currentArm) shouldBe true

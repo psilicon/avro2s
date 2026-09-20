@@ -20,10 +20,10 @@ scripts/compare-benchmarks.sh --current-only
 scripts/compare-benchmarks.sh --against v0.29.0
 
 # Ballpark numbers in a couple of minutes rather than hours.
-scripts/compare-benchmarks.sh --profile fast --sizes 16 "(IdentityArrays|Maps)Benchmark.(encode|get)$"
+scripts/compare-benchmarks.sh --profile fast --sizes 16 "(IdentityArrays|Maps)Benchmark"
 
 # Check the harness runs at all. Not numbers.
-scripts/compare-benchmarks.sh --profile smoke --scala 3 PrimitivesBenchmark.encode
+scripts/compare-benchmarks.sh --profile smoke --scala 3 PrimitivesBenchmark.write
 ```
 
 | Profile | Forks | Iterations | Use |
@@ -45,14 +45,17 @@ after `compare-benchmarks.sh` has generated it.
 
 ## What is measured
 
-Each shape has a benchmark class with four measurements:
+Each shape has a benchmark class with two measurements:
 
 | Measurement | What it covers |
 | --- | --- |
-| `get` | The generated `get(i)` for every field, with no encoder involved |
-| `put` | The generated `put(i, v)`, fed exactly the values `get` produces |
-| `encode` | A full `SpecificDatumWriter` write, which drives `get` for every field |
-| `decode` | A full `SpecificDatumReader` read, which drives `put` for every field |
+| `write` | A `SpecificDatumWriter` write, which drives the generated `get(i)` for every field |
+| `read` | A `SpecificDatumReader` read, which drives the generated `put(i, v)` for every field |
+
+These are whole operations, because that is what callers experience and the only level at
+which the numbers are trustworthy. Benchmarking `get` and `put` in isolation was tried and
+removed: with their results unused the JIT can eliminate allocations a real write cannot, so
+the isolated figures understated the work and did not reconcile with the write containing them.
 
 Shapes live in `src/main/resources/avro`, one schema per shape. `IdentityArrays`,
 `ConvertingArrays`, `Maps`, `Strings` and `Bytes` sweep a `collectionSize` parameter;
