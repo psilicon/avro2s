@@ -1,0 +1,5 @@
+{"type":"record","name":"ConvertingArrays","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"nested_arrays","type":{"type":"array","items":{"type":"array","items":"string"}}},
+  {"name":"nested_maps","type":{"type":"array","items":{"type":"map","values":"long"}}},
+  {"name":"nested_unions","type":{"type":"array","items":["null","string"]}},
+  {"name":"byte_arrays","type":{"type":"array","items":"bytes"}}]}

@@ -1,0 +1,6 @@
+{"type":"record","name":"Unions","namespace":"avro2s.benchmarks.models","fields":[
+  {"name":"optional_text","type":["null","string"]},
+  {"name":"optional_long","type":["null","long"]},
+  {"name":"coproduct","type":["string","long","double","boolean"]},
+  {"name":"optional_record","type":["null",
+    {"type":"record","name":"UnionLeaf","fields":[{"name":"id","type":"long"}]}]}]}
