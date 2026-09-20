@@ -44,6 +44,7 @@ object Check extends App {
     sys.error("An empty enum must reject every symbol")
   } catch { case _: org.apache.avro.AvroRuntimeException => () }
 
+  SmallSymbolChecks.check()
   EnumWireChecks.check(new SpecificDatumReader[SymbolsRecord](SymbolsRecord.SCHEMA$))
   EnumWireChecks.check(new SpecificDatumReader[SymbolsRecord](SymbolsRecord.SCHEMA$, SymbolsRecord.SCHEMA$, new SpecificData()))
   assert(Symbols.fromAvroSymbol("values") eq Symbols.values$avro)
@@ -94,5 +95,35 @@ object EnumWireChecks {
         DecoderFactory.get().binaryDecoder(encodedOutput.toByteArray, null))
       assert(generic == record, symbol)
     }
+  }
+}
+
+object SmallSymbolChecks {
+  // Symbols has more than 32 symbols, so it only exercises the HashMap symbol cache.
+  // SmallSymbols stays under that threshold and so takes the inline match cache, which
+  // must map a renamed Scala case back to its original Avro symbol just the same.
+  def check(): Unit = {
+    val schema = SmallSymbolsRecord.SCHEMA$
+    val iterator = SmallSymbols.SCHEMA$.getEnumSymbols.iterator()
+    while (iterator.hasNext) {
+      val symbol = iterator.next()
+      val value = SmallSymbols.fromAvroSymbol(symbol)
+      val wrapped = SmallSymbols.toAvroSymbol$(value)
+      assert(wrapped.toString == symbol, symbol)
+      assert(wrapped.getSchema eq SmallSymbols.SCHEMA$, symbol)
+      assert(SmallSymbols.toAvroSymbol$(value) eq wrapped, symbol)
+
+      val output = new ByteArrayOutputStream()
+      val encoder = EncoderFactory.get().binaryEncoder(output, null)
+      new SpecificDatumWriter[SmallSymbolsRecord](schema).write(SmallSymbolsRecord(value), encoder)
+      encoder.flush()
+      val generic = new GenericDatumReader[GenericRecord](schema).read(null,
+        DecoderFactory.get().binaryDecoder(output.toByteArray, null))
+
+      val expected = new GenericData.Record(schema)
+      expected.put("symbol", new GenericData.EnumSymbol(SmallSymbols.SCHEMA$, symbol))
+      assert(generic == expected, symbol)
+    }
+    assert(SmallSymbols.toAvroSymbol$(null) == null)
   }
 }

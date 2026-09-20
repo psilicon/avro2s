@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "SmallSymbolsRecord",
+  "namespace": "example",
+  "fields": [
+    {"name": "symbol", "type": {
+      "type": "enum", "name": "SmallSymbols",
+      "symbols": ["values", "valueOf", "toString", "fromAvroSymbol", "fromOrdinal", "_", "type", "NORMAL"]
+    }}
+  ]
+}
