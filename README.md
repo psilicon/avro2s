@@ -109,6 +109,30 @@ Multiline documentation is preserved; missing or whitespace-only docs produce no
 comment. Comment delimiters and backslashes are escaped so documentation cannot
 break the generated source. No additional configuration is required.
 
+#### Known limitations
+
+**Unions whose logical types map to the same Scala type are rejected.** Avro keeps
+union branches apart by type name, so `["null", {"type":"int","logicalType":"time-millis"},
+{"type":"long","logicalType":"time-micros"}]` is a legal schema - the branches are `int`
+and `long`. Both map to `java.time.LocalTime`, though, which leaves the two branches
+indistinguishable in generated code.
+
+Reads would still be correct, because the decoder resolves the branch itself. Writes
+would not: Avro picks a union branch from the value's class, so every value would be
+encoded as whichever branch was declared first, silently. A consumer holding only the
+other branch then decodes the payload through the wrong conversion - and because Avro
+promotes `int` to `long` when matching branches, it does so without error. A
+`time-millis` of `20:35:34.567` comes back as `00:01:14.134567`.
+
+Rather than generate code that can do that, avro2s fails with a `SchemaError` naming the
+field and the colliding branches. Generate the schema with logical types disabled to use
+it: the same branches then map to `Int` and `Long`, which are distinct and round-trip
+correctly.
+
+`time-millis`/`time-micros` is the only pair this can affect. The other same-type pairs -
+`timestamp-millis`/`timestamp-micros` and `local-timestamp-millis`/`local-timestamp-micros`
+- are both `long` on the wire, so Avro itself rejects a union containing either pair.
+
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.
    - Parts of this code are directly copied from avrohugger; a lot of the code within the `filesorter`, `parser` and `schema` packages has been changed only slightly.
