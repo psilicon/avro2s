@@ -392,7 +392,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             val value = kvp._2
             (key, {
               value match {
-                case x: org.apache.avro.util.Utf8 => x.toString
+                case x: java.lang.CharSequence => x.toString
                 case x: Int => x
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
@@ -408,7 +408,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             val value = kvp._2
             (key, {
               value match {
-                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case x: java.lang.CharSequence => Option(x.toString)
                 case x: Long => Option(x)
                 case x: Boolean => Option(x)
                 case map: java.util.Map[?,?] =>
@@ -424,7 +424,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                             val value = kvp._2
                             (key, {
                               value match {
-                                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                                case x: java.lang.CharSequence => Option(x.toString)
                                 case x: Long => Option(x)
                                 case x: Boolean => Option(x)
                                 case x: Double => Option(x)
@@ -497,7 +497,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   val value = kvp._2
                   (key, {
                     value match {
-                      case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                      case x: java.lang.CharSequence => Option(x.toString)
                       case x: Long => Option(x)
                       case x: Boolean => Option(x)
                       case x: Double => Option(x)

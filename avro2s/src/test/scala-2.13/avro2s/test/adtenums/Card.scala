@@ -142,7 +142,7 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
           case x @ null => Coproduct[scala.Null :+: avro2s.test.adtenums.Suit :+: String :+: CNil](x)
           case x: avro2s.test.adtenums.Suit => Coproduct[scala.Null :+: avro2s.test.adtenums.Suit :+: String :+: CNil](x)
           case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "avro2s.test.adtenums.Suit" => Coproduct[scala.Null :+: avro2s.test.adtenums.Suit :+: String :+: CNil](_root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString))
-          case x: org.apache.avro.util.Utf8 => Coproduct[scala.Null :+: avro2s.test.adtenums.Suit :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[scala.Null :+: avro2s.test.adtenums.Suit :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }

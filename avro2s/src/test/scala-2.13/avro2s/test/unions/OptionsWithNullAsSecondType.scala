@@ -75,7 +75,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 0 => this._simple = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+          case x: java.lang.CharSequence => Some(x.toString)
         }
       }
       case 1 => this._optional_array = {
@@ -97,7 +97,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: org.apache.avro.util.Utf8 => Some(x.toString)
+                case x: java.lang.CharSequence => Some(x.toString)
               }
             }).toList
           }
@@ -112,7 +112,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
                 (key, {
                   value match {
                     case null => None
-                    case x: org.apache.avro.util.Utf8 => Some(x.toString)
+                    case x: java.lang.CharSequence => Some(x.toString)
                   }
                 })
               }.toMap

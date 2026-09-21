@@ -104,12 +104,12 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 11 => this._union_nullable = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+          case x: java.lang.CharSequence => Some(x.toString)
         }
       }
       case 12 => this._union_other = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
           case x: Int => Coproduct[String :+: Int :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }

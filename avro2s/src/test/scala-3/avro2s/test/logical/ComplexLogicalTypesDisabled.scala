@@ -212,7 +212,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 3 => this._option = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -303,7 +303,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
             case null => None
-            case x: org.apache.avro.util.Utf8 => Option(x.toString)
+            case x: java.lang.CharSequence => Option(x.toString)
             case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
         }).toList

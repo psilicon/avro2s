@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "JavaStrings",
+  "namespace": "avro2s.test.javastring",
+  "doc": "Strings carrying avro.java.string: String, which makes the reader hand put() a java.lang.String rather than a Utf8.",
+  "fields": [
+    {
+      "name": "optional_name",
+      "doc": "Exercises the two-branch option path.",
+      "type": ["null", {"type": "string", "avro.java.string": "String"}]
+    },
+    {
+      "name": "name_or_count",
+      "doc": "Exercises the multi-branch union path.",
+      "type": [{"type": "string", "avro.java.string": "String"}, "int"]
+    },
+    {
+      "name": "names",
+      "doc": "Exercises a union nested in an array.",
+      "type": {"type": "array", "items": [{"type": "string", "avro.java.string": "String"}, "int"]}
+    },
+    {
+      "name": "lookup",
+      "doc": "Exercises a union nested in a map.",
+      "type": {"type": "map", "values": [{"type": "string", "avro.java.string": "String"}, "int"]}
+    }
+  ]
+}

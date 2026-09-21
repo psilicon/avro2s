@@ -377,7 +377,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
           case array: java.util.List[_] =>
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
-                case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
+                case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
                 case x: Int => Coproduct[String :+: Int :+: CNil](x)
                 case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }

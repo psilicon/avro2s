@@ -74,7 +74,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
     (field$: @switch) match {
       case 0 => this._simple = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -93,7 +93,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
         val array = value.asInstanceOf[java.util.List[?]]
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
-            case x: org.apache.avro.util.Utf8 => Option(x.toString)
+            case x: java.lang.CharSequence => Option(x.toString)
             case null => None
             case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
@@ -107,7 +107,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
             val value = kvp._2
             (key, {
               value match {
-                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case x: java.lang.CharSequence => Option(x.toString)
                 case null => None
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }

@@ -138,7 +138,7 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
           case null => None
           case x: avro2s.test.scalaenums.Suit => Option(x.asInstanceOf[avro2s.test.scalaenums.Suit | String])
           case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "avro2s.test.scalaenums.Suit" => Option(_root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString).asInstanceOf[avro2s.test.scalaenums.Suit | String])
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
