@@ -3,6 +3,8 @@ package avro2s.generator.specific
 import avro2s.error.Error.ConfigError
 import avro2s.error.Error.SchemaError
 import avro2s.generator.EnumType
+import avro2s.generator.logical.LogicalTypes
+import avro2s.generator.logical.LogicalTypes.LogicalTypeConverter
 import avro2s.generator.javagenerator.JavaGenericEnumGenerator.schemaToJavaEnum
 import avro2s.generator.specific.scala2.enumeration.ScalaAdtEnumGenerator
 import avro2s.generator.specific.scala2.fixed.SpecificFixedGenerator.schemaToScala2Fixed
@@ -18,9 +20,14 @@ private[avro2s] class SpecificGenerator(generatorConfig: GeneratorConfig) {
   import scala2SpecificGenerator._
   import scala3SpecificGenerator._
 
+  private val ltc = LogicalTypeConverter(
+    if (generatorConfig.logicalTypesEnabled) LogicalTypes.logicalTypeMap else Map.empty)
+
   def compile(
     schema: Schema,
     namespace: Option[String]): GeneratedCode = {
+
+    UnionValidator.validate(schema, ltc)
 
     generatorConfig.targetScalaVersion match {
       case ScalaVersion.Scala_2_13 => compileScala2(schema, namespace)
