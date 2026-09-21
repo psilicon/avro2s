@@ -456,7 +456,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
     (field$: @switch) match {
       case 0 => this._union_of_map_of_union = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]{
@@ -473,7 +473,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                           val value = kvp._2
                           (key, {
                             value match {
-                              case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                              case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                               case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                               case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                               case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
@@ -495,7 +495,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 1 => this._union_of_map_of_option = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil]{
@@ -506,7 +506,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                 (key, {
                   value match {
                     case null => None
-                    case x: org.apache.avro.util.Utf8 => Some(x.toString)
+                    case x: java.lang.CharSequence => Some(x.toString)
                   }
                 })
               }.toMap
@@ -518,7 +518,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 2 => this._union_of_array_of_option = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x)
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil]({
@@ -527,7 +527,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                 scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                   value match {
                     case null => None
-                    case x: org.apache.avro.util.Utf8 => Some(x.toString)
+                    case x: java.lang.CharSequence => Some(x.toString)
                   }
                 }).toList
               }
@@ -538,7 +538,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 3 => this._union_of_array_of_union = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x)
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil]({
@@ -546,7 +546,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               case array: java.util.List[_] =>
                 scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                   value match {
-                    case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.toString)
+                    case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.toString)
                     case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
                     case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
                     case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
@@ -563,7 +563,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 4 => this._union_of_array_of_array = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]({
@@ -574,7 +574,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                     case array: java.util.List[_] =>
                       scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                         value match {
-                          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                           case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
@@ -592,7 +592,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 5 => this._union_of_records = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Record1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
@@ -603,7 +603,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 6 => this._union_of_enum = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Enum1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
@@ -613,7 +613,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 7 => this._union_of_fixed = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Fixed1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
@@ -623,7 +623,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 8 => this._union_of_string = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: scala.Null :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: scala.Null :+: CNil](x)
           case x @ null => Coproduct[String :+: Long :+: scala.Null :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -632,42 +632,42 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       case 9 => this._union_of_int = {
         value match {
           case x: Int => Coproduct[Int :+: String :+: CNil](x)
-          case x: org.apache.avro.util.Utf8 => Coproduct[Int :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Int :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 10 => this._union_of_long = {
         value match {
           case x: Long => Coproduct[Long :+: String :+: CNil](x)
-          case x: org.apache.avro.util.Utf8 => Coproduct[Long :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Long :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 11 => this._union_of_float = {
         value match {
           case x: Float => Coproduct[Float :+: String :+: CNil](x)
-          case x: org.apache.avro.util.Utf8 => Coproduct[Float :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Float :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._union_of_double = {
         value match {
           case x: Double => Coproduct[Double :+: String :+: CNil](x)
-          case x: org.apache.avro.util.Utf8 => Coproduct[Double :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Double :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 13 => this._union_of_boolean = {
         value match {
           case x: Boolean => Coproduct[Boolean :+: String :+: CNil](x)
-          case x: org.apache.avro.util.Utf8 => Coproduct[Boolean :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Boolean :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 14 => this._union_of_bytes = {
         value match {
           case x: java.nio.ByteBuffer => Coproduct[Array[Byte] :+: String :+: CNil](x.array())
-          case x: org.apache.avro.util.Utf8 => Coproduct[Array[Byte] :+: String :+: CNil](x.toString)
+          case x: java.lang.CharSequence => Coproduct[Array[Byte] :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -692,7 +692,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       case 18 => this._optional_string = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Some(x.toString)
+          case x: java.lang.CharSequence => Some(x.toString)
         }
       }
       case 19 => this._optional_int = {
@@ -862,7 +862,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                 val value = kvp._2
                 (key, {
                   value match {
-                    case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                    case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                     case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
@@ -883,7 +883,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               case array: java.util.List[_] =>
                 scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                   value match {
-                    case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                    case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                     case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)

@@ -359,7 +359,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
         val array = value.asInstanceOf[java.util.List[?]]
         scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
           value match {
-            case x: org.apache.avro.util.Utf8 => x.toString
+            case x: java.lang.CharSequence => x.toString
             case x: Int => x
             case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }

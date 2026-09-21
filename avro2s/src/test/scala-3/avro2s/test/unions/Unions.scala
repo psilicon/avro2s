@@ -433,7 +433,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
     (field$: @switch) match {
       case 0 => this._union_of_map_of_union = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case map: java.util.Map[?,?] =>
@@ -449,7 +449,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
                       val value = kvp._2
                       (key, {
                         value match {
-                          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                          case x: java.lang.CharSequence => Option(x.toString)
                           case x: Long => Option(x)
                           case x: Boolean => Option(x)
                           case x: Double => Option(x)
@@ -468,7 +468,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 1 => this._union_of_map_of_option = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case map: java.util.Map[?,?] =>
@@ -479,7 +479,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
                 (key, {
                   value match {
                     case null => None
-                    case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                    case x: java.lang.CharSequence => Option(x.toString)
                     case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
                 })
@@ -491,14 +491,14 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 2 => this._union_of_array_of_option = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
             Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
                 case null => None
-                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case x: java.lang.CharSequence => Option(x.toString)
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList)
@@ -508,13 +508,13 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 3 => this._union_of_array_of_union = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
             Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
-                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case x: java.lang.CharSequence => Option(x.toString)
                 case x: Long => Option(x)
                 case x: Boolean => Option(x)
                 case x: Double => Option(x)
@@ -529,7 +529,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 4 => this._union_of_array_of_array = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
@@ -537,7 +537,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               val array = value.asInstanceOf[java.util.List[?]]
               scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
                 value match {
-                  case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                  case x: java.lang.CharSequence => Option(x.toString)
                   case x: Long => Option(x)
                   case x: Boolean => Option(x)
                   case x: Double => Option(x)
@@ -552,7 +552,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 5 => this._union_of_records = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case x: avro2s.test.unions.Record1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Record1 | avro2s.test.unions.Record2])
@@ -563,7 +563,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 6 => this._union_of_enum = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case x: avro2s.test.unions.Enum1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Enum1])
@@ -573,7 +573,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 7 => this._union_of_fixed = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case x: avro2s.test.unions.Fixed1 => Option(x.asInstanceOf[String | Long | Boolean | avro2s.test.unions.Fixed1])
@@ -583,7 +583,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 8 => this._union_of_string = {
         value match {
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case x: Long => Option(x)
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -592,42 +592,42 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 9 => this._union_of_int = {
         value match {
           case x: Int => x
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 10 => this._union_of_long = {
         value match {
           case x: Long => x
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 11 => this._union_of_float = {
         value match {
           case x: Float => x
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._union_of_double = {
         value match {
           case x: Double => x
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 13 => this._union_of_boolean = {
         value match {
           case x: Boolean => x
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 14 => this._union_of_bytes = {
         value match {
           case x: java.nio.ByteBuffer => x.array()
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -655,7 +655,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 18 => this._optional_string = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -813,7 +813,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
                 val value = kvp._2
                 (key, {
                   value match {
-                    case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                    case x: java.lang.CharSequence => Option(x.toString)
                     case x: Long => Option(x)
                     case x: Boolean => Option(x)
                     case x: Double => Option(x)
@@ -832,7 +832,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case array: java.util.List[?] =>
             Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
               value match {
-                case x: org.apache.avro.util.Utf8 => Option(x.toString)
+                case x: java.lang.CharSequence => Option(x.toString)
                 case x: Long => Option(x)
                 case x: Boolean => Option(x)
                 case x: Double => Option(x)

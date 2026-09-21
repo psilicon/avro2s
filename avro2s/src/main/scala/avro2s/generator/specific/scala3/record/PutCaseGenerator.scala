@@ -150,7 +150,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
               } else {
                 t.getType match {
                   case Type.STRING =>
-                    List(s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}")
+                    List(s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x.toString"))}")
                   case Type.NULL => List(s"case null => None")
                   case _ =>
                     List(s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}")

@@ -82,7 +82,12 @@ private[avro2s] class TypeHelpers(ltc: LogicalTypeConverter) {
       case Schema.Type.LONG => "Long"
       case Schema.Type.FLOAT => "Float"
       case Schema.Type.DOUBLE => "Double"
-      case Schema.Type.STRING => "org.apache.avro.util.Utf8"
+      // CharSequence, not Utf8: the reader picks the concrete class from the schema. A string
+      // carrying "avro.java.string": "String" - what the Avro Java compiler's -string flag emits,
+      // so common in schemas shared with Java codegen - arrives as a java.lang.String instead, and
+      // matching Utf8 alone would throw on it. Callers pair this with toStringConverter, so either
+      // class ends up a Scala String. No other type a union branch can receive is a CharSequence.
+      case Schema.Type.STRING => "java.lang.CharSequence"
       case Schema.Type.BYTES => "java.nio.ByteBuffer"
       case Schema.Type.NULL => "scala.Null"
       case other => throw SchemaError(s"Unsupported type: $other")

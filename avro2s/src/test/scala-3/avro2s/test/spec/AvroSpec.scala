@@ -110,13 +110,13 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 11 => this._union_nullable = {
         value match {
           case null => None
-          case x: org.apache.avro.util.Utf8 => Option(x.toString)
+          case x: java.lang.CharSequence => Option(x.toString)
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._union_other = {
         value match {
-          case x: org.apache.avro.util.Utf8 => x.toString
+          case x: java.lang.CharSequence => x.toString
           case x: Int => x
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
