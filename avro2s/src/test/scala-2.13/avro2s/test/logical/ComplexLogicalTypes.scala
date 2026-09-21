@@ -288,13 +288,17 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.util.UUID] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, java.util.UUID]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.asInstanceOf[java.util.UUID]
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -303,13 +307,17 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.time.LocalDate] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, java.time.LocalDate]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.asInstanceOf[java.time.LocalDate]
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -317,9 +325,15 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
       case 2 => this._array = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[java.time.LocalDate]
-            }).toList
+            val builder$ = List.newBuilder[java.time.LocalDate]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[java.time.LocalDate]
+              }
+            }
+            builder$.result()
           }
       }
       case 3 => this._union = {
@@ -345,17 +359,21 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Int :+: java.time.Instant :+: CNil] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Int :+: java.time.Instant :+: CNil]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
                     case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
                     case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -364,16 +382,20 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[java.time.Instant]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[java.time.Instant]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: java.time.Instant => Some(x)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -382,18 +404,28 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[java.time.LocalDate]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, List[java.time.LocalDate]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.asInstanceOf[java.time.LocalDate]
-                      }).toList
+                      val builder$ = List.newBuilder[java.time.LocalDate]
+                      val iterator$ = array.iterator
+                      while (iterator$.hasNext) {
+                        val value = iterator$.next
+                        builder$ += {
+                          value.asInstanceOf[java.time.LocalDate]
+                        }
+                      }
+                      builder$.result()
                     }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -403,13 +435,17 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           case x: Int => Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, java.util.UUID] :+: CNil]{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.util.UUID] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, java.util.UUID]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.asInstanceOf[java.util.UUID]
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -420,13 +456,17 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           case x: Int => Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, java.time.LocalDate] :+: CNil]{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.time.LocalDate] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, java.time.LocalDate]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.asInstanceOf[java.time.LocalDate]
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -438,86 +478,130 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
           case x: java.util.List[_] => Coproduct[Int :+: List[java.time.LocalDate] :+: CNil]({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value.asInstanceOf[java.time.LocalDate]
-                }).toList
+                val builder$ = List.newBuilder[java.time.LocalDate]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.asInstanceOf[java.time.LocalDate]
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._array_map = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.util.UUID] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.asInstanceOf[java.util.UUID]
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Map[String, java.util.UUID]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case map: java.util.Map[_,_] => {
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.util.UUID] else {
+                      val builder$ = Map.newBuilder[String, java.util.UUID]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.asInstanceOf[java.util.UUID]
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 13 => this._array_map_alt = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.time.LocalDate] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.asInstanceOf[java.time.LocalDate]
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Map[String, java.time.LocalDate]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case map: java.util.Map[_,_] => {
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, java.time.LocalDate] else {
+                      val builder$ = Map.newBuilder[String, java.time.LocalDate]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.asInstanceOf[java.time.LocalDate]
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 14 => this._array_union = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
-                case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[Int :+: java.time.Instant :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
+                  case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 15 => this._array_option = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.util.UUID => Some(x)
+            val builder$ = List.newBuilder[Option[java.util.UUID]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: java.util.UUID => Some(x)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 16 => this._array_option_alt = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.time.LocalDate => Some(x)
+            val builder$ = List.newBuilder[Option[java.time.LocalDate]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: java.time.LocalDate => Some(x)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

@@ -81,7 +81,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       }
       case 6 => this.`else` = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 7 => this.`extends` = {
         value.toString.asInstanceOf[String]
@@ -106,7 +106,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       }
       case 14 => this.`implicit` = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 15 => this.`import` = {
         value.toString.asInstanceOf[String]
@@ -131,7 +131,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       }
       case 22 => this.`override` = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 23 => this.`package` = {
         value.toString.asInstanceOf[String]
@@ -156,7 +156,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       }
       case 30 => this.`throw` = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 31 => this.`trait` = {
         value.toString.asInstanceOf[String]
@@ -181,7 +181,7 @@ case class ReservedScala3(var `abstract`: scala.Null, var `case`: Boolean, var `
       }
       case 38 => this.`with` = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 39 => this.`yield` = {
         value.toString.asInstanceOf[String]

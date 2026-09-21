@@ -16,6 +16,7 @@ import scala.util.Try
  * can adjust the stack size, if needed, when running code generation, without impacting applications. This may be improved in the future.
  */
 private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Boolean) {
+  private val dollar = "$"
   private val typeHelpers = new TypeHelpers(ltc)
 
   import typeHelpers._
@@ -29,7 +30,10 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           .call(matchUnion(_, "value", field.schema()))
           .outdent
           .add("}")
-      case BYTES if ltc.avroAutoConverts(field.schema()) =>
+      case BYTES | FIXED if ltc.putConversionIsOptional(field.schema()) =>
+        printer
+          .add(s"case $index => this.${field.safeName} = ${ltc.toType(field.schema(), "value")}")
+      case BYTES | FIXED if ltc.putReceivesConverted(field.schema()) =>
         printer
           .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
       case BYTES =>
@@ -62,7 +66,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
         printer
           .add(s"case $index => this.${field.safeName} = ${ScalaEnumSupport.putConversion("value", field.schema())}")
       case _ =>
-        if (ltc.logicalTypeInUse(field.schema())) {
+        if (ltc.putReceivesConverted(field.schema())) {
           printer
             .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
         } else {
@@ -87,7 +91,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     printer
       .add(s"$matchTarget match {")
       .indent
-      .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array")}")
+      .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array")}")
       .outdent
       .add("}")
   }
@@ -111,11 +115,22 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       .indent
       .add("case array: java.util.List[_] =>")
       .indent
-      .add("scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>")
+      // A loop rather than CollectionConverters: asScala.map(...).toList allocates a wrapper, a
+      // Scala iterator adapter and a lazy map iterator before a single element is read, and none
+      // of them outlive the call.
+      .add(s"val builder$dollar = List.newBuilder[${schemaToScalaType(schema.getElementType, true)}]")
+      .add(s"val iterator$dollar = array.iterator")
+      .add(s"while (iterator$dollar.hasNext) {")
+      .indent
+      .add(s"val value = iterator$dollar.next")
+      .add(s"builder$dollar += {")
       .indent
       .call(printArrayValue(_, "value", schema.getElementType))
       .outdent
-      .add("}).toList")
+      .add("}")
+      .outdent
+      .add("}")
+      .add(s"builder$dollar.result()")
       .outdent
       .add("}")
       .outdent
@@ -128,20 +143,22 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           .call(matchUnion(_, valueName, schema))
       case MAP => matchMap(printer, valueName, schema)
       case ARRAY => matchArray(printer, valueName, schema)
+      case BYTES | FIXED if ltc.putReceivesConverted(schema) =>
+        printer.add(s"$valueName.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
       case BYTES =>
         printer
           .add(s"$valueName match {")
           .indent
-          .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array")}")
+          .add(s"case buffer: java.nio.ByteBuffer => ${ltc.toTypeWithFallback(schema, "buffer", "val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array")}")
           .outdent
           .add("}")
       case ENUM if scalaEnums =>
         printer.add(ScalaEnumSupport.putConversion(valueName, schema))
       case _ =>
-        if (ltc.logicalTypeInUse(schema)) {
+        if (ltc.putReceivesConverted(schema)) {
           printer.add(s"$valueName.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
-          printer.add(ltc.toType(schema, typeCast(valueName, schema)))
+          printer.add(ltc.toType(schema, if (ltc.selfConverts(schema)) valueName else typeCast(valueName, schema)))
         }
     }
   }
@@ -150,17 +167,21 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     functionalPrinter
       .add(s"if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, ${schemaToScalaType(schema.getValueType, true)}] else {")
       .indent
-      .add("scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>")
+      .add(s"val builder$dollar = Map.newBuilder[String, ${schemaToScalaType(schema.getValueType, true)}]")
+      .add(s"val iterator$dollar = map.entrySet.iterator")
+      .add(s"while (iterator$dollar.hasNext) {")
       .indent
-      .add("val key = kvp._1.toString")
-      .add("val value = kvp._2")
-      .add(s"(key, {")
+      .add(s"val entry$dollar = iterator$dollar.next")
+      .add(s"val key = entry$dollar.getKey.toString")
+      .add(s"val value = entry$dollar.getValue")
+      .add(s"builder$dollar += ((key, {")
       .indent
       .call(printMapValueInner(_, schema.getValueType))
       .outdent
-      .add("})")
+      .add("}))")
       .outdent
-      .add("}.toMap")
+      .add("}")
+      .add(s"builder$dollar.result()")
       .outdent
       .add("}")
   }
@@ -174,16 +195,18 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       case ARRAY =>
         printer
           .call(matchArray(_, "value", schema))
+      case BYTES | FIXED if ltc.putReceivesConverted(schema) =>
+        printer.add(s"value.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
       case BYTES =>
         printer
           .call(matchBytes(_, "value", schema))
       case ENUM if scalaEnums =>
         printer.add(ScalaEnumSupport.putConversion("value", schema))
       case _ =>
-        if (ltc.logicalTypeInUse(schema)) {
+        if (ltc.putReceivesConverted(schema)) {
           printer.add(s"value.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
-          printer.add(ltc.toType(schema, typeCast("value", schema)))
+          printer.add(ltc.toType(schema, if (ltc.selfConverts(schema)) "value" else typeCast("value", schema)))
         }
     }
   }
@@ -206,18 +229,20 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
                 .outdent
                 .add("}")
                 .result())
+            case FIXED if ltc.putReceivesConverted(t) => List(s"case x: ${ltc.getType(t, t.getFullName)} => Coproduct[${union.asString(typeHelpers)}](x)")
             case FIXED => List(s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, "x")})")
-            case BYTES => List(s"case x: java.nio.ByteBuffer => Coproduct[${union.asString(typeHelpers)}](${ltc.toTypeWithFallback(t, "x", "x.array()")})")
+            case BYTES if ltc.putReceivesConverted(t) => List(s"case x: ${ltc.getType(t, "java.nio.ByteBuffer")} => Coproduct[${union.asString(typeHelpers)}](x)")
+            case BYTES => List(s"case x: java.nio.ByteBuffer => Coproduct[${union.asString(typeHelpers)}](${ltc.toTypeWithFallback(t, "x", "{ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ }")})")
             case ARRAY =>
               List(new FunctionalPrinter()
                 .add(s"case x: java.util.List[_] => Coproduct[${union.asString(typeHelpers)}]({")
                 .indent
                 .call(printArrayValue(_, "x", t))
                 .outdent
-                .add("}.toList)")
+                .add("})")
                 .result())
             case _ =>
-              if (ltc.logicalTypeInUse(t)) {
+              if (ltc.putReceivesConverted(t)) {
                 List(s"case x: ${ltc.getType(t, simpleTypeToScalaReceiveType(t.getType))} => Coproduct[${union.asString(typeHelpers)}](x)")
               } else {
                 val typeName = simpleTypeToScalaReceiveType(t.getType)
@@ -244,10 +269,13 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
               .indent
               .call(printArrayValue(_, "x", schema))
               .outdent
-              .add("}.toList)")
+              .add("})")
+          case BYTES | FIXED if ltc.putReceivesConverted(schema) =>
+            nullCasePrinter
+              .add(s"case x: ${ltc.getType(schema, schemaToScalaType(schema, false))} => Some(x)")
           case BYTES =>
             nullCasePrinter
-              .add(s"case x: java.nio.ByteBuffer => Some(${ltc.toTypeWithFallback(schema, "x", "x.array()")})")
+              .add(s"case x: java.nio.ByteBuffer => Some(${ltc.toTypeWithFallback(schema, "x", "{ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ }")})")
           case ENUM if scalaEnums =>
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(x)")
@@ -259,7 +287,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(${ltc.toType(schema, "x")})")
           case _ =>
-            if (ltc.logicalTypeInUse(schema)) {
+            if (ltc.putReceivesConverted(schema)) {
               nullCasePrinter.add(s"case x: ${ltc.getType(schema, simpleTypeToScalaReceiveType(schema.getType))} => Some(x)")
             } else {
               val x = toStringConverter("x", schema)

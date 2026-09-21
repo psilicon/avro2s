@@ -97,22 +97,32 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
       case 2 => this.history = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
-            }).toList
+            val builder$ = List.newBuilder[avro2s.test.adtenums.Suit]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
+              }
+            }
+            builder$.result()
           }
       }
       case 3 => this.byPlayer = {
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.adtenums.Suit] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, avro2s.test.adtenums.Suit]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match { case x: _root_.avro2s.test.adtenums.Suit => x; case x => _root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString) }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -120,13 +130,19 @@ case class Card(var suit: avro2s.test.adtenums.Suit, var trump: Option[avro2s.te
       case 4 => this.maybeHistory = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: avro2s.test.adtenums.Suit => Some(x)
-                case x: org.apache.avro.generic.GenericEnumSymbol[_] => Some(_root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString))
+            val builder$ = List.newBuilder[Option[avro2s.test.adtenums.Suit]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: avro2s.test.adtenums.Suit => Some(x)
+                  case x: org.apache.avro.generic.GenericEnumSymbol[_] => Some(_root_.avro2s.test.adtenums.Suit.fromAvroSymbol(x.toString))
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 5 => this.kw = value match { case x: _root_.avro2s.test.adtenums.Kw => x; case x => _root_.avro2s.test.adtenums.Kw.fromAvroSymbol(x.toString) }

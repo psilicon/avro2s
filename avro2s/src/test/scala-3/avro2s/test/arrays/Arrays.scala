@@ -333,139 +333,287 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
     (field$: @switch) match {
       case 0 => this._array_of_arrays = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          val array = value.asInstanceOf[java.util.List[?]]
-          scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-            value.toString
-          }).toList
-        }).toList
+        {
+          val builder$ = List.newBuilder[List[String]]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              val array = value.asInstanceOf[java.util.List[?]]
+              {
+                val builder$ = List.newBuilder[String]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.toString
+                  }
+                }
+                builder$.result()
+              }
+            }
+          }
+          builder$.result()
+        }
       }
       case 1 => this._array_of_maps = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          val map = value.asInstanceOf[java.util.Map[?,?]]
-          if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-            scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-              val key = kvp._1.toString
-              val value = kvp._2
-              (key, {
-                value.toString
-              })
-            }.toMap
+        {
+          val builder$ = List.newBuilder[Map[String, String]]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              val map = value.asInstanceOf[java.util.Map[?,?]]
+              if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                val builder$ = Map.newBuilder[String, String]
+                val iterator$ = map.entrySet.iterator
+                while (iterator$.hasNext) {
+                  val entry$ = iterator$.next
+                  val key = entry$.getKey.toString
+                  val value = entry$.getValue
+                  builder$ += ((key, {
+                    value.toString
+                  }))
+                }
+                builder$.result()
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 2 => this._array_of_unions = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: java.lang.CharSequence => x.toString
-            case x: Int => x
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[String | Int]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case x: java.lang.CharSequence => x.toString
+                case x: Int => x
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 3 => this._array_of_records = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[avro2s.test.arrays.Record]
-        }).toList
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.Record]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[avro2s.test.arrays.Record]
+            }
+          }
+          builder$.result()
+        }
       }
       case 4 => this._array_of_union_of_records = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: avro2s.test.arrays.Record1 => x.asInstanceOf[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int]
-            case x: avro2s.test.arrays.Record2 => x.asInstanceOf[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int]
-            case x: Int => x
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case x: avro2s.test.arrays.Record1 => x.asInstanceOf[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int]
+                case x: avro2s.test.arrays.Record2 => x.asInstanceOf[avro2s.test.arrays.Record1 | avro2s.test.arrays.Record2 | Int]
+                case x: Int => x
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 5 => this._array_of_enums = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[avro2s.test.arrays.Enum]
-        }).toList
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.Enum]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[avro2s.test.arrays.Enum]
+            }
+          }
+          builder$.result()
+        }
       }
       case 6 => this._array_of_fixed = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[avro2s.test.arrays.Fixed]
-        }).toList
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.Fixed]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[avro2s.test.arrays.Fixed]
+            }
+          }
+          builder$.result()
+        }
       }
       case 7 => this._array_of_bytes = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-          val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-        }).toList
+        {
+          val builder$ = List.newBuilder[Array[Byte]]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              val buffer = value.asInstanceOf[java.nio.ByteBuffer]
+              val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
+            }
+          }
+          builder$.result()
+        }
       }
       case 8 => this._array_of_strings = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.toString
-        }).toList
+        {
+          val builder$ = List.newBuilder[String]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.toString
+            }
+          }
+          builder$.result()
+        }
       }
       case 9 => this._array_of_ints = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[Int]
-        }).toList
+        {
+          val builder$ = List.newBuilder[Int]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[Int]
+            }
+          }
+          builder$.result()
+        }
       }
       case 10 => this._array_of_longs = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[Long]
-        }).toList
+        {
+          val builder$ = List.newBuilder[Long]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[Long]
+            }
+          }
+          builder$.result()
+        }
       }
       case 11 => this._array_of_floats = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[Float]
-        }).toList
+        {
+          val builder$ = List.newBuilder[Float]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[Float]
+            }
+          }
+          builder$.result()
+        }
       }
       case 12 => this._array_of_doubles = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[Double]
-        }).toList
+        {
+          val builder$ = List.newBuilder[Double]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[Double]
+            }
+          }
+          builder$.result()
+        }
       }
       case 13 => this._array_of_booleans = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[Boolean]
-        }).toList
+        {
+          val builder$ = List.newBuilder[Boolean]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[Boolean]
+            }
+          }
+          builder$.result()
+        }
       }
       case 14 => this._array_of_union_of_only_records = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: avro2s.test.arrays.RecordA => x.asInstanceOf[avro2s.test.arrays.RecordA | avro2s.test.arrays.RecordB]
-            case x: avro2s.test.arrays.RecordB => x.asInstanceOf[avro2s.test.arrays.RecordA | avro2s.test.arrays.RecordB]
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.RecordA | avro2s.test.arrays.RecordB]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case x: avro2s.test.arrays.RecordA => x.asInstanceOf[avro2s.test.arrays.RecordA | avro2s.test.arrays.RecordB]
+                case x: avro2s.test.arrays.RecordB => x.asInstanceOf[avro2s.test.arrays.RecordA | avro2s.test.arrays.RecordB]
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 15 => this._array_of_union_of_only_enums = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: avro2s.test.arrays.EnumA => x.asInstanceOf[avro2s.test.arrays.EnumA | avro2s.test.arrays.EnumB]
-            case x: avro2s.test.arrays.EnumB => x.asInstanceOf[avro2s.test.arrays.EnumA | avro2s.test.arrays.EnumB]
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.EnumA | avro2s.test.arrays.EnumB]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case x: avro2s.test.arrays.EnumA => x.asInstanceOf[avro2s.test.arrays.EnumA | avro2s.test.arrays.EnumB]
+                case x: avro2s.test.arrays.EnumB => x.asInstanceOf[avro2s.test.arrays.EnumA | avro2s.test.arrays.EnumB]
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 16 => this._array_of_union_of_only_fixed = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: avro2s.test.arrays.FixedA => x.asInstanceOf[avro2s.test.arrays.FixedA | avro2s.test.arrays.FixedB]
-            case x: avro2s.test.arrays.FixedB => x.asInstanceOf[avro2s.test.arrays.FixedA | avro2s.test.arrays.FixedB]
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[avro2s.test.arrays.FixedA | avro2s.test.arrays.FixedB]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case x: avro2s.test.arrays.FixedA => x.asInstanceOf[avro2s.test.arrays.FixedA | avro2s.test.arrays.FixedB]
+                case x: avro2s.test.arrays.FixedB => x.asInstanceOf[avro2s.test.arrays.FixedA | avro2s.test.arrays.FixedB]
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }

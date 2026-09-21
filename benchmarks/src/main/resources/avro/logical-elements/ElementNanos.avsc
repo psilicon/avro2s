@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "ElementNanos",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. delegated to a corrected subclass of Avro's conversion",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "long",
+          "logicalType": "timestamp-nanos"
+        }
+      }
+    }
+  ]
+}

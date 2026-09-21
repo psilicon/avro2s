@@ -366,63 +366,84 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
       case 0 => this._map_of_maps = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Map[String, String]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val map = value.asInstanceOf[java.util.Map[?,?]]
               if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                  val key = kvp._1.toString
-                  val value = kvp._2
-                  (key, {
+                val builder$ = Map.newBuilder[String, String]
+                val iterator$ = map.entrySet.iterator
+                while (iterator$.hasNext) {
+                  val entry$ = iterator$.next
+                  val key = entry$.getKey.toString
+                  val value = entry$.getValue
+                  builder$ += ((key, {
                     value.toString
-                  })
-                }.toMap
+                  }))
+                }
+                builder$.result()
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 1 => this._map_of_union = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String | Int] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, String | Int]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value match {
                 case x: java.lang.CharSequence => x.toString
                 case x: Int => x
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 2 => this._map_of_union_of_map_of_union = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String | Long | Boolean | Map[String, Map[String, Option[String | Long | Boolean | Double]]]]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Option[String | Long | Boolean | Map[String, Map[String, Option[String | Long | Boolean | Double]]]]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value match {
                 case x: java.lang.CharSequence => Option(x.toString)
                 case x: Long => Option(x)
                 case x: Boolean => Option(x)
                 case map: java.util.Map[?,?] =>
                   Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, Option[String | Long | Boolean | Double]]] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
+                    val builder$ = Map.newBuilder[String, Map[String, Option[String | Long | Boolean | Double]]]
+                    val iterator$ = map.entrySet.iterator
+                    while (iterator$.hasNext) {
+                      val entry$ = iterator$.next
+                      val key = entry$.getKey.toString
+                      val value = entry$.getValue
+                      builder$ += ((key, {
                         val map = value.asInstanceOf[java.util.Map[?,?]]
                         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String | Long | Boolean | Double]] else {
-                          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                            val key = kvp._1.toString
-                            val value = kvp._2
-                            (key, {
+                          val builder$ = Map.newBuilder[String, Option[String | Long | Boolean | Double]]
+                          val iterator$ = map.entrySet.iterator
+                          while (iterator$.hasNext) {
+                            val entry$ = iterator$.next
+                            val key = entry$.getKey.toString
+                            val value = entry$.getValue
+                            builder$ += ((key, {
                               value match {
                                 case x: java.lang.CharSequence => Option(x.toString)
                                 case x: Long => Option(x)
@@ -431,71 +452,108 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                                 case null => None
                                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                               }
-                            })
-                          }.toMap
+                            }))
+                          }
+                          builder$.result()
                         }
-                      })
-                    }.toMap
+                      }))
+                    }
+                    builder$.result()
                   })
                 case null => None
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 3 => this._map_of_arrays = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, List[String]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val array = value.asInstanceOf[java.util.List[?]]
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                value.toString
-              }).toList
-            })
-          }.toMap
+              {
+                val builder$ = List.newBuilder[String]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.toString
+                  }
+                }
+                builder$.result()
+              }
+            }))
+          }
+          builder$.result()
         }
       }
       case 4 => this._map_of_arrays_of_maps = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Map[String, Boolean]]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, List[Map[String, Boolean]]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val array = value.asInstanceOf[java.util.List[?]]
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                val map = value.asInstanceOf[java.util.Map[?,?]]
-                if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Boolean] else {
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value.asInstanceOf[Boolean]
-                    })
-                  }.toMap
+              {
+                val builder$ = List.newBuilder[Map[String, Boolean]]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    val map = value.asInstanceOf[java.util.Map[?,?]]
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Boolean] else {
+                      val builder$ = Map.newBuilder[String, Boolean]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.asInstanceOf[Boolean]
+                        }))
+                      }
+                      builder$.result()
+                    }
+                  }
                 }
-              }).toList
-            })
-          }.toMap
+                builder$.result()
+              }
+            }))
+          }
+          builder$.result()
         }
       }
       case 5 => this._map_of_map_of_union = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, Option[String | Long | Boolean | Double]]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Map[String, Option[String | Long | Boolean | Double]]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val map = value.asInstanceOf[java.util.Map[?,?]]
               if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String | Long | Boolean | Double]] else {
-                scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                  val key = kvp._1.toString
-                  val value = kvp._2
-                  (key, {
+                val builder$ = Map.newBuilder[String, Option[String | Long | Boolean | Double]]
+                val iterator$ = map.entrySet.iterator
+                while (iterator$.hasNext) {
+                  val entry$ = iterator$.next
+                  val key = entry$.getKey.toString
+                  val value = entry$.getValue
+                  builder$ += ((key, {
                     value match {
                       case x: java.lang.CharSequence => Option(x.toString)
                       case x: Long => Option(x)
@@ -504,205 +562,283 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                       case null => None
                       case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                     }
-                  })
-                }.toMap
+                  }))
+                }
+                builder$.result()
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 6 => this._map_of_map_of_arrays = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, List[String]]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Map[String, List[String]]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val map = value.asInstanceOf[java.util.Map[?,?]]
               if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
-                scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                  val key = kvp._1.toString
-                  val value = kvp._2
-                  (key, {
+                val builder$ = Map.newBuilder[String, List[String]]
+                val iterator$ = map.entrySet.iterator
+                while (iterator$.hasNext) {
+                  val entry$ = iterator$.next
+                  val key = entry$.getKey.toString
+                  val value = entry$.getValue
+                  builder$ += ((key, {
                     val array = value.asInstanceOf[java.util.List[?]]
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      value.toString
-                    }).toList
-                  })
-                }.toMap
+                    {
+                      val builder$ = List.newBuilder[String]
+                      val iterator$ = array.iterator
+                      while (iterator$.hasNext) {
+                        val value = iterator$.next
+                        builder$ += {
+                          value.toString
+                        }
+                      }
+                      builder$.result()
+                    }
+                  }))
+                }
+                builder$.result()
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 7 => this._map_of_fixed = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Fixed] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, avro2s.test.maps.Fixed]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[avro2s.test.maps.Fixed]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 8 => this._map_of_enum = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Enum] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, avro2s.test.maps.Enum]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[avro2s.test.maps.Enum]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 9 => this._map_of_record = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.maps.Record] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, avro2s.test.maps.Record]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[avro2s.test.maps.Record]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 10 => this._map_of_union_of_record = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.maps.Record | Int]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Option[avro2s.test.maps.Record | Int]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value match {
                 case x: avro2s.test.maps.Record => Option(x.asInstanceOf[avro2s.test.maps.Record | Int])
                 case x: Int => Option(x)
                 case null => None
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 11 => this._map_of_bytes = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Array[Byte]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Array[Byte]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-              val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
-            })
-          }.toMap
+              val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
+            }))
+          }
+          builder$.result()
         }
       }
       case 12 => this._map_of_string = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, String]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.toString
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 13 => this._map_of_int = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Int] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Int]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Int]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 14 => this._map_of_long = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Long]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Long]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 15 => this._map_of_float = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Float] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Float]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Float]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 16 => this._map_of_double = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Double] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Double]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Double]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 17 => this._map_of_boolean = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Boolean] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Boolean]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Boolean]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 18 => this._map_of_null = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, scala.Null] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, scala.Null]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[scala.Null]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 19 => this._map_of_union_of_array = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[List[String] | Int]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Option[List[String] | Int]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value match {
                 case array: java.util.List[?] =>
-                  Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                    value.toString
-                  }).toList)
+                  Option({
+                    val builder$ = List.newBuilder[String]
+                    val iterator$ = array.iterator
+                    while (iterator$.hasNext) {
+                      val value = iterator$.next
+                      builder$ += {
+                        value.toString
+                      }
+                    }
+                    builder$.result()
+                  })
                 case x: Int => Option(x)
                 case null => None
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

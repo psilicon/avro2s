@@ -45,4 +45,5 @@ object GenerateBenchmarkModels extends App {
   generate("default", GeneratorConfig(scalaVersion, logicalTypesEnabled = false))
   generate("logical", GeneratorConfig(scalaVersion, logicalTypesEnabled = true))
   generate("scala-enums", GeneratorConfig(scalaVersion, logicalTypesEnabled = false, enumType = EnumType.ScalaEnum))
+  generate("logical-elements", GeneratorConfig(scalaVersion, logicalTypesEnabled = true))
 }

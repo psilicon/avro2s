@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "ElementLong",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. control: a long with no logical type",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": "long"
+      }
+    }
+  ]
+}

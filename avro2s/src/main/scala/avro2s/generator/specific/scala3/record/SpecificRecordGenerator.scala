@@ -77,8 +77,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .add(s"object $name {")
       .indent
-      .add(s"${if (scalaEnums) "@scala.annotation.static " else ""}val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .call(printConversionInfrastructure(_, distinctConversions))
+      .add(s"${if (scalaEnums) "@scala.annotation.static " else ""}val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .add(defaultValues: _*)
       .outdent
       .add("}")
@@ -89,7 +89,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   private def printGetConversion(printer: FunctionalPrinter, name: String, fields: List[Schema.Field]): FunctionalPrinter = {
     if (!generatorConfig.logicalTypesEnabled) printer
     else {
-      val hasAnyConversion = fields.exists(f => ltc.logicalTypeInUse(f.schema()))
+      val hasAnyConversion = fields.exists(f => ltc.getConversionClass(f.schema()).isDefined)
       if (!hasAnyConversion) printer
       else printer
         .newline
@@ -119,18 +119,19 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     else distinctConversions
       .foldLeft(printer) { (p, cls) =>
         val shortName = cls.split('.').last
-        p.add(s"val $dollar$shortName: org.apache.avro.Conversion[?] = new $cls()")
+        p.add(s"@scala.annotation.static val $dollar$shortName: org.apache.avro.Conversion[?] = ${ltc.conversionExpressionFor(cls)}")
       }
-      .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
-      .indent
-      .add("val model = new org.apache.avro.specific.SpecificData()")
-      .add(distinctConversions.map { cls =>
-        val shortName = cls.split('.').last
-        s"model.addLogicalTypeConversion($dollar$shortName)"
-      }: _*)
-      .add("model")
-      .outdent
-      .add("}")
+      // A @static initialiser may not bind locals - Scala 3's MoveStatics phase cannot relocate
+      // them - so the conversions are folded in rather than added in a block. A helper method
+      // would do as well, but a private one is reachable from the class's static initialiser only
+      // through a mangled public accessor, which then shows up on the companion.
+      //
+      // foldLeft returns the receiver, so the model stays a plain SpecificData rather than a
+      // subclass: FastReaderBuilder.isSupportedData tests getClass equality, and a subclass would
+      // silently drop every reader onto Avro's slow path.
+      .add(s"@scala.annotation.static val MODEL$dollar: org.apache.avro.specific.SpecificData = " +
+        s"List(${distinctConversions.map(cls => dollar + cls.split('.').last).mkString(", ")})" +
+        s".foldLeft(new org.apache.avro.specific.SpecificData())((model, conversion) => { model.addLogicalTypeConversion(conversion); model })")
   }
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
@@ -152,7 +153,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       case MAP => "Map.empty"
       case UNION =>
         val types = schema.getTypes.asScala.toList
-        if (!types.exists(_.getType == NULL)) logical(schema).getOrElse(defaultForType(types.head))
+        if (!types.exists(_.getType == NULL)) logical(types.head).getOrElse(defaultForType(types.head))
         else "None"
       case _ => "null"
     }
@@ -163,7 +164,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
         val scalaType = ltc.getType(schema, "")
         // Only immutable logical values may be shared by different record instances.
         Some(scalaType match {
-          case "java.util.UUID" | "java.time.LocalDate" | "java.time.LocalTime" | "java.time.Instant" | "java.time.LocalDateTime" =>
+          case "java.util.UUID" | "java.time.LocalDate" | "java.time.LocalTime" | "java.time.Instant" | "java.time.LocalDateTime" |
+               "scala.math.BigDecimal" | "java.math.BigDecimal" | "org.apache.avro.util.TimePeriod" =>
             val member = cachedDefaults.getOrElseUpdate((scalaType, value), s"${dollar}default$dollar${cachedDefaults.size}")
             s"$name.$member"
           case _ => value

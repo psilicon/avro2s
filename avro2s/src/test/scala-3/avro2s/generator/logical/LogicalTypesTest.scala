@@ -293,9 +293,6 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     era.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEra
   }
 
-  // Pre-epoch nanos cases are omitted: Avro 1.12's TimestampNanosConversion.toLong
-  // has a bug for negative seconds with positive nanos (subtracts 1_000_000 instead
-  // of 1_000_000_000), so round-trip is lossy below the epoch.
   test("timestamp-nanos should work at the edges") {
     def logicalTypes(time: java.time.Instant) = avro2s.test.logical.LogicalTypes(
       _uuid = fixedUuid,
@@ -315,15 +312,27 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val startOfEpoch = java.time.Instant.ofEpochSecond(0L, 0L)
     val nanoPrecision = java.time.Instant.ofEpochSecond(1234567890L, 123456789L)
     val upperBound = java.time.Instant.ofEpochSecond(Long.MaxValue / 1_000_000_000L, Long.MaxValue % 1_000_000_000L)
+    // Before the epoch with positive nanos. Avro 1.12's own TimestampNanosConversion encodes this
+    // to a positive number and reads it back as 1970-01-01T00:00:00.499Z, so avro2s registers a
+    // corrected conversion; without it these assertions fail silently rather than throwing.
+    val preEpoch = java.time.Instant.ofEpochSecond(-1L, 500000000L)
+    val deepPreEpoch = java.time.Instant.ofEpochSecond(-100L, 999999999L)
 
     val start = logicalTypes(startOfEpoch)
     val nano = logicalTypes(nanoPrecision)
     val upper = logicalTypes(upperBound)
+    val pre = logicalTypes(preEpoch)
+    val deep = logicalTypes(deepPreEpoch)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(nano), nano.getSchema) shouldBe nano
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
 
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(pre), pre.getSchema) shouldBe pre
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(deep), deep.getSchema) shouldBe deep
+
     start.get(8).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
+    pre.get(8).asInstanceOf[java.time.Instant] shouldBe preEpoch
+    deep.get(8).asInstanceOf[java.time.Instant] shouldBe deepPreEpoch
     nano.get(8).asInstanceOf[java.time.Instant] shouldBe nanoPrecision
     upper.get(8).asInstanceOf[java.time.Instant] shouldBe upperBound
   }
@@ -347,15 +356,26 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val startOfEpoch = java.time.LocalDateTime.ofEpochSecond(0L, 0, java.time.ZoneOffset.UTC)
     val nanoPrecision = java.time.LocalDateTime.ofEpochSecond(1234567890L, 123456789, java.time.ZoneOffset.UTC)
     val upperBound = java.time.LocalDateTime.ofEpochSecond(Long.MaxValue / 1_000_000_000L, (Long.MaxValue % 1_000_000_000L).toInt, java.time.ZoneOffset.UTC)
+    // Same pre-epoch defect as timestamp-nanos. This one additionally threw DateTimeException on
+    // read before the fix, because LocalDateTime.ofEpochSecond rejects a negative nanoOfSecond.
+    val preEpoch = java.time.LocalDateTime.ofEpochSecond(-1L, 500000000, java.time.ZoneOffset.UTC)
+    val deepPreEpoch = java.time.LocalDateTime.ofEpochSecond(-100L, 999999999, java.time.ZoneOffset.UTC)
 
     val start = logicalTypes(startOfEpoch)
     val nano = logicalTypes(nanoPrecision)
     val upper = logicalTypes(upperBound)
+    val pre = logicalTypes(preEpoch)
+    val deep = logicalTypes(deepPreEpoch)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
     deserialize[avro2s.test.logical.LogicalTypes](serialize(nano), nano.getSchema) shouldBe nano
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
 
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(pre), pre.getSchema) shouldBe pre
+    deserialize[avro2s.test.logical.LogicalTypes](serialize(deep), deep.getSchema) shouldBe deep
+
     start.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
+    pre.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe preEpoch
+    deep.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe deepPreEpoch
     nano.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe nanoPrecision
     upper.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
   }

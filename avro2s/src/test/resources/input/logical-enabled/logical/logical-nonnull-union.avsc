@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "avro2s.test.logical",
+  "name": "LogicalNonNullUnion",
+  "doc": "Unions without a null branch, whose first branch carries a logical type. The no-arg constructor defaults to the first branch, so it has to use the logical type's default rather than the underlying Avro type's.",
+  "fields": [
+    {"name": "_date_or_string", "type": [{"type": "int", "logicalType": "date"}, "string"]},
+    {"name": "_instant_or_string", "type": [{"type": "long", "logicalType": "timestamp-millis"}, "string"]},
+    {"name": "_uuid_or_int", "type": [{"type": "string", "logicalType": "uuid"}, "int"]},
+    {"name": "_decimal_or_string", "type": [{"type": "bytes", "logicalType": "decimal", "precision": 10, "scale": 2}, "string"]}
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "name": "ElementDecimalBytes",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. self-converted: arithmetic emitted into get and put, per element",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 18,
+          "scale": 4
+        }
+      }
+    }
+  ]
+}

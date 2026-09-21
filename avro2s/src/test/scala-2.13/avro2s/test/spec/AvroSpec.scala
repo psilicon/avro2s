@@ -73,7 +73,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 5 => this._double = value.asInstanceOf[Double]
       case 6 => this._bytes = {
         value match {
-          case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+          case buffer: java.nio.ByteBuffer => val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
         }
       }
       case 7 => this._string = value.toString.asInstanceOf[String]
@@ -81,22 +81,32 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 9 => this._array = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.toString
-            }).toList
+            val builder$ = List.newBuilder[String]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.toString
+              }
+            }
+            builder$.result()
           }
       }
       case 10 => this._map = {
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Long]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.asInstanceOf[Long]
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }

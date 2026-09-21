@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "name": "ElementDuration",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. self-converted, using the conversion hoisted onto the fixed companion",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "fixed",
+          "name": "DurationFixed12",
+          "namespace": "avro2s.benchmarks.models",
+          "size": 12,
+          "logicalType": "duration"
+        }
+      }
+    }
+  ]
+}

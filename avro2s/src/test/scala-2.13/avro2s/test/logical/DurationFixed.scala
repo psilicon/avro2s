@@ -14,7 +14,7 @@ case class DurationFixed() extends org.apache.avro.specific.SpecificFixed {
 }
 
 object DurationFixed {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"DurationFixed","namespace":"avro2s.test.logical","size":12,"logicalType":"duration"}""")
+  val SCHEMA$ = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"DurationFixed","namespace":"avro2s.test.logical","size":12,"logicalType":"duration"}""")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[DurationFixed](DurationFixed.SCHEMA$, DurationFixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
   val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[DurationFixed](DurationFixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): DurationFixed = {

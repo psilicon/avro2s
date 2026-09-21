@@ -95,32 +95,52 @@ case class Card(var suit: avro2s.test.scalaenums.Suit, var trump: Option[avro2s.
       }
       case 2 => this.history = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match { case x: _root_.avro2s.test.scalaenums.Suit => x; case x => _root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString) }
-        }).toList
+        {
+          val builder$ = List.newBuilder[avro2s.test.scalaenums.Suit]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match { case x: _root_.avro2s.test.scalaenums.Suit => x; case x => _root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString) }
+            }
+          }
+          builder$.result()
+        }
       }
       case 3 => this.byPlayer = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.scalaenums.Suit] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, avro2s.test.scalaenums.Suit]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value match { case x: _root_.avro2s.test.scalaenums.Suit => x; case x => _root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString) }
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 4 => this.maybeHistory = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case null => None
-            case x: avro2s.test.scalaenums.Suit => Option(x.asInstanceOf[avro2s.test.scalaenums.Suit])
-            case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "avro2s.test.scalaenums.Suit" => Option(_root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString).asInstanceOf[avro2s.test.scalaenums.Suit])
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+        {
+          val builder$ = List.newBuilder[Option[avro2s.test.scalaenums.Suit]]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value match {
+                case null => None
+                case x: avro2s.test.scalaenums.Suit => Option(x.asInstanceOf[avro2s.test.scalaenums.Suit])
+                case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "avro2s.test.scalaenums.Suit" => Option(_root_.avro2s.test.scalaenums.Suit.fromAvroSymbol(x.toString).asInstanceOf[avro2s.test.scalaenums.Suit])
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }
           }
-        }).toList
+          builder$.result()
+        }
       }
       case 5 => this.kw = {
         value match { case x: _root_.avro2s.test.scalaenums.Kw => x; case x => _root_.avro2s.test.scalaenums.Kw.fromAvroSymbol(x.toString) }

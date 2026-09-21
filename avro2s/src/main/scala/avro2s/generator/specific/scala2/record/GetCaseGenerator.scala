@@ -17,6 +17,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   import typeHelpers._
 
+
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
       case UNION => printUnionCase(printer, index, field)
@@ -29,7 +30,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
   }
 
   private def printFixedCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
-    if (ltc.logicalTypeInUse(field.schema())) {
+    if (ltc.selfConverts(field.schema())) {
       printer.add(s"case $index => ${ltc.fromType(field.schema(), field.safeName)}.asInstanceOf[AnyRef]")
     } else {
       printer.add(s"case $index => ${field.safeName}.asInstanceOf[AnyRef]")
@@ -77,12 +78,18 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   private def printByteCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
     printer
-      .add(s"case $index => ${ltc.fromTypeWithFallback(field.schema(), field.safeName, s"java.nio.ByteBuffer.wrap(${field.safeName})")}.asInstanceOf[AnyRef]")
+      .add(
+        if (ltc.selfConverts(field.schema()))
+          s"case $index => ${ltc.fromType(field.schema(), field.safeName)}.asInstanceOf[AnyRef]"
+        else if (ltc.logicalTypeInUse(field.schema()))
+          s"case $index => ${field.safeName}.asInstanceOf[AnyRef]"
+        else
+          s"case $index => java.nio.ByteBuffer.wrap(${field.safeName}).asInstanceOf[AnyRef]")
 
   private def printDefaultCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
     if (scalaEnums && field.schema().getType == ENUM) {
       printer.add(s"case $index => ${ScalaEnumSupport.wrapExpression(field.safeName, field.schema())}.asInstanceOf[AnyRef]")
-    } else if (ltc.logicalTypeInUse(field.schema())) {
+    } else if (ltc.delegates(field.schema())) {
       printer.add(s"case $index => ${field.safeName}.asInstanceOf[AnyRef]")
     } else {
       printer.add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")
@@ -93,9 +100,9 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
     val element = schema.getElementType
     val needsConversion = element.getType match {
       case UNION | ARRAY | MAP => true
-      case BYTES => !ltc.logicalTypeInUse(element)
+      case BYTES => !ltc.logicalTypeInUse(element) || ltc.selfConverts(element)
       case ENUM => scalaEnums
-      case _ => false
+      case _ => ltc.selfConverts(element)
     }
     val elementType = schemaToScalaType(element, useLogical = true)
     if (!needsConversion) {
@@ -155,6 +162,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
               .add("}")
           case ARRAY => printer.call(printArrayValue(_, element, Some("element$")))
           case MAP => printer.call(printMapValue(_, element, Some("element$")))
+          case _ if ltc.selfConverts(element) => printer.add(ltc.fromType(element, "element$"))
           case BYTES if !ltc.logicalTypeInUse(element) => printer.add("java.nio.ByteBuffer.wrap(element$)")
           case ENUM if scalaEnums => printer.add(ScalaEnumSupport.wrapExpression("element$", element))
           case _ => printer.add("element$")
@@ -201,6 +209,9 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       case ARRAY =>
         printer
           .call(printArrayValue(_, schema, Some(value)))
+      case _ if ltc.selfConverts(schema) =>
+        printer
+          .add(ltc.fromType(schema, value))
       case BYTES if !ltc.logicalTypeInUse(schema) =>
         printer
           .add(s"java.nio.ByteBuffer.wrap($value)")
@@ -231,6 +242,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
         case MAP => s"\n${printMapValue(new FunctionalPrinter(indentLevel = 1), schema, Some("x")).result()}"
         case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), unionSchemasToType(schemas(schema))).result()}"
         case ARRAY => s"\n${printArrayValue(new FunctionalPrinter(indentLevel = 1), schema, Some("x")).result()}"
+        case _ if ltc.selfConverts(schema) => s"${ltc.fromType(schema, "x")}.asInstanceOf[AnyRef]"
         case BYTES if !ltc.logicalTypeInUse(schema) => s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]"
         case ENUM if scalaEnums => s"${ScalaEnumSupport.wrapExpression("x", schema)}.asInstanceOf[AnyRef]"
         case _ => s"x.asInstanceOf[AnyRef]"

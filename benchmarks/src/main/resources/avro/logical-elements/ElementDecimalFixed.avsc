@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "ElementDecimalFixed",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. self-converted, plus sign-extension padding on write",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "fixed",
+          "name": "DecimalFixed16",
+          "namespace": "avro2s.benchmarks.models",
+          "size": 16,
+          "logicalType": "decimal",
+          "precision": 20,
+          "scale": 4
+        }
+      }
+    }
+  ]
+}

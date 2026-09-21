@@ -286,11 +286,27 @@ class SerializationTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalFixedDecimal](serialize(negative), negative.getSchema) shouldBe negative
   }
 
-  test("logical fixed decimal rejects values that do not fit in the fixed size") {
+  test("logical fixed decimal rejects a value too wide for the schema") {
+    // Precision binds before the fixed size here - the schema declares precision 4 in 2 bytes, and
+    // 2 bytes would hold 5 digits - so this is the AvroTypeException Avro itself raises. The size
+    // check behind it remains for schemas whose fixed is narrower than the precision implies.
     val tooLarge = avro2s.test.logical.LogicalFixedDecimal(
       _decimal_fixed = scala.math.BigDecimal("99999.99")
     )
-    an[ArithmeticException] should be thrownBy serialize(tooLarge)
+    an[org.apache.avro.AvroTypeException] should be thrownBy serialize(tooLarge)
+  }
+
+  test("logical decimal coerces a value to the schema's scale, and refuses to round to reach it") {
+    // decimal carries its scale in the schema, so every value is stored at that scale. Padding a
+    // shorter value is lossless and allowed; shortening a longer one would discard digits, and
+    // avro2s throws rather than do so silently. Avro's own DecimalConversion refuses too - it uses
+    // RoundingMode.UNNECESSARY and raises AvroTypeException - so this matches it, including the
+    // exception type, which precision overflow already used.
+    val padded = avro2s.test.logical.LogicalFixedDecimal(_decimal_fixed = scala.math.BigDecimal("12.3"))
+    deserialize[avro2s.test.logical.LogicalFixedDecimal](serialize(padded), padded.getSchema)._decimal_fixed.scale shouldBe 2
+
+    val tooPrecise = avro2s.test.logical.LogicalFixedDecimal(_decimal_fixed = scala.math.BigDecimal("12.345"))
+    an[org.apache.avro.AvroTypeException] should be thrownBy serialize(tooPrecise)
   }
 
   test("logical duration can be serialized and deserialized") {

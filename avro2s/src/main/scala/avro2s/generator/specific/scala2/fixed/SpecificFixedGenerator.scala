@@ -6,7 +6,9 @@ import avro2s.generator.{FunctionalPrinter, GeneratedCode, Scaladoc}
 private[avro2s] object SpecificFixedGenerator {
   private val dollar = "$"
 
-  def schemaToScala2Fixed(schema: org.apache.avro.Schema, namespace: Option[String]): GeneratedCode = {
+  def schemaToScala2Fixed(
+    schema: org.apache.avro.Schema,
+    namespace: Option[String]): GeneratedCode = {
     val name = schema.getName
     val printer = new FunctionalPrinter()
     val ns = Option(schema.getNamespace).orElse(namespace)

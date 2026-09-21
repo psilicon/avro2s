@@ -196,13 +196,17 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.toString
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -210,9 +214,15 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
       case 1 => this._array = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Int]
-            }).toList
+            val builder$ = List.newBuilder[Int]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Int]
+              }
+            }
+            builder$.result()
           }
       }
       case 2 => this._union = {
@@ -232,17 +242,21 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Int :+: Long :+: CNil] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Int :+: Long :+: CNil]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case x: Int => Coproduct[Int :+: Long :+: CNil](x)
                     case x: Long => Coproduct[Int :+: Long :+: CNil](x)
                     case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -251,18 +265,28 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Int]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, List[Int]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.asInstanceOf[Int]
-                      }).toList
+                      val builder$ = List.newBuilder[Int]
+                      val iterator$ = array.iterator
+                      while (iterator$.hasNext) {
+                        val value = iterator$.next
+                        builder$ += {
+                          value.asInstanceOf[Int]
+                        }
+                      }
+                      builder$.result()
                     }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -272,13 +296,17 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           case x: Int => Coproduct[Int :+: Map[String, String] :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[Int :+: Map[String, String] :+: CNil]{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.toString
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -290,55 +318,83 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           case x: java.util.List[_] => Coproduct[Int :+: List[Int] :+: CNil]({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value.asInstanceOf[Int]
-                }).toList
+                val builder$ = List.newBuilder[Int]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.asInstanceOf[Int]
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 8 => this._array_map = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Map[String, String]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case map: java.util.Map[_,_] => {
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                      val builder$ = Map.newBuilder[String, String]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.toString
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 9 => this._array_union = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: Int => Coproduct[Int :+: Long :+: CNil](x)
-                case x: Long => Coproduct[Int :+: Long :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[Int :+: Long :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: Int => Coproduct[Int :+: Long :+: CNil](x)
+                  case x: Long => Coproduct[Int :+: Long :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 10 => this._array_option = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.lang.CharSequence => Some(x.toString)
+            val builder$ = List.newBuilder[Option[String]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: java.lang.CharSequence => Some(x.toString)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

@@ -92,7 +92,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   private def printGetConversion(printer: FunctionalPrinter, name: String, fields: List[Schema.Field]): FunctionalPrinter = {
     if (!generatorConfig.logicalTypesEnabled) printer
     else {
-      val hasAnyConversion = fields.exists(f => ltc.logicalTypeInUse(f.schema()))
+      val hasAnyConversion = fields.exists(f => ltc.getConversionClass(f.schema()).isDefined)
       if (!hasAnyConversion) printer
       else printer
         .newline
@@ -122,7 +122,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     else distinctConversions
       .foldLeft(printer) { (p, cls) =>
         val shortName = cls.split('.').last
-        p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = new $cls()")
+        p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = ${ltc.conversionExpressionFor(cls)}")
       }
       .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
       .indent
@@ -166,7 +166,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
         val scalaType = ltc.getType(schema, "")
         // Only immutable logical values may be shared by different record instances.
         Some(scalaType match {
-          case "java.util.UUID" | "java.time.LocalDate" | "java.time.LocalTime" | "java.time.Instant" | "java.time.LocalDateTime" =>
+          case "java.util.UUID" | "java.time.LocalDate" | "java.time.LocalTime" | "java.time.Instant" | "java.time.LocalDateTime" |
+               "scala.math.BigDecimal" | "java.math.BigDecimal" | "org.apache.avro.util.TimePeriod" =>
             val member = cachedDefaults.getOrElseUpdate((scalaType, value), s"${dollar}default$dollar${cachedDefaults.size}")
             s"$name.$member"
           case _ => value

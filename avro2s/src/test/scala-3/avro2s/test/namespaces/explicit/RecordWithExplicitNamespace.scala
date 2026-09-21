@@ -57,20 +57,32 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
       }
       case 2 => this._array_of_records = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray]
-        }).toList
+        {
+          val builder$ = List.newBuilder[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray]
+            }
+          }
+          builder$.result()
+        }
       }
       case 3 => this._map_of_records = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 4 => this._union_of_records = {

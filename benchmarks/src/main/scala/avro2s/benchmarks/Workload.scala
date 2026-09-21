@@ -16,6 +16,13 @@ import java.io.ByteArrayOutputStream
  *
  * The record instance is produced by decoding bytes written from an independent GenericRecord,
  * so no generated code participates in building the value being measured.
+ *
+ * One bias to be aware of when reading write numbers: the instance written is the instance our own
+ * put produced, so write measures the read-then-rewrite pattern rather than writing a record a
+ * caller built. That matters where a field's representation depends on how it was constructed -
+ * java.math.BigDecimal being the example, since it keeps either a compact long or an inflated
+ * BigInteger, and unscaledValue() has to materialise the latter. A read path that yields inflated
+ * values therefore flatters the write number here in a way it would not for a caller-built record.
  */
 final class Workload(val name: String, val recordClass: Class[_ <: SpecificRecord], val schema: Schema, val size: Int) {
   private val genericValue: GenericRecord = GenericValues.record(schema, size)
