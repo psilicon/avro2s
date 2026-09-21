@@ -84,38 +84,54 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           case x: java.util.List[_] => Some({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value.asInstanceOf[Boolean]
-                }).toList
+                val builder$ = List.newBuilder[Boolean]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.asInstanceOf[Boolean]
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
         }
       }
       case 2 => this._array_of_options = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.lang.CharSequence => Some(x.toString)
+            val builder$ = List.newBuilder[Option[String]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: java.lang.CharSequence => Some(x.toString)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 3 => this._map_of_options = {
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: java.lang.CharSequence => Some(x.toString)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }

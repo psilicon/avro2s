@@ -32,7 +32,17 @@ object Workloads {
     "javaEnums" -> ("default", "JavaEnums"),
     "wideRecord" -> ("default", "WideRecord"),
     "logicalTypes" -> ("logical", "LogicalTypes"),
-    "scalaEnums" -> ("scala-enums", "ScalaEnums")
+    "scalaEnums" -> ("scala-enums", "ScalaEnums"),
+    "elementLong" -> ("logical-elements", "ElementLong"),
+    "elementBytes" -> ("logical-elements", "ElementBytes"),
+    "elementFixed" -> ("logical-elements", "ElementFixed"),
+    "elementInstant" -> ("logical-elements", "ElementInstant"),
+    "elementNanos" -> ("logical-elements", "ElementNanos"),
+    "elementBigDecimal" -> ("logical-elements", "ElementBigDecimal"),
+    "elementDecimalBytes" -> ("logical-elements", "ElementDecimalBytes"),
+    "elementDecimalFixed" -> ("logical-elements", "ElementDecimalFixed"),
+    "elementDuration" -> ("logical-elements", "ElementDuration"),
+    "elementDecimalMap" -> ("logical-elements", "ElementDecimalMap")
   )
 
   val names: List[String] = shapes.keys.toList.sorted

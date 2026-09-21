@@ -109,7 +109,103 @@ Multiline documentation is preserved; missing or whitespace-only docs produce no
 comment. Comment delimiters and backslashes are escaped so documentation cannot
 break the generated source. No additional configuration is required.
 
+#### Logical types
+
+On by default under the sbt plugin; turn them off with
+`Compile / avro2sLogicalTypesEnabled := false`, which maps each of these to its underlying Avro type
+instead. Direct library users pass `logicalTypesEnabled` to `GeneratorConfig`. Supported:
+
+| Logical type | Avro type | Scala type |
+|---|---|---|
+| `uuid` | `string` | `java.util.UUID` |
+| `date` | `int` | `java.time.LocalDate` |
+| `time-millis` | `int` | `java.time.LocalTime` |
+| `time-micros` | `long` | `java.time.LocalTime` |
+| `timestamp-millis` / `-micros` / `-nanos` | `long` | `java.time.Instant` |
+| `local-timestamp-millis` / `-micros` / `-nanos` | `long` | `java.time.LocalDateTime` |
+| `decimal` | `bytes` or `fixed` | `scala.math.BigDecimal` |
+| `big-decimal` | `bytes` | `java.math.BigDecimal` |
+| `duration` | `fixed` (size 12) | `org.apache.avro.util.TimePeriod` |
+
+Most of these are converted by Avro's own `Conversion` classes, which the generated companion
+registers in `MODEL$` and returns from `getConversion`. Two groups differ:
+
+ - `decimal` and `duration` are converted by generated code. Avro's decimal conversion produces
+   `java.math.BigDecimal` while the field is `scala.math.BigDecimal` - use `big-decimal` if you want
+   the Java type and per-value scale.
+ - `timestamp-nanos` and `local-timestamp-nanos` delegate, but to a corrected subclass. Avro 1.12's
+   own conversion is wrong before the epoch, encoding `1969-12-31T23:59:59.500Z` so that it reads
+   back as `1970-01-01T00:00:00.499Z`. This is fixed in Avro upstream, so the subclass becomes
+   redundant once a release carrying the fix is adopted.
+
+`decimal` stores its scale in the schema, so values are coerced to it. A shorter value is padded; a
+more precise one throws `AvroTypeException` rather than silently dropping digits, as does one with
+more digits than the declared precision. Avro's own conversion refuses both in the same way.
+`big-decimal` carries the scale per value instead, so `1.5`, `1.50` and `1.500` stay distinct.
+
+Because a field's value is encoded inside `get`, a record holding a decimal that does not fit its
+schema will throw from `equals`, `hashCode` and `toString` as well as when written - those come from
+`SpecificRecordBase` and read every field through `get`.
+
+On Scala 3 the companion's `MODEL$` is emitted as a static field, which is what Avro reflects for
+when it resolves a generated class's conversions. That means a reader or writer built from the
+schema or the class uses the conversions avro2s registered, rather than the ones on Avro's global
+`SpecificData.get()`. If you have registered your own conversion globally - overriding Avro's
+`TimestampMillisConversion`, say - it no longer reaches records generated for Scala 3. Pass your
+model explicitly if you need it to:
+
+```scala
+new SpecificDatumReader[MyRecord](schema, schema, myModel)
+```
+
+Scala 2 cannot emit a static field, so it continues to fall back to the global model. That
+difference is the cause of the nanos limitation below.
+
+`duration` is converted by generated code so that records holding one keep a working `equals` -
+delegating would make `get` return a `TimePeriod`, and `SpecificRecordBase.equals` compares through
+`GenericData.compare`, which requires `Comparable`. Whether `put` receives a converted `TimePeriod`
+or the raw fixed depends on which reader ran, so it accepts either; a reader built with a bare
+`new SpecificData()` works as well as one keeping Avro's defaults.
+
+#### Upgrading from 0.31
+
+Five logical types were previously unrecognised, so fields carrying them generated as their
+underlying Avro type. They now generate as the table above, which changes those field types and
+will not compile against existing code until it is updated:
+
+| logical type | on 0.31 | now |
+| ------------ | ------- | --- |
+| `decimal` on `bytes` or `fixed` | `Array[Byte]` | `scala.math.BigDecimal` |
+| `big-decimal` | `Array[Byte]` | `java.math.BigDecimal` |
+| `duration` | the generated `fixed` class | `org.apache.avro.util.TimePeriod` |
+| `timestamp-nanos` | `Long` | `java.time.Instant` |
+| `local-timestamp-nanos` | `Long` | `java.time.LocalDateTime` |
+
+Nothing else changes shape: records without these logical types generate the same constructors,
+field types and members as before. Generating with `logicalTypesEnabled = false` is unaffected.
+
 #### Known limitations
+
+**On Scala 2.12 and 2.13, a `timestamp-nanos` or `local-timestamp-nanos` before 1970 is wrong
+in a nested position.** Avro finds a generated class's conversions by reflecting for a static field
+named `MODEL$`. Scala 3 can emit one via `@scala.annotation.static`; Scala 2 has no equivalent - the
+annotation was proposed as SIP-30 and never implemented - so an object `val` becomes a static
+forwarder method and the lookup silently falls back to Avro's global model, whose nanos conversion
+has the pre-epoch bug described above.
+
+A top-level field is unaffected, because Avro asks the record directly through `getConversion`. A
+value inside an array, map, option or union is resolved against the model instead, so the same
+`Instant` encodes differently depending on where it sits, and a Scala 2 writer disagrees with a
+Scala 3 one. Passing the model explicitly is a working remedy:
+
+```scala
+new SpecificDatumReader[MyRecord](schema, schema, MyRecord.MODEL$)
+new SpecificDatumWriter[MyRecord](schema, MyRecord.MODEL$)
+```
+
+The underlying bug is fixed in Avro upstream, so this resolves itself once a release carrying the
+fix is adopted - at which point the global model's conversion is correct and the fallback is
+harmless. Scala 3 is unaffected either way.
 
 **Unions whose logical types map to the same Scala type are rejected.** Avro keeps
 union branches apart by type name, so `["null", {"type":"int","logicalType":"time-millis"},

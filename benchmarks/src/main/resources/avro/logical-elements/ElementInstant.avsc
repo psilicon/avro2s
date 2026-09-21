@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "ElementInstant",
+  "namespace": "avro2s.benchmarks.models",
+  "doc": "One logical type per record, held in a collection, so the measurement is dominated by the per-element cost of converting it rather than by anything else in the record. delegated: the conversion is Avro's, so get and put pass the value through",
+  "fields": [
+    {
+      "name": "values",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      }
+    }
+  ]
+}

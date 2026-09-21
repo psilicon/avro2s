@@ -461,17 +461,23 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case map: java.util.Map[_,_] => {
                       if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil] else {
-                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                          val key = kvp._1.toString
-                          val value = kvp._2
-                          (key, {
+                        val builder$ = Map.newBuilder[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]
+                        val iterator$ = map.entrySet.iterator
+                        while (iterator$.hasNext) {
+                          val entry$ = iterator$.next
+                          val key = entry$.getKey.toString
+                          val value = entry$.getValue
+                          builder$ += ((key, {
                             value match {
                               case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                               case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
@@ -480,13 +486,15 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                               case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                               case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                             }
-                          })
-                        }.toMap
+                          }))
+                        }
+                        builder$.result()
                       }
                     }
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
@@ -500,16 +508,20 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x)
           case map: java.util.Map[_,_] => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil]{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: java.lang.CharSequence => Some(x.toString)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x)
@@ -524,14 +536,20 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil]({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case null => None
-                    case x: java.lang.CharSequence => Some(x.toString)
+                val builder$ = List.newBuilder[Option[String]]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case null => None
+                      case x: java.lang.CharSequence => Some(x.toString)
+                    }
                   }
-                }).toList
+                }
+                builder$.result()
               }
-          }.toList)
+          })
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -544,19 +562,25 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil]({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.toString)
-                    case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
-                    case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
-                    case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
-                    case x: java.nio.ByteBuffer => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.array())
-                    case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
-                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                val builder$ = List.newBuilder[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.toString)
+                      case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
+                      case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
+                      case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
+                      case x: java.nio.ByteBuffer => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil]({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
+                      case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
+                      case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
                   }
-                }).toList
+                }
+                builder$.result()
               }
-          }.toList)
+          })
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -569,23 +593,35 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil]({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value match {
-                          case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
-                          case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                val builder$ = List.newBuilder[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case array: java.util.List[_] =>
+                        val builder$ = List.newBuilder[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]
+                        val iterator$ = array.iterator
+                        while (iterator$.hasNext) {
+                          val value = iterator$.next
+                          builder$ += {
+                            value match {
+                              case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                              case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                              case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                            }
+                          }
                         }
-                      }).toList
-                    }
-                }).toList
+                        builder$.result()
+                      }
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -666,7 +702,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       }
       case 14 => this._union_of_bytes = {
         value match {
-          case x: java.nio.ByteBuffer => Coproduct[Array[Byte] :+: String :+: CNil](x.array())
+          case x: java.nio.ByteBuffer => Coproduct[Array[Byte] :+: String :+: CNil]({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
           case x: java.lang.CharSequence => Coproduct[Array[Byte] :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -728,7 +764,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
       case 24 => this._optional_bytes = {
         value match {
           case null => None
-          case x: java.nio.ByteBuffer => Some(x.array())
+          case x: java.nio.ByteBuffer => Some({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
         }
       }
       case 25 => this._optional_map = {
@@ -736,13 +772,17 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case null => None
           case map: java.util.Map[_,_] => Some{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.toString
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -753,11 +793,17 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Some({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value.toString
-                }).toList
+                val builder$ = List.newBuilder[String]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value.toString
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
         }
       }
       case 27 => this._optional_map_of_array = {
@@ -765,18 +811,28 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case null => None
           case map: java.util.Map[_,_] => Some{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, List[String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.toString
-                      }).toList
+                      val builder$ = List.newBuilder[String]
+                      val iterator$ = array.iterator
+                      while (iterator$.hasNext) {
+                        val value = iterator$.next
+                        builder$ += {
+                          value.toString
+                        }
+                      }
+                      builder$.result()
                     }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -787,23 +843,33 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Some({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case map: java.util.Map[_,_] => {
-                      if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                          val key = kvp._1.toString
-                          val value = kvp._2
-                          (key, {
-                            value.toString
-                          })
-                        }.toMap
+                val builder$ = List.newBuilder[Map[String, String]]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case map: java.util.Map[_,_] => {
+                        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                          val builder$ = Map.newBuilder[String, String]
+                          val iterator$ = map.entrySet.iterator
+                          while (iterator$.hasNext) {
+                            val entry$ = iterator$.next
+                            val key = entry$.getKey.toString
+                            val value = entry$.getValue
+                            builder$ += ((key, {
+                              value.toString
+                            }))
+                          }
+                          builder$.result()
+                        }
                       }
                     }
                   }
-                }).toList
+                }
+                builder$.result()
               }
-          }.toList)
+          })
         }
       }
       case 29 => this._optional_map_of_map = {
@@ -811,25 +877,33 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case null => None
           case map: java.util.Map[_,_] => Some{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Map[String, String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case map: java.util.Map[_,_] => {
                       if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                          val key = kvp._1.toString
-                          val value = kvp._2
-                          (key, {
+                        val builder$ = Map.newBuilder[String, String]
+                        val iterator$ = map.entrySet.iterator
+                        while (iterator$.hasNext) {
+                          val entry$ = iterator$.next
+                          val key = entry$.getKey.toString
+                          val value = entry$.getValue
+                          builder$ += ((key, {
                             value.toString
-                          })
-                        }.toMap
+                          }))
+                        }
+                        builder$.result()
                       }
                     }
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -840,16 +914,28 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Some({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.toString
-                      }).toList
-                    }
-                }).toList
+                val builder$ = List.newBuilder[List[String]]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case array: java.util.List[_] =>
+                        val builder$ = List.newBuilder[String]
+                        val iterator$ = array.iterator
+                        while (iterator$.hasNext) {
+                          val value = iterator$.next
+                          builder$ += {
+                            value.toString
+                          }
+                        }
+                        builder$.result()
+                      }
+                  }
+                }
+                builder$.result()
               }
-          }.toList)
+          })
         }
       }
       case 31 => this._optional_map_of_union = {
@@ -857,10 +943,13 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case null => None
           case map: java.util.Map[_,_] => Some{
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
                     case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
@@ -869,8 +958,9 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                     case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -881,18 +971,24 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: java.util.List[_] => Some({
             x match {
               case array: java.util.List[_] =>
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  value match {
-                    case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
-                    case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                    case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                    case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                    case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                val builder$ = List.newBuilder[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]
+                val iterator$ = array.iterator
+                while (iterator$.hasNext) {
+                  val value = iterator$.next
+                  builder$ += {
+                    value match {
+                      case x: java.lang.CharSequence => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x.toString)
+                      case x: Long => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                      case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                      case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                      case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
+                      case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
                   }
-                }).toList
+                }
+                builder$.result()
               }
-          }.toList)
+          })
         }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

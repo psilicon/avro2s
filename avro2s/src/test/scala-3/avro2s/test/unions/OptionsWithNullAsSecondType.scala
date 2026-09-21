@@ -82,37 +82,57 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
       case 1 => this._optional_array = {
         value match {
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Boolean]
-            }).toList)
+            Option({
+              val builder$ = List.newBuilder[Boolean]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  value.asInstanceOf[Boolean]
+                }
+              }
+              builder$.result()
+            })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 2 => this._array_of_options = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value match {
-            case x: java.lang.CharSequence => Option(x.toString)
-            case null => None
-            case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-          }
-        }).toList
-      }
-      case 3 => this._map_of_options = {
-        val map = value.asInstanceOf[java.util.Map[?,?]]
-        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+        {
+          val builder$ = List.newBuilder[Option[String]]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
               value match {
                 case x: java.lang.CharSequence => Option(x.toString)
                 case null => None
                 case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
-            })
-          }.toMap
+            }
+          }
+          builder$.result()
+        }
+      }
+      case 3 => this._map_of_options = {
+        val map = value.asInstanceOf[java.util.Map[?,?]]
+        if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
+          val builder$ = Map.newBuilder[String, Option[String]]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
+              value match {
+                case x: java.lang.CharSequence => Option(x.toString)
+                case null => None
+                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              }
+            }))
+          }
+          builder$.result()
         }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

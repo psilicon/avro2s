@@ -268,16 +268,20 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.RecordForComplexOptions]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[avro2s.test.unions.RecordForComplexOptions]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -286,26 +290,34 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[Map[String, String]]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[Map[String, String]]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case map: java.util.Map[_,_] => Some{
                       if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                        scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                          val key = kvp._1.toString
-                          val value = kvp._2
-                          (key, {
+                        val builder$ = Map.newBuilder[String, String]
+                        val iterator$ = map.entrySet.iterator
+                        while (iterator$.hasNext) {
+                          val entry$ = iterator$.next
+                          val key = entry$.getKey.toString
+                          val value = entry$.getValue
+                          builder$ += ((key, {
                             value.toString
-                          })
-                        }.toMap
+                          }))
+                        }
+                        builder$.result()
                       }
                     }
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -314,23 +326,33 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[List[String]]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[List[String]]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: java.util.List[_] => Some({
                       x match {
                         case array: java.util.List[_] =>
-                          scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                            value.toString
-                          }).toList
+                          val builder$ = List.newBuilder[String]
+                          val iterator$ = array.iterator
+                          while (iterator$.hasNext) {
+                            val value = iterator$.next
+                            builder$ += {
+                              value.toString
+                            }
+                          }
+                          builder$.result()
                         }
-                    }.toList)
+                    })
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -338,95 +360,143 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
       case 3 => this._array_of_option_of_record = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+            val builder$ = List.newBuilder[Option[avro2s.test.unions.RecordForComplexOptions]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 4 => this._array_of_option_of_map = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case map: java.util.Map[_,_] => Some{
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Option[Map[String, String]]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case map: java.util.Map[_,_] => Some{
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                      val builder$ = Map.newBuilder[String, String]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.toString
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 5 => this._array_of_option_of_array = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.util.List[_] => Some({
-                  x match {
-                    case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value.toString
-                      }).toList
-                    }
-                }.toList)
+            val builder$ = List.newBuilder[Option[List[String]]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case null => None
+                  case x: java.util.List[_] => Some({
+                    x match {
+                      case array: java.util.List[_] =>
+                        val builder$ = List.newBuilder[String]
+                        val iterator$ = array.iterator
+                        while (iterator$.hasNext) {
+                          val value = iterator$.next
+                          builder$ += {
+                            value.toString
+                          }
+                        }
+                        builder$.result()
+                      }
+                  })
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 6 => this._array_of_map_of_option_of_record = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.RecordForComplexOptions]] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value match {
-                          case null => None
-                          case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
-                        }
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Map[String, Option[avro2s.test.unions.RecordForComplexOptions]]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case map: java.util.Map[_,_] => {
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.RecordForComplexOptions]] else {
+                      val builder$ = Map.newBuilder[String, Option[avro2s.test.unions.RecordForComplexOptions]]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value match {
+                            case null => None
+                            case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                          }
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 7 => this._map_of_array_of_option_of_record = {
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[Option[avro2s.test.unions.RecordForComplexOptions]]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, List[Option[avro2s.test.unions.RecordForComplexOptions]]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case array: java.util.List[_] =>
-                      scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                        value match {
-                          case null => None
-                          case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                      val builder$ = List.newBuilder[Option[avro2s.test.unions.RecordForComplexOptions]]
+                      val iterator$ = array.iterator
+                      while (iterator$.hasNext) {
+                        val value = iterator$.next
+                        builder$ += {
+                          value match {
+                            case null => None
+                            case x: avro2s.test.unions.RecordForComplexOptions => Some(x)
+                          }
                         }
-                      }).toList
+                      }
+                      builder$.result()
                     }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -435,16 +505,20 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[Array[Byte]]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[Array[Byte]]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
-                    case x: java.nio.ByteBuffer => Some(x.array())
+                    case x: java.nio.ByteBuffer => Some({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -453,16 +527,20 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.FixedForComplexOptions]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[avro2s.test.unions.FixedForComplexOptions]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: avro2s.test.unions.FixedForComplexOptions => Some(x)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }
@@ -471,16 +549,20 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[avro2s.test.unions.EnumForComplexOptions]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[avro2s.test.unions.EnumForComplexOptions]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: avro2s.test.unions.EnumForComplexOptions => Some(x)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }

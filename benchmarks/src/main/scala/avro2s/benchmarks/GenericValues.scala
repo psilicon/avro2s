@@ -66,6 +66,11 @@ object GenericValues {
   private def isUuid(schema: Schema): Boolean =
     schema.getLogicalType != null && schema.getLogicalType.getName == "uuid"
 
+  private def logicalName(schema: Schema): String =
+    if (schema.getLogicalType == null) "" else schema.getLogicalType.getName
+
+  private val bigDecimalConversion = new org.apache.avro.Conversions.BigDecimalConversion()
+
   private def value(schema: Schema, random: Random, size: Int, depth: Int): AnyRef = {
     import Schema.Type._
     schema.getType match {
@@ -101,10 +106,31 @@ object GenericValues {
       case ENUM =>
         val symbols = schema.getEnumSymbols
         new GenericData.EnumSymbol(schema, symbols.get(random.nextInt(symbols.size())))
+      // A decimal on a fixed is an unscaled two's-complement integer sign-extended to the full
+      // width, and it has to fit the declared precision - random bytes give an arbitrary 16-byte
+      // integer, which is ~39 digits and rejected by Avro. Bounding it also makes the padding path
+      // this shape is meant to measure actually run.
+      case FIXED if logicalName(schema) == "decimal" =>
+        val precision = schema.getLogicalType.asInstanceOf[org.apache.avro.LogicalTypes.Decimal].getPrecision
+        val bound = math.pow(10, math.min(precision, 18).toDouble).toLong
+        val unscaled = java.math.BigInteger.valueOf(random.nextLong() % bound).toByteArray
+        val padded = new Array[Byte](schema.getFixedSize)
+        java.util.Arrays.fill(padded, if (unscaled(0) < 0) 0xFF.toByte else 0x00.toByte)
+        System.arraycopy(unscaled, 0, padded, padded.length - unscaled.length, unscaled.length)
+        new GenericData.Fixed(schema, padded)
       case FIXED =>
         val bytes = new Array[Byte](schema.getFixedSize)
         random.nextBytes(bytes)
         new GenericData.Fixed(schema, bytes)
+      // A decimal on bytes carries the unscaled value in minimal two's-complement form, so
+      // arbitrary bytes would not survive a round trip through BigInteger.
+      case BYTES if logicalName(schema) == "decimal" =>
+        ByteBuffer.wrap(java.math.BigInteger.valueOf(random.nextLong() % 1000000000000000L).toByteArray)
+      // big-decimal is Avro's own encoding of scale plus unscaled value; only Avro can write it.
+      case BYTES if logicalName(schema) == "big-decimal" =>
+        bigDecimalConversion.toBytes(
+          new java.math.BigDecimal(java.math.BigInteger.valueOf(random.nextLong() % 1000000000000000L), 4),
+          schema, schema.getLogicalType)
       case BYTES =>
         val bytes = new Array[Byte](math.max(0, size))
         random.nextBytes(bytes)

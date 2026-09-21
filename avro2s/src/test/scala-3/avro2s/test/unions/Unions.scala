@@ -438,16 +438,22 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: Boolean => Option(x)
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, Option[String | Long | Boolean | Double]]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Map[String, Option[String | Long | Boolean | Double]]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   val map = value.asInstanceOf[java.util.Map[?,?]]
                   if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String | Long | Boolean | Double]] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
+                    val builder$ = Map.newBuilder[String, Option[String | Long | Boolean | Double]]
+                    val iterator$ = map.entrySet.iterator
+                    while (iterator$.hasNext) {
+                      val entry$ = iterator$.next
+                      val key = entry$.getKey.toString
+                      val value = entry$.getValue
+                      builder$ += ((key, {
                         value match {
                           case x: java.lang.CharSequence => Option(x.toString)
                           case x: Long => Option(x)
@@ -456,11 +462,13 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
                           case null => None
                           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
-                      })
-                    }.toMap
+                      }))
+                    }
+                    builder$.result()
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -473,17 +481,21 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: Boolean => Option(x)
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case null => None
                     case x: java.lang.CharSequence => Option(x.toString)
                     case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -495,13 +507,21 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case null => None
-                case x: java.lang.CharSequence => Option(x.toString)
-                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            Option({
+              val builder$ = List.newBuilder[Option[String]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  value match {
+                    case null => None
+                    case x: java.lang.CharSequence => Option(x.toString)
+                    case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                }
               }
-            }).toList)
+              builder$.result()
+            })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -512,17 +532,25 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: java.lang.CharSequence => Option(x.toString)
-                case x: Long => Option(x)
-                case x: Boolean => Option(x)
-                case x: Double => Option(x)
-                case x: java.nio.ByteBuffer => Option(x.array())
-                case null => None
-                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            Option({
+              val builder$ = List.newBuilder[Option[String | Long | Boolean | Double | Array[Byte]]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  value match {
+                    case x: java.lang.CharSequence => Option(x.toString)
+                    case x: Long => Option(x)
+                    case x: Boolean => Option(x)
+                    case x: Double => Option(x)
+                    case x: java.nio.ByteBuffer => Option({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
+                    case null => None
+                    case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                }
               }
-            }).toList)
+              builder$.result()
+            })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -533,19 +561,35 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case x: Long => Option(x)
           case x: Boolean => Option(x)
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              val array = value.asInstanceOf[java.util.List[?]]
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                value match {
-                  case x: java.lang.CharSequence => Option(x.toString)
-                  case x: Long => Option(x)
-                  case x: Boolean => Option(x)
-                  case x: Double => Option(x)
-                  case null => None
-                  case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            Option({
+              val builder$ = List.newBuilder[List[Option[String | Long | Boolean | Double]]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  val array = value.asInstanceOf[java.util.List[?]]
+                  {
+                    val builder$ = List.newBuilder[Option[String | Long | Boolean | Double]]
+                    val iterator$ = array.iterator
+                    while (iterator$.hasNext) {
+                      val value = iterator$.next
+                      builder$ += {
+                        value match {
+                          case x: java.lang.CharSequence => Option(x.toString)
+                          case x: Long => Option(x)
+                          case x: Boolean => Option(x)
+                          case x: Double => Option(x)
+                          case null => None
+                          case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                        }
+                      }
+                    }
+                    builder$.result()
+                  }
                 }
-              }).toList
-            }).toList)
+              }
+              builder$.result()
+            })
           case null => None
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -626,7 +670,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       }
       case 14 => this._union_of_bytes = {
         value match {
-          case x: java.nio.ByteBuffer => x.array()
+          case x: java.nio.ByteBuffer => { val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ }
           case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -697,7 +741,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 24 => this._optional_bytes = {
         value match {
           case null => None
-          case x: java.nio.ByteBuffer => Option(x.array())
+          case x: java.nio.ByteBuffer => Option({ val start$ = x.position(); val bytes$ = new Array[Byte](x.remaining); x.get(bytes$); (x: java.nio.Buffer).position(start$); bytes$ })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -706,13 +750,17 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case null => None
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value.toString
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -721,9 +769,17 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         value match {
           case null => None
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.toString
-            }).toList)
+            Option({
+              val builder$ = List.newBuilder[String]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  value.toString
+                }
+              }
+              builder$.result()
+            })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -732,16 +788,28 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case null => None
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, List[String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, List[String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   val array = value.asInstanceOf[java.util.List[?]]
-                  scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                    value.toString
-                  }).toList
-                })
-              }.toMap
+                  {
+                    val builder$ = List.newBuilder[String]
+                    val iterator$ = array.iterator
+                    while (iterator$.hasNext) {
+                      val value = iterator$.next
+                      builder$ += {
+                        value.toString
+                      }
+                    }
+                    builder$.result()
+                  }
+                }))
+              }
+              builder$.result()
             })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -750,18 +818,30 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         value match {
           case null => None
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              val map = value.asInstanceOf[java.util.Map[?,?]]
-              if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                  val key = kvp._1.toString
-                  val value = kvp._2
-                  (key, {
-                    value.toString
-                  })
-                }.toMap
+            Option({
+              val builder$ = List.newBuilder[Map[String, String]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  val map = value.asInstanceOf[java.util.Map[?,?]]
+                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                    val builder$ = Map.newBuilder[String, String]
+                    val iterator$ = map.entrySet.iterator
+                    while (iterator$.hasNext) {
+                      val entry$ = iterator$.next
+                      val key = entry$.getKey.toString
+                      val value = entry$.getValue
+                      builder$ += ((key, {
+                        value.toString
+                      }))
+                    }
+                    builder$.result()
+                  }
+                }
               }
-            }).toList)
+              builder$.result()
+            })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -770,22 +850,30 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case null => None
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Map[String, String]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Map[String, String]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   val map = value.asInstanceOf[java.util.Map[?,?]]
                   if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
+                    val builder$ = Map.newBuilder[String, String]
+                    val iterator$ = map.entrySet.iterator
+                    while (iterator$.hasNext) {
+                      val entry$ = iterator$.next
+                      val key = entry$.getKey.toString
+                      val value = entry$.getValue
+                      builder$ += ((key, {
                         value.toString
-                      })
-                    }.toMap
+                      }))
+                    }
+                    builder$.result()
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -794,12 +882,28 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         value match {
           case null => None
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              val array = value.asInstanceOf[java.util.List[?]]
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                value.toString
-              }).toList
-            }).toList)
+            Option({
+              val builder$ = List.newBuilder[List[String]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  val array = value.asInstanceOf[java.util.List[?]]
+                  {
+                    val builder$ = List.newBuilder[String]
+                    val iterator$ = array.iterator
+                    while (iterator$.hasNext) {
+                      val value = iterator$.next
+                      builder$ += {
+                        value.toString
+                      }
+                    }
+                    builder$.result()
+                  }
+                }
+              }
+              builder$.result()
+            })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -808,10 +912,13 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case null => None
           case map: java.util.Map[?,?] =>
             Option(if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Option[String | Long | Boolean | Double]] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, Option[String | Long | Boolean | Double]]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case x: java.lang.CharSequence => Option(x.toString)
                     case x: Long => Option(x)
@@ -820,8 +927,9 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
                     case null => None
                     case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -830,16 +938,24 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         value match {
           case null => None
           case array: java.util.List[?] =>
-            Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: java.lang.CharSequence => Option(x.toString)
-                case x: Long => Option(x)
-                case x: Boolean => Option(x)
-                case x: Double => Option(x)
-                case null => None
-                case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            Option({
+              val builder$ = List.newBuilder[Option[String | Long | Boolean | Double]]
+              val iterator$ = array.iterator
+              while (iterator$.hasNext) {
+                val value = iterator$.next
+                builder$ += {
+                  value match {
+                    case x: java.lang.CharSequence => Option(x.toString)
+                    case x: Long => Option(x)
+                    case x: Boolean => Option(x)
+                    case x: Double => Option(x)
+                    case null => None
+                    case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                  }
+                }
               }
-            }).toList)
+              builder$.result()
+            })
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }

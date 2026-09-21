@@ -342,177 +342,289 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
       case 0 => this._array_of_arrays = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case array: java.util.List[_] =>
-                  scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                    value.toString
-                  }).toList
-                }
-            }).toList
+            val builder$ = List.newBuilder[List[String]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case array: java.util.List[_] =>
+                    val builder$ = List.newBuilder[String]
+                    val iterator$ = array.iterator
+                    while (iterator$.hasNext) {
+                      val value = iterator$.next
+                      builder$ += {
+                        value.toString
+                      }
+                    }
+                    builder$.result()
+                  }
+              }
+            }
+            builder$.result()
           }
       }
       case 1 => this._array_of_maps = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case map: java.util.Map[_,_] => {
-                  if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
-                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                      val key = kvp._1.toString
-                      val value = kvp._2
-                      (key, {
-                        value.toString
-                      })
-                    }.toMap
+            val builder$ = List.newBuilder[Map[String, String]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case map: java.util.Map[_,_] => {
+                    if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String] else {
+                      val builder$ = Map.newBuilder[String, String]
+                      val iterator$ = map.entrySet.iterator
+                      while (iterator$.hasNext) {
+                        val entry$ = iterator$.next
+                        val key = entry$.getKey.toString
+                        val value = entry$.getValue
+                        builder$ += ((key, {
+                          value.toString
+                        }))
+                      }
+                      builder$.result()
+                    }
                   }
                 }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 2 => this._array_of_unions = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
-                case x: Int => Coproduct[String :+: Int :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[String :+: Int :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
+                  case x: Int => Coproduct[String :+: Int :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 3 => this._array_of_records = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[avro2s.test.arrays.Record]
-            }).toList
+            val builder$ = List.newBuilder[avro2s.test.arrays.Record]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[avro2s.test.arrays.Record]
+              }
+            }
+            builder$.result()
           }
       }
       case 4 => this._array_of_union_of_records = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: avro2s.test.arrays.Record1 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
-                case x: avro2s.test.arrays.Record2 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
-                case x: Int => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: avro2s.test.arrays.Record1 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
+                  case x: avro2s.test.arrays.Record2 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
+                  case x: Int => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 5 => this._array_of_enums = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[avro2s.test.arrays.Enum]
-            }).toList
+            val builder$ = List.newBuilder[avro2s.test.arrays.Enum]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[avro2s.test.arrays.Enum]
+              }
+            }
+            builder$.result()
           }
       }
       case 6 => this._array_of_fixed = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[avro2s.test.arrays.Fixed]
-            }).toList
+            val builder$ = List.newBuilder[avro2s.test.arrays.Fixed]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[avro2s.test.arrays.Fixed]
+              }
+            }
+            builder$.result()
           }
       }
       case 7 => this._array_of_bytes = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case buffer: java.nio.ByteBuffer => val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+            val builder$ = List.newBuilder[Array[Byte]]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case buffer: java.nio.ByteBuffer => val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 8 => this._array_of_strings = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.toString
-            }).toList
+            val builder$ = List.newBuilder[String]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.toString
+              }
+            }
+            builder$.result()
           }
       }
       case 9 => this._array_of_ints = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Int]
-            }).toList
+            val builder$ = List.newBuilder[Int]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Int]
+              }
+            }
+            builder$.result()
           }
       }
       case 10 => this._array_of_longs = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Long]
-            }).toList
+            val builder$ = List.newBuilder[Long]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Long]
+              }
+            }
+            builder$.result()
           }
       }
       case 11 => this._array_of_floats = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Float]
-            }).toList
+            val builder$ = List.newBuilder[Float]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Float]
+              }
+            }
+            builder$.result()
           }
       }
       case 12 => this._array_of_doubles = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Double]
-            }).toList
+            val builder$ = List.newBuilder[Double]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Double]
+              }
+            }
+            builder$.result()
           }
       }
       case 13 => this._array_of_booleans = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value.asInstanceOf[Boolean]
-            }).toList
+            val builder$ = List.newBuilder[Boolean]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value.asInstanceOf[Boolean]
+              }
+            }
+            builder$.result()
           }
       }
       case 14 => this._array_of_union_of_only_records = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: avro2s.test.arrays.RecordA => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
-                case x: avro2s.test.arrays.RecordB => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: avro2s.test.arrays.RecordA => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
+                  case x: avro2s.test.arrays.RecordB => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 15 => this._array_of_union_of_only_enums = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: avro2s.test.arrays.EnumA => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
-                case x: avro2s.test.arrays.EnumB => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: avro2s.test.arrays.EnumA => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
+                  case x: avro2s.test.arrays.EnumB => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 16 => this._array_of_union_of_only_fixed = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: avro2s.test.arrays.FixedA => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
-                case x: avro2s.test.arrays.FixedB => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: avro2s.test.arrays.FixedA => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
+                  case x: avro2s.test.arrays.FixedB => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

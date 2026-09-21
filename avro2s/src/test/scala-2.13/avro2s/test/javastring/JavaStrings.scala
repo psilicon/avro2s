@@ -90,30 +90,40 @@ case class JavaStrings(var optional_name: Option[String], var name_or_count: Str
       case 2 => this.names = {
         value match {
           case array: java.util.List[_] =>
-            scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              value match {
-                case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
-                case x: Int => Coproduct[String :+: Int :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+            val builder$ = List.newBuilder[String :+: Int :+: CNil]
+            val iterator$ = array.iterator
+            while (iterator$.hasNext) {
+              val value = iterator$.next
+              builder$ += {
+                value match {
+                  case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
+                  case x: Int => Coproduct[String :+: Int :+: CNil](x)
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                }
               }
-            }).toList
+            }
+            builder$.result()
           }
       }
       case 3 => this.lookup = {
         value match {
           case map: java.util.Map[_,_] => {
             if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, String :+: Int :+: CNil] else {
-              scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-                val key = kvp._1.toString
-                val value = kvp._2
-                (key, {
+              val builder$ = Map.newBuilder[String, String :+: Int :+: CNil]
+              val iterator$ = map.entrySet.iterator
+              while (iterator$.hasNext) {
+                val entry$ = iterator$.next
+                val key = entry$.getKey.toString
+                val value = entry$.getValue
+                builder$ += ((key, {
                   value match {
                     case x: java.lang.CharSequence => Coproduct[String :+: Int :+: CNil](x.toString)
                     case x: Int => Coproduct[String :+: Int :+: CNil](x)
                     case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
-                })
-              }.toMap
+                }))
+              }
+              builder$.result()
             }
           }
         }

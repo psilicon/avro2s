@@ -39,6 +39,23 @@ class UnionValidatorTest extends AnyFunSuite with Matchers {
       error.getMessage should include("logical types disabled")
     }
 
+    test(s"Scala $version rejects a union of the same logical type on different Avro types") {
+      // decimal sits on bytes or fixed, so Avro sees two distinct branch names while avro2s maps
+      // both to scala.math.BigDecimal. Two differently named fixed durations collide the same way.
+      val decimals = s"""["null",{"type":"bytes","logicalType":"decimal","precision":10,"scale":2},""" +
+        """{"type":"fixed","name":"FD","size":16,"logicalType":"decimal","precision":20,"scale":4}]"""
+      val durations = """["null",{"type":"fixed","name":"D1","size":12,"logicalType":"duration"},""" +
+        """{"type":"fixed","name":"D2","size":12,"logicalType":"duration"}]"""
+
+      val decimalError = the[SchemaError] thrownBy generate(record(decimals), target, logicalTypesEnabled = true)
+      decimalError.getMessage should include("scala.math.BigDecimal")
+      decimalError.getMessage should include("bytes (decimal)")
+      decimalError.getMessage should include("fixed (decimal)")
+
+      val durationError = the[SchemaError] thrownBy generate(record(durations), target, logicalTypesEnabled = true)
+      durationError.getMessage should include("org.apache.avro.util.TimePeriod")
+    }
+
     test(s"Scala $version generates the same union once logical types are disabled") {
       // The documented way out: the branches map to distinct Scala types and round-trip correctly.
       val code = generate(record(s"""["null",$millis,$micros]"""), target, logicalTypesEnabled = false)

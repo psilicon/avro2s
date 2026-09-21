@@ -81,7 +81,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       }
       case 6 => this._bytes = {
         val buffer = value.asInstanceOf[java.nio.ByteBuffer]
-        val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); array
+        val start$ = buffer.position(); val array = Array.ofDim[Byte](buffer.remaining()); buffer.get(array); (buffer: java.nio.Buffer).position(start$); array
       }
       case 7 => this._string = {
         value.toString.asInstanceOf[String]
@@ -91,20 +91,32 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       }
       case 9 => this._array = {
         val array = value.asInstanceOf[java.util.List[?]]
-        scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-          value.toString
-        }).toList
+        {
+          val builder$ = List.newBuilder[String]
+          val iterator$ = array.iterator
+          while (iterator$.hasNext) {
+            val value = iterator$.next
+            builder$ += {
+              value.toString
+            }
+          }
+          builder$.result()
+        }
       }
       case 10 => this._map = {
         val map = value.asInstanceOf[java.util.Map[?,?]]
         if (map.isEmpty) _root_.scala.collection.immutable.Map.empty[String, Long] else {
-          scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.iterator.map { kvp =>
-            val key = kvp._1.toString
-            val value = kvp._2
-            (key, {
+          val builder$ = Map.newBuilder[String, Long]
+          val iterator$ = map.entrySet.iterator
+          while (iterator$.hasNext) {
+            val entry$ = iterator$.next
+            val key = entry$.getKey.toString
+            val value = entry$.getValue
+            builder$ += ((key, {
               value.asInstanceOf[Long]
-            })
-          }.toMap
+            }))
+          }
+          builder$.result()
         }
       }
       case 11 => this._union_nullable = {
