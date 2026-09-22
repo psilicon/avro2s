@@ -58,7 +58,10 @@ object GenericValues {
       case "time-micros" => within(millisPerDay.toLong * 1000L)
       case "time-nanos" => within(millisPerDay.toLong * 1000000L)
       case "timestamp-micros" | "local-timestamp-micros" => within(millisRange * 1000L) - (millisRange * 1000L / 2)
-      case "timestamp-nanos" | "local-timestamp-nanos" => within(millisRange) - (millisRange / 2)
+      // Scaled like micros above. Left at millisRange these landed within about 800 seconds of the
+      // epoch, so they zigzag-encoded to two or three bytes instead of the eight or nine a real
+      // nanosecond timestamp needs, and the benchmark measured an unrepresentatively cheap encode.
+      case "timestamp-nanos" | "local-timestamp-nanos" => within(millisRange * 1000000L) - (millisRange * 1000000L / 2)
       case _ => within(millisRange) - (millisRange / 2)
     }
   }
