@@ -17,15 +17,15 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate | String
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _date_or_string match {
-        case x: java.time.LocalDate => x.asInstanceOf[AnyRef]
+        case x: java.time.LocalDate => {x.toEpochDay.toInt}.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
       }
       case 1 => _instant_or_string match {
-        case x: java.time.Instant => x.asInstanceOf[AnyRef]
+        case x: java.time.Instant => {x.toEpochMilli}.asInstanceOf[AnyRef]
         case x: String => x.asInstanceOf[AnyRef]
       }
       case 2 => _uuid_or_int match {
-        case x: java.util.UUID => x.asInstanceOf[AnyRef]
+        case x: java.util.UUID => {x.toString}.asInstanceOf[AnyRef]
         case x: Int => x.asInstanceOf[AnyRef]
       }
       case 3 => _decimal_or_string match {
@@ -40,28 +40,32 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate | String
     (field$: @switch) match {
       case 0 => this._date_or_string = {
         value match {
-          case x: java.time.LocalDate => x
+          case x: java.time.LocalDate => x.asInstanceOf[java.time.LocalDate | String]
+          case x: Int => {java.time.LocalDate.ofEpochDay(x)}.asInstanceOf[java.time.LocalDate | String]
           case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 1 => this._instant_or_string = {
         value match {
-          case x: java.time.Instant => x
+          case x: java.time.Instant => x.asInstanceOf[java.time.Instant | String]
+          case x: Long => {java.time.Instant.ofEpochMilli(x)}.asInstanceOf[java.time.Instant | String]
           case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 2 => this._uuid_or_int = {
         value match {
-          case x: java.util.UUID => x
+          case x: java.util.UUID => x.asInstanceOf[java.util.UUID | Int]
+          case x: CharSequence => {java.util.UUID.fromString(x.toString)}.asInstanceOf[java.util.UUID | Int]
           case x: Int => x
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 3 => this._decimal_or_string = {
         value match {
-          case x: java.nio.ByteBuffer => {{ val buffer$ = x; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }}
+          case x: java.math.BigDecimal => scala.math.BigDecimal(x).asInstanceOf[scala.math.BigDecimal | String]
+          case x: java.nio.ByteBuffer => {{ val buffer$ = x; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }}.asInstanceOf[scala.math.BigDecimal | String]
           case x: java.lang.CharSequence => x.toString
           case _ => throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }

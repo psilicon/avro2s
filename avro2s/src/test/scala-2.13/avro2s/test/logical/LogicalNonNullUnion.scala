@@ -20,17 +20,17 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate :+: Stri
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => _date_or_string match {
-        case Inl(x) => x.asInstanceOf[AnyRef]
+        case Inl(x) => {x.toEpochDay.toInt}.asInstanceOf[AnyRef]
         case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 1 => _instant_or_string match {
-        case Inl(x) => x.asInstanceOf[AnyRef]
+        case Inl(x) => {x.toEpochMilli}.asInstanceOf[AnyRef]
         case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 2 => _uuid_or_int match {
-        case Inl(x) => x.asInstanceOf[AnyRef]
+        case Inl(x) => {x.toString}.asInstanceOf[AnyRef]
         case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
@@ -48,6 +48,7 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate :+: Stri
       case 0 => this._date_or_string = {
         value match {
           case x: java.time.LocalDate => Coproduct[java.time.LocalDate :+: String :+: CNil](x)
+          case x: Int => Coproduct[java.time.LocalDate :+: String :+: CNil]({java.time.LocalDate.ofEpochDay(x)})
           case x: java.lang.CharSequence => Coproduct[java.time.LocalDate :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -55,6 +56,7 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate :+: Stri
       case 1 => this._instant_or_string = {
         value match {
           case x: java.time.Instant => Coproduct[java.time.Instant :+: String :+: CNil](x)
+          case x: Long => Coproduct[java.time.Instant :+: String :+: CNil]({java.time.Instant.ofEpochMilli(x)})
           case x: java.lang.CharSequence => Coproduct[java.time.Instant :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -62,12 +64,14 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate :+: Stri
       case 2 => this._uuid_or_int = {
         value match {
           case x: java.util.UUID => Coproduct[java.util.UUID :+: Int :+: CNil](x)
+          case x: CharSequence => Coproduct[java.util.UUID :+: Int :+: CNil]({java.util.UUID.fromString(x.toString)})
           case x: Int => Coproduct[java.util.UUID :+: Int :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 3 => this._decimal_or_string = {
         value match {
+          case x: java.math.BigDecimal => Coproduct[scala.math.BigDecimal :+: String :+: CNil](scala.math.BigDecimal(x))
           case x: java.nio.ByteBuffer => Coproduct[scala.math.BigDecimal :+: String :+: CNil]({{ val buffer$ = x; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }})
           case x: java.lang.CharSequence => Coproduct[scala.math.BigDecimal :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)

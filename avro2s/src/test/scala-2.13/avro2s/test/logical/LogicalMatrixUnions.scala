@@ -21,61 +21,61 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
     (field$: @switch) match {
       case 0 => _uuid match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.toString}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 1 => _date match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.toEpochDay.toInt}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 2 => _time_millis match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {(x.toNanoOfDay / 1000000L).toInt}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 3 => _time_micros match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.toNanoOfDay / 1000L}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 4 => _timestamp_millis match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.toEpochMilli}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 5 => _timestamp_micros match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {(x.getEpochSecond * 1000000L) + (x.getNano / 1000L)}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 6 => _timestamp_nanos match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {java.lang.Math.addExact(java.lang.Math.multiplyExact(x.getEpochSecond, 1000000000L), x.getNano.toLong)}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 7 => _local_timestamp_millis match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.atZone(java.time.ZoneId.of("UTC")).toInstant.toEpochMilli}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 8 => _local_timestamp_micros match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {x.atZone(java.time.ZoneId.of("UTC")).toInstant.getEpochSecond * 1000000L + x.atZone(java.time.ZoneId.of("UTC")).toInstant.getNano / 1000L}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
       case 9 => _local_timestamp_nanos match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {java.lang.Math.addExact(java.lang.Math.multiplyExact(x.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), x.getNano.toLong)}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
@@ -113,6 +113,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.util.UUID :+: Int :+: CNil](x)
           case x: java.util.UUID => Coproduct[scala.Null :+: java.util.UUID :+: Int :+: CNil](x)
+          case x: CharSequence => Coproduct[scala.Null :+: java.util.UUID :+: Int :+: CNil]({java.util.UUID.fromString(x.toString)})
           case x: Int => Coproduct[scala.Null :+: java.util.UUID :+: Int :+: CNil](x)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -121,6 +122,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalDate :+: String :+: CNil](x)
           case x: java.time.LocalDate => Coproduct[scala.Null :+: java.time.LocalDate :+: String :+: CNil](x)
+          case x: Int => Coproduct[scala.Null :+: java.time.LocalDate :+: String :+: CNil]({java.time.LocalDate.ofEpochDay(x)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalDate :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -129,6 +131,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x)
           case x: java.time.LocalTime => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x)
+          case x: Int => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil]({java.time.LocalTime.ofNanoOfDay(x * 1000000L)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -137,6 +140,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x)
           case x: java.time.LocalTime => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil]({java.time.LocalTime.ofNanoOfDay(x * 1000L)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalTime :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -145,6 +149,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
           case x: java.time.Instant => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil]({java.time.Instant.ofEpochMilli(x)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -153,6 +158,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
           case x: java.time.Instant => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil]({java.time.Instant.ofEpochSecond(x / 1000000L, (x % 1000000L) * 1000L)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -161,6 +167,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
           case x: java.time.Instant => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil]({java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(x, 1000000000L), java.lang.Math.floorMod(x, 1000000000L))})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.Instant :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -169,6 +176,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
           case x: java.time.LocalDateTime => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil]({java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(x), java.time.ZoneId.of("UTC"))})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -177,6 +185,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
           case x: java.time.LocalDateTime => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil]({java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(x / 1000000L, (x % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -185,6 +194,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
           case x: java.time.LocalDateTime => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x)
+          case x: Long => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil]({java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(x, 1000000000L), java.lang.Math.floorMod(x, 1000000000L).toInt, java.time.ZoneOffset.UTC)})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.time.LocalDateTime :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -192,6 +202,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
       case 10 => this._decimal_bytes = {
         value match {
           case x @ null => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](x)
+          case x: java.math.BigDecimal => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](scala.math.BigDecimal(x))
           case x: java.nio.ByteBuffer => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil]({{ val buffer$ = x; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -200,7 +211,8 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
       case 11 => this._decimal_fixed = {
         value match {
           case x @ null => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](x)
-          case x: avro2s.test.logical.MatrixDecimalFixed => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil]({{ val raw$ = x.asInstanceOf[avro2s.test.logical.MatrixDecimalFixed].bytes(); val sign$ = if (raw$(0) < 0) -1L else 0L; val signByte$ = sign$.toByte; var first$ = 0; while (first$ < raw$.length - 1 && raw$(first$) == signByte$ && ((raw$(first$ + 1) < 0) == (signByte$ < 0))) first$ += 1; if (raw$.length - first$ <= 8) { var unscaled$ = sign$; var index$ = first$; while (index$ < raw$.length) { unscaled$ = (unscaled$ << 8) | (raw$(index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 4)) } else scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(raw$), 4)) }})
+          case x: java.math.BigDecimal => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](scala.math.BigDecimal(x))
+          case x: avro2s.test.logical.MatrixDecimalFixed => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil]({{ val raw$ = x.bytes(); val sign$ = if (raw$(0) < 0) -1L else 0L; val signByte$ = sign$.toByte; var first$ = 0; while (first$ < raw$.length - 1 && raw$(first$) == signByte$ && ((raw$(first$ + 1) < 0) == (signByte$ < 0))) first$ += 1; if (raw$.length - first$ <= 8) { var unscaled$ = sign$; var index$ = first$; while (index$ < raw$.length) { unscaled$ = (unscaled$ << 8) | (raw$(index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 4)) } else scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(raw$), 4)) }})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: scala.math.BigDecimal :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -217,6 +229,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: org.apache.avro.util.TimePeriod :+: String :+: CNil](x)
           case x: org.apache.avro.util.TimePeriod => Coproduct[scala.Null :+: org.apache.avro.util.TimePeriod :+: String :+: CNil](x)
+          case x: avro2s.test.logical.MatrixDurationFixed => Coproduct[scala.Null :+: org.apache.avro.util.TimePeriod :+: String :+: CNil]({{ val bytes$ = x.bytes(); org.apache.avro.util.TimePeriod.of(((bytes$(0) & 0xFFL) | ((bytes$(1) & 0xFFL) << 8) | ((bytes$(2) & 0xFFL) << 16) | ((bytes$(3) & 0xFFL) << 24)), ((bytes$(4) & 0xFFL) | ((bytes$(5) & 0xFFL) << 8) | ((bytes$(6) & 0xFFL) << 16) | ((bytes$(7) & 0xFFL) << 24)), ((bytes$(8) & 0xFFL) | ((bytes$(9) & 0xFFL) << 8) | ((bytes$(10) & 0xFFL) << 16) | ((bytes$(11) & 0xFFL) << 24))) }})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: org.apache.avro.util.TimePeriod :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }

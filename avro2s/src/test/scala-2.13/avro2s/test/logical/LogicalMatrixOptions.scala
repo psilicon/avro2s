@@ -18,43 +18,43 @@ case class LogicalMatrixOptions(var _uuid: Option[java.util.UUID], var _date: Op
     (field$: @switch) match {
       case 0 => _uuid match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.toString}.asInstanceOf[AnyRef]
       }
       case 1 => _date match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.toEpochDay.toInt}.asInstanceOf[AnyRef]
       }
       case 2 => _time_millis match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {(x.toNanoOfDay / 1000000L).toInt}.asInstanceOf[AnyRef]
       }
       case 3 => _time_micros match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.toNanoOfDay / 1000L}.asInstanceOf[AnyRef]
       }
       case 4 => _timestamp_millis match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.toEpochMilli}.asInstanceOf[AnyRef]
       }
       case 5 => _timestamp_micros match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {(x.getEpochSecond * 1000000L) + (x.getNano / 1000L)}.asInstanceOf[AnyRef]
       }
       case 6 => _timestamp_nanos match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {java.lang.Math.addExact(java.lang.Math.multiplyExact(x.getEpochSecond, 1000000000L), x.getNano.toLong)}.asInstanceOf[AnyRef]
       }
       case 7 => _local_timestamp_millis match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.atZone(java.time.ZoneId.of("UTC")).toInstant.toEpochMilli}.asInstanceOf[AnyRef]
       }
       case 8 => _local_timestamp_micros match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {x.atZone(java.time.ZoneId.of("UTC")).toInstant.getEpochSecond * 1000000L + x.atZone(java.time.ZoneId.of("UTC")).toInstant.getNano / 1000L}.asInstanceOf[AnyRef]
       }
       case 9 => _local_timestamp_nanos match {
         case None => null
-        case Some(x) => x.asInstanceOf[AnyRef]
+        case Some(x) => {java.lang.Math.addExact(java.lang.Math.multiplyExact(x.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), x.getNano.toLong)}.asInstanceOf[AnyRef]
       }
       case 10 => _decimal_bytes match {
         case None => null
@@ -82,72 +82,84 @@ case class LogicalMatrixOptions(var _uuid: Option[java.util.UUID], var _date: Op
         value match {
           case null => None
           case x: java.util.UUID => Some(x)
+          case x: CharSequence => Some({java.util.UUID.fromString(x.toString)})
         }
       }
       case 1 => this._date = {
         value match {
           case null => None
           case x: java.time.LocalDate => Some(x)
+          case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
         }
       }
       case 2 => this._time_millis = {
         value match {
           case null => None
           case x: java.time.LocalTime => Some(x)
+          case x: Int => Some({java.time.LocalTime.ofNanoOfDay(x * 1000000L)})
         }
       }
       case 3 => this._time_micros = {
         value match {
           case null => None
           case x: java.time.LocalTime => Some(x)
+          case x: Long => Some({java.time.LocalTime.ofNanoOfDay(x * 1000L)})
         }
       }
       case 4 => this._timestamp_millis = {
         value match {
           case null => None
           case x: java.time.Instant => Some(x)
+          case x: Long => Some({java.time.Instant.ofEpochMilli(x)})
         }
       }
       case 5 => this._timestamp_micros = {
         value match {
           case null => None
           case x: java.time.Instant => Some(x)
+          case x: Long => Some({java.time.Instant.ofEpochSecond(x / 1000000L, (x % 1000000L) * 1000L)})
         }
       }
       case 6 => this._timestamp_nanos = {
         value match {
           case null => None
           case x: java.time.Instant => Some(x)
+          case x: Long => Some({java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(x, 1000000000L), java.lang.Math.floorMod(x, 1000000000L))})
         }
       }
       case 7 => this._local_timestamp_millis = {
         value match {
           case null => None
           case x: java.time.LocalDateTime => Some(x)
+          case x: Long => Some({java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(x), java.time.ZoneId.of("UTC"))})
         }
       }
       case 8 => this._local_timestamp_micros = {
         value match {
           case null => None
           case x: java.time.LocalDateTime => Some(x)
+          case x: Long => Some({java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(x / 1000000L, (x % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))})
         }
       }
       case 9 => this._local_timestamp_nanos = {
         value match {
           case null => None
           case x: java.time.LocalDateTime => Some(x)
+          case x: Long => Some({java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(x, 1000000000L), java.lang.Math.floorMod(x, 1000000000L).toInt, java.time.ZoneOffset.UTC)})
         }
       }
       case 10 => this._decimal_bytes = {
         value match {
           case null => None
+          case x: java.math.BigDecimal => Some(scala.math.BigDecimal(x))
           case x: java.nio.ByteBuffer => Some({{ val buffer$ = x; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }})
         }
       }
       case 11 => this._decimal_fixed = {
         value match {
           case null => None
-          case x: avro2s.test.logical.MatrixDecimalFixed => Some({{ val raw$ = x.asInstanceOf[avro2s.test.logical.MatrixDecimalFixed].bytes(); val sign$ = if (raw$(0) < 0) -1L else 0L; val signByte$ = sign$.toByte; var first$ = 0; while (first$ < raw$.length - 1 && raw$(first$) == signByte$ && ((raw$(first$ + 1) < 0) == (signByte$ < 0))) first$ += 1; if (raw$.length - first$ <= 8) { var unscaled$ = sign$; var index$ = first$; while (index$ < raw$.length) { unscaled$ = (unscaled$ << 8) | (raw$(index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 4)) } else scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(raw$), 4)) }})
+          case x: java.math.BigDecimal => Some(scala.math.BigDecimal(x))
+          case x: avro2s.test.logical.MatrixDecimalFixed => Some({{ val raw$ = x.bytes(); val sign$ = if (raw$(0) < 0) -1L else 0L; val signByte$ = sign$.toByte; var first$ = 0; while (first$ < raw$.length - 1 && raw$(first$) == signByte$ && ((raw$(first$ + 1) < 0) == (signByte$ < 0))) first$ += 1; if (raw$.length - first$ <= 8) { var unscaled$ = sign$; var index$ = first$; while (index$ < raw$.length) { unscaled$ = (unscaled$ << 8) | (raw$(index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 4)) } else scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(raw$), 4)) }})
         }
       }
       case 12 => this._big_decimal = {
@@ -160,6 +172,7 @@ case class LogicalMatrixOptions(var _uuid: Option[java.util.UUID], var _date: Op
         value match {
           case null => None
           case x: org.apache.avro.util.TimePeriod => Some(x)
+          case x: avro2s.test.logical.MatrixDurationFixed => Some({{ val bytes$ = x.bytes(); org.apache.avro.util.TimePeriod.of(((bytes$(0) & 0xFFL) | ((bytes$(1) & 0xFFL) << 8) | ((bytes$(2) & 0xFFL) << 16) | ((bytes$(3) & 0xFFL) << 24)), ((bytes$(4) & 0xFFL) | ((bytes$(5) & 0xFFL) << 8) | ((bytes$(6) & 0xFFL) << 16) | ((bytes$(7) & 0xFFL) << 24)), ((bytes$(8) & 0xFFL) | ((bytes$(9) & 0xFFL) << 8) | ((bytes$(10) & 0xFFL) << 16) | ((bytes$(11) & 0xFFL) << 24))) }})
         }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

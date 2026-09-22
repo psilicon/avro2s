@@ -30,9 +30,9 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
           .call(matchUnion(_, "value", field.schema()))
           .outdent
           .add("}")
-      case BYTES | FIXED if ltc.putConversionIsOptional(field.schema()) =>
+      case _ if ltc.putConversionIsOptional(field.schema()) =>
         printer
-          .add(s"case $index => this.${field.safeName} = ${ltc.toType(field.schema(), "value")}")
+          .add(s"case $index => this.${field.safeName} = ${ltc.acceptEitherShape(field.schema(), "value")}")
       case BYTES | FIXED if ltc.putReceivesConverted(field.schema()) =>
         printer
           .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
@@ -138,6 +138,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   private def printArrayValue(printer: FunctionalPrinter, valueName: String, schema: Schema): FunctionalPrinter = {
     schema.getType match {
+      case _ if ltc.putConversionIsOptional(schema) =>
+        printer.add(ltc.acceptEitherShape(schema, valueName))
       case UNION =>
         printer
           .call(matchUnion(_, valueName, schema))
@@ -188,6 +190,8 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
 
   private def printMapValueInner(printer: FunctionalPrinter, schema: Schema): FunctionalPrinter = {
     schema.getType match {
+      case _ if ltc.putConversionIsOptional(schema) =>
+        printer.add(ltc.acceptEitherShape(schema, "value"))
       case UNION =>
         printer
           .call(matchUnion(_, "value", schema))
@@ -216,6 +220,13 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       case CoproductRepresentation(types) => printer.add({
         types.flatMap { t =>
           t.getType match {
+            case _ if ltc.putConversionIsOptional(t) =>
+              val raw = ltc.rawShapeOf(t, Some(t.getFullName))
+              val bound = if (t.getType == Type.STRING) "x.toString" else "x"
+              List(
+                s"case x: ${ltc.convertedTypeFor(t).get} => Coproduct[${union.asString(typeHelpers)}](${ltc.fromConvertedFor(t, "x")})",
+                s"case x: $raw => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, bound)})"
+              )
             case ENUM if scalaEnums => List(
               s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)",
               s"""case x: org.apache.avro.generic.GenericEnumSymbol[_] if x.getSchema.getFullName == "${t.getFullName}" => Coproduct[${union.asString(typeHelpers)}](_root_.${t.getFullName}.fromAvroSymbol(x.toString))"""
@@ -256,6 +267,12 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
       case OptionRepresentation(schema) =>
         val nullCasePrinter = printer.add("case null => None")
         schema.getType match {
+          case _ if ltc.putConversionIsOptional(schema) =>
+            val raw = ltc.rawShapeOf(schema, Some(schema.getFullName))
+            val bound = if (schema.getType == Type.STRING) "x.toString" else "x"
+            nullCasePrinter
+              .add(s"case x: ${ltc.convertedTypeFor(schema).get} => Some(${ltc.fromConvertedFor(schema, "x")})")
+              .add(s"case x: $raw => Some(${ltc.toType(schema, bound)})")
           case MAP =>
             nullCasePrinter
               .add("case map: java.util.Map[_,_] => Some{")
