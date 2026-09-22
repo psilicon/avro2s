@@ -134,6 +134,25 @@ private[avro2s] object LogicalTypes {
      * ARRAY items and UNION branches. A superset of what getConversion advertises: a ModelOnly
      * conversion is not advertised but still has to be registered, or the model stops applying it.
      */
+    /**
+     * True when a logical type appears anywhere in this schema. MODEL$ is emitted for any record
+     * that uses one, even though it now registers nothing: an absent MODEL$ makes getSpecificData
+     * fall back to SpecificData.get(), which carries Avro's conversions, and the point of emitting
+     * it is to keep those away from generated code.
+     */
+    def usesLogicalType(schema: Schema): Boolean = {
+      import scala.jdk.CollectionConverters._
+      def loop(s: Schema, seen: Set[String]): Boolean = s.getType match {
+        case Schema.Type.MAP    => loop(s.getValueType, seen)
+        case Schema.Type.ARRAY  => loop(s.getElementType, seen)
+        case Schema.Type.UNION  => s.getTypes.asScala.exists(loop(_, seen))
+        case Schema.Type.RECORD =>
+          !seen(s.getFullName) && s.getFields.asScala.exists(f => loop(f.schema(), seen + s.getFullName))
+        case _                  => logicalTypeInUse(s)
+      }
+      loop(schema, Set.empty)
+    }
+
     def collectConversionClasses(schema: Schema): List[String] = {
       import scala.jdk.CollectionConverters._
       // Nested records are included because the model is per-reader, not per-record: a logical type

@@ -24,9 +24,12 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     val fields = schema.getFields.asScala.toList
     val ns = Option(schema.getNamespace).orElse(namespace)
     val nsString = ns.getOrElse("")
-    val distinctConversions =
-      if (!generatorConfig.logicalTypesEnabled) Nil
-      else fields.flatMap(f => ltc.collectConversionClasses(f.schema())).distinct
+    // A model is emitted for any record using a logical type, and it registers nothing: generated
+    // code converts in get and accepts either shape in put, so a conversion here would only decide
+    // which arm of put runs. Leaving it out is not the same as emitting an empty one - with no
+    // MODEL$, getSpecificData falls back to SpecificData.get(), which carries Avro's own.
+    val usesLogicalTypes =
+      generatorConfig.logicalTypesEnabled && fields.exists(f => ltc.usesLogicalType(f.schema()))
     val (constructor, defaultValues) = toThis(name, fields)
 
     val functionalPrinter = new FunctionalPrinter()
@@ -44,7 +47,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(fields.nonEmpty)(_.add(constructor))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
-      .when(distinctConversions.nonEmpty)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
+      .when(usesLogicalTypes)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -77,7 +80,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .newline
       .add(s"object $name {")
       .indent
-      .call(printConversionInfrastructure(_, distinctConversions))
+      .call(printConversionInfrastructure(_, usesLogicalTypes))
       .add(s"${if (scalaEnums) "@scala.annotation.static " else ""}val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
       .add(defaultValues: _*)
       .outdent
@@ -114,25 +117,12 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     }
   }
 
-  private def printConversionInfrastructure(printer: FunctionalPrinter, distinctConversions: List[String]): FunctionalPrinter = {
-    if (distinctConversions.isEmpty) printer
-    else distinctConversions
-      .foldLeft(printer) { (p, cls) =>
-        val shortName = cls.split('.').last
-        p.add(s"@scala.annotation.static val $dollar$shortName: org.apache.avro.Conversion[?] = ${ltc.conversionExpressionFor(cls)}")
-      }
-      // A @static initialiser may not bind locals - Scala 3's MoveStatics phase cannot relocate
-      // them - so the conversions are folded in rather than added in a block. A helper method
-      // would do as well, but a private one is reachable from the class's static initialiser only
-      // through a mangled public accessor, which then shows up on the companion.
-      //
-      // foldLeft returns the receiver, so the model stays a plain SpecificData rather than a
-      // subclass: FastReaderBuilder.isSupportedData tests getClass equality, and a subclass would
-      // silently drop every reader onto Avro's slow path.
-      .add(s"@scala.annotation.static val MODEL$dollar: org.apache.avro.specific.SpecificData = " +
-        s"List(${distinctConversions.map(cls => dollar + cls.split('.').last).mkString(", ")})" +
-        s".foldLeft(new org.apache.avro.specific.SpecificData())((model, conversion) => { model.addLogicalTypeConversion(conversion); model })")
-  }
+  private def printConversionInfrastructure(printer: FunctionalPrinter, usesLogicalTypes: Boolean): FunctionalPrinter =
+    if (!usesLogicalTypes) printer
+    // Kept a plain SpecificData rather than a subclass: FastReaderBuilder.isSupportedData tests
+    // getClass equality, and a subclass silently drops every reader onto Avro's slow path.
+    else printer.add(s"@scala.annotation.static val MODEL$dollar: org.apache.avro.specific.SpecificData = " +
+      "new org.apache.avro.specific.SpecificData()")
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
     fields.map { field =>

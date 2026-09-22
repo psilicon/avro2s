@@ -799,30 +799,5 @@ case class LogicalMatrixMapsOfArrays(var _uuid: Map[String, List[java.util.UUID]
 
 object LogicalMatrixMapsOfArrays {
   val SCHEMA$: org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalMatrixMapsOfArrays","namespace":"avro2s.test.logical","doc":"Every supported logical type in the mapsofarrays position.","fields":[{"name":"_uuid","type":{"type":"map","values":{"type":"array","items":{"type":"string","logicalType":"uuid"}}}},{"name":"_date","type":{"type":"map","values":{"type":"array","items":{"type":"int","logicalType":"date"}}}},{"name":"_time_millis","type":{"type":"map","values":{"type":"array","items":{"type":"int","logicalType":"time-millis"}}}},{"name":"_time_micros","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"time-micros"}}}},{"name":"_timestamp_millis","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"timestamp-millis"}}}},{"name":"_timestamp_micros","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"timestamp-micros"}}}},{"name":"_timestamp_nanos","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"timestamp-nanos"}}}},{"name":"_local_timestamp_millis","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"local-timestamp-millis"}}}},{"name":"_local_timestamp_micros","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"local-timestamp-micros"}}}},{"name":"_local_timestamp_nanos","type":{"type":"map","values":{"type":"array","items":{"type":"long","logicalType":"local-timestamp-nanos"}}}},{"name":"_decimal_bytes","type":{"type":"map","values":{"type":"array","items":{"type":"bytes","logicalType":"decimal","precision":10,"scale":2}}}},{"name":"_decimal_fixed","type":{"type":"map","values":{"type":"array","items":{"type":"fixed","name":"MatrixDecimalFixed","size":16,"logicalType":"decimal","precision":20,"scale":4}}}},{"name":"_big_decimal","type":{"type":"map","values":{"type":"array","items":{"type":"bytes","logicalType":"big-decimal"}}}},{"name":"_duration","type":{"type":"map","values":{"type":"array","items":{"type":"fixed","name":"MatrixDurationFixed","size":12,"logicalType":"duration"}}}}]}""")
-  val $UUIDConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.UUIDConversion()
-  val $DateConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.DateConversion()
-  val $TimeMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMillisConversion()
-  val $TimeMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
-  val $TimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
-  val $TimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
-  val $TimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.Instant = java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L)); override def toLong(value: java.time.Instant, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.getEpochSecond, 1000000000L), value.getNano.toLong)) }
-  val $LocalTimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
-  val $LocalTimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
-  val $LocalTimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.LocalDateTime = java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L).toInt, java.time.ZoneOffset.UTC); override def toLong(value: java.time.LocalDateTime, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), value.getNano.toLong)) }
-  val $DurationConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.DurationConversion()
-  val MODEL$: org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
-    model.addLogicalTypeConversion($UUIDConversion)
-    model.addLogicalTypeConversion($DateConversion)
-    model.addLogicalTypeConversion($TimeMillisConversion)
-    model.addLogicalTypeConversion($TimeMicrosConversion)
-    model.addLogicalTypeConversion($TimestampMillisConversion)
-    model.addLogicalTypeConversion($TimestampMicrosConversion)
-    model.addLogicalTypeConversion($TimestampNanosConversion)
-    model.addLogicalTypeConversion($LocalTimestampMillisConversion)
-    model.addLogicalTypeConversion($LocalTimestampMicrosConversion)
-    model.addLogicalTypeConversion($LocalTimestampNanosConversion)
-    model.addLogicalTypeConversion($DurationConversion)
-    model
-  }
+  val MODEL$: org.apache.avro.specific.SpecificData = new org.apache.avro.specific.SpecificData()
 }

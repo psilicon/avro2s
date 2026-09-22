@@ -28,11 +28,6 @@ case class LogicalDuration(var _duration: org.apache.avro.util.TimePeriod) exten
 
 object LogicalDuration {
   val SCHEMA$: org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalDuration","namespace":"avro2s.test.logical","fields":[{"name":"_duration","type":{"type":"fixed","name":"DurationFixed","size":12,"logicalType":"duration"}}]}""")
-  val $DurationConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.DurationConversion()
-  val MODEL$: org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
-    model.addLogicalTypeConversion($DurationConversion)
-    model
-  }
+  val MODEL$: org.apache.avro.specific.SpecificData = new org.apache.avro.specific.SpecificData()
   private val $default$0: org.apache.avro.util.TimePeriod = org.apache.avro.util.TimePeriod.of(0L, 0L, 0L)
 }
