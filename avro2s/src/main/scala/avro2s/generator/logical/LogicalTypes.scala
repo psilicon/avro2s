@@ -20,6 +20,69 @@ private[avro2s] object LogicalTypes {
     def fromType(schema: Schema, value: String): String =
       logicalTypeFor(schema).map(lt => s"{${lt.fromType(value, schema)}}").getOrElse(value)
 
+    /**
+     * fromType for a position that has to hold an AnyRef - a java.util.List element, a Map value or
+     * a union branch. A logical type sitting on an int or a long encodes to a primitive, which must
+     * box; every other encoded form is already a reference.
+     */
+    def fromTypeBoxed(schema: Schema, value: String): String = {
+      val encoded = fromType(schema, value)
+      if (schema.getType == INT || schema.getType == LONG) s"$encoded.asInstanceOf[AnyRef]" else encoded
+    }
+
+    /**
+     * put's accepting matcher. Whether the value was converted before put is called is decided by
+     * the model in play, not by us: Avro looks a read conversion up by logical type name, so a
+     * populated model converts whatever getConversion returns and an empty one converts nothing.
+     * Both shapes therefore reach put, and they are always distinguishable - no logical type's
+     * converted class is also its encoded class.
+     *
+     * fixedPattern names what a FIXED matches on. Inside a union that must be the concrete
+     * generated class, since a union may legally hold two differently named fixeds and a
+     * GenericFixed arm would swallow the sibling's values. Everywhere else there is a single
+     * element type, so GenericFixed is both safe and what catches the GenericData.Fixed Avro
+     * produces when the model cannot load the generated class.
+     */
+    def acceptEitherShape(schema: Schema, value: String, fixedPattern: Option[String] = None): String =
+      logicalTypeFor(schema).map { logicalType =>
+        // These four bindings wrap whatever toType emits, so none of them may share a name with a
+        // local bound inside a toType - raw$ did collide with Decimal's, giving val raw$ = raw$...
+        // encoded$ appears in Decimal's fromType, which is fine: fromType is the get side and is
+        // never nested inside this matcher.
+        //
+        // A string arrives as Utf8 or String depending on the model, so it is matched as
+        // CharSequence and handed on as a String.
+        val bound = if (schema.getType == STRING) "encoded$.toString" else "encoded$"
+        s"{ val in$$: Any = $value; in$$ match { " +
+          // Every logical type maps to a reference type, so null is always assignable. put used to
+          // be a plain cast, which null survived; a match without this arm would throw instead.
+          s"case null => null; " +
+          s"case converted$$: ${logicalType.convertedType(schema)} => ${logicalType.fromConverted("converted$", schema)}; " +
+          s"case encoded$$: ${rawShapeOf(schema, fixedPattern)} => {${logicalType.toType(bound, schema)}}; " +
+          s"case other$$ => throw new org.apache.avro.AvroRuntimeException(" +
+          s"""\"Cannot decode ${logicalType.name} from \" + other$$.getClass.getName) } }"""
+      }.getOrElse(value)
+
+    /**
+     * The same two shapes as acceptEitherShape, exposed separately for a union: there the incoming
+     * value is already being matched, so the branch contributes two case arms rather than a match
+     * of its own.
+     */
+    def convertedTypeFor(schema: Schema): Option[String] = logicalTypeFor(schema).map(_.convertedType(schema))
+
+    def fromConvertedFor(schema: Schema, value: String): String =
+      logicalTypeFor(schema).map(_.fromConverted(value, schema)).getOrElse(value)
+
+    /** The runtime type of the value Avro hands put when nothing converted it on the way in. */
+    def rawShapeOf(schema: Schema, fixedPattern: Option[String] = None): String = schema.getType match {
+      case STRING => "CharSequence"
+      case INT => "Int"
+      case LONG => "Long"
+      case BYTES => "java.nio.ByteBuffer"
+      case FIXED => fixedPattern.getOrElse("org.apache.avro.generic.GenericFixed")
+      case other => throw new IllegalStateException(s"No supported logical type sits on $other")
+    }
+
     def getType(schema: Schema, default: String): String =
       logicalTypeFor(schema).map(_.getType(schema)).getOrElse(default)
 
@@ -45,7 +108,17 @@ private[avro2s] object LogicalTypes {
     /** put may receive either shape, so it has to accept both. See ConversionSite.ModelOnly. */
     def putConversionIsOptional(schema: Schema): Boolean = conversionSite(schema).contains(ConversionSite.ModelOnly)
 
-    def getConversionClass(schema: Schema): Option[String] = logicalTypeFor(schema).flatMap(_.conversionClass)
+    /**
+     * The conversion getConversion advertises to Avro. A self-converting type advertises nothing:
+     * get already hands back the encoded form, and SpecificDatumWriter.writeField would apply an
+     * advertised conversion to that value a second time.
+     */
+    def getConversionClass(schema: Schema): Option[String] =
+      logicalTypeFor(schema).filterNot(_.selfConverting).flatMap(_.conversionClass)
+
+    /** What the model must carry, which is not the same set - see collectConversionClasses. */
+    private def registeredConversionClass(schema: Schema): Option[String] =
+      logicalTypeFor(schema).flatMap(_.conversionClass)
 
     def helperConversionFor(schema: Schema): Option[String] = logicalTypeFor(schema).flatMap(_.helperConversion)
 
@@ -73,7 +146,7 @@ private[avro2s] object LogicalTypes {
         case Schema.Type.RECORD =>
           if (seen(s.getFullName)) Nil
           else s.getFields.asScala.toList.flatMap(f => loop(f.schema(), seen + s.getFullName))
-        case _                  => getConversionClass(s).orElse(helperConversionFor(s)).toList
+        case _                  => registeredConversionClass(s).orElse(helperConversionFor(s)).toList
       }
       loop(schema, Set.empty)
     }
@@ -123,30 +196,42 @@ private[avro2s] object LogicalTypes {
      * How to construct the registered conversion. Normally just the class, but a type whose Avro
      * conversion is wrong registers a corrected subclass instead.
      *
-     * Overriding beats declining to delegate: opting out is not actually possible. Avro applies any
-     * conversion its own model holds for a logical type, whatever getConversion returns, so a reader
-     * built from a schema rather than a class converts through SpecificData.get() regardless.
+     * Declining to delegate does not stop a conversion happening on the way in: Avro looks a read
+     * conversion up by logical type name against whichever model is in play, so a populated model
+     * converts whatever getConversion returns. It does decide the way out, because Avro looks a
+     * write conversion up by the datum's own class - see GenericDatumWriter.write.
      */
     def conversionExpression: Option[String] = conversionClass.map(cls => s"new $cls()")
 
     /**
-     * True when Avro's own default model converts this type whether or not avro2s registers it.
-     * SpecificData.get() ships conversions for nearly every logical type, and a reader built from a
-     * schema uses that model, so declining to delegate does not stop the conversion happening - it
-     * only decides who encodes on the way out. put must then still expect the converted type.
+     * An Avro Conversion the generated code calls itself, for a type avro2s does not delegate but
+     * whose encoding is still best left to Avro. Registered in the model although getConversion
+     * does not advertise it, and emitted once on the named type's companion so it is not allocated
+     * on every call - which, inside a collection, means every element.
      */
+    def helperConversion: Option[String] = None
 
     /**
-     * An Avro Conversion the generated code calls itself, for a type avro2s does not delegate but
-     * whose encoding is still best left to Avro. Emitted once on the named type's companion so it
-     * is not allocated on every call - which, inside a collection, means every element.
+     * The class Avro's own conversion produces for this logical type. put has to accept it
+     * alongside the encoded form, because whether a conversion ran on the way in is decided by the
+     * model in play rather than by us. Defaults to the Scala field type, which is what Avro
+     * produces for every type whose conversion agrees with ours.
      */
-    /** A conversion that must be registered in the model although getConversion does not advertise it. */
-    def helperConversion: Option[String] = None
+    def convertedType(schema: Schema): String = getType(schema)
+
+    /** Turns Avro's converted value into the Scala field type. Identity unless the two differ. */
+    def fromConverted(value: String, schema: Schema): String = value
+
+    /**
+     * Migration flag: true once this type converts in the generated get and accepts either shape in
+     * put. Removed once every type is switched over, at which point ConversionSite collapses too.
+     */
+    def selfConverting: Boolean = false
 
     /** Derived rather than declared, so the three states cannot contradict each other. */
     final def conversionSite: ConversionSite =
-      if (conversionClass.isDefined) ConversionSite.Delegated
+      if (selfConverting) ConversionSite.ModelOnly
+      else if (conversionClass.isDefined) ConversionSite.Delegated
       else if (helperConversion.isDefined) ConversionSite.ModelOnly
       else ConversionSite.Generated
   }
@@ -161,6 +246,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.util.UUID.fromString(\"00000000-0000-0000-0000-000000000000\")"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.Conversions.UUIDConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object Date extends LogicalType("date", Set(INT)) {
@@ -173,6 +260,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.LocalDate.ofEpochDay(0)"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.DateConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object TimeMillisecondPrecision extends LogicalType("time-millis", Set(INT)) {
@@ -185,6 +274,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.LocalTime.ofNanoOfDay(0)"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.TimeMillisConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object TimeMicrosecondPrecision extends LogicalType("time-micros", Set(LONG)) {
@@ -197,6 +288,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.LocalTime.ofNanoOfDay(0)"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.TimeMicrosConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object TimestampMillisecondPrecision extends LogicalType("timestamp-millis", Set(LONG)) {
@@ -209,6 +302,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochMilli(0)"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.TimestampMillisConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object TimestampMicrosecondPrecision extends LogicalType("timestamp-micros", Set(LONG)) {
@@ -221,6 +316,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochSecond(0, 0)"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.TimestampMicrosConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object LocalTimestampMillisecondPrecision extends LogicalType("local-timestamp-millis", Set(LONG)) {
@@ -233,6 +330,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of(\"UTC\"))"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object LocalTimestampMicrosecondPrecision extends LogicalType("local-timestamp-micros", Set(LONG)) {
@@ -245,6 +344,8 @@ private[avro2s] object LogicalTypes {
     override def defaultValue(schema: Schema): String = "java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of(\"UTC\"))"
 
     override def conversionClass: Option[String] = Some("org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion")
+
+    override def selfConverting: Boolean = true
   }
 
   case object TimestampNanosecondPrecision extends LogicalType("timestamp-nanos", Set(LONG)) {
@@ -269,6 +370,8 @@ private[avro2s] object LogicalTypes {
         "java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L)); " +
         "override def toLong(value: java.time.Instant, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = " +
         "java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.getEpochSecond, 1000000000L), value.getNano.toLong)) }")
+
+    override def selfConverting: Boolean = true
   }
 
   case object LocalTimestampNanosecondPrecision extends LogicalType("local-timestamp-nanos", Set(LONG)) {
@@ -294,6 +397,8 @@ private[avro2s] object LogicalTypes {
         "java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L).toInt, java.time.ZoneOffset.UTC); " +
         "override def toLong(value: java.time.LocalDateTime, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = " +
         "java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), value.getNano.toLong)) }")
+
+    override def selfConverting: Boolean = true
   }
 
   case object Decimal extends LogicalType("decimal", Set(BYTES, FIXED)) {
@@ -309,7 +414,7 @@ private[avro2s] object LogicalTypes {
         // Long, which skips the BigInteger and the int[] it holds. A leading byte is only
         // redundant when the next byte's top bit agrees with the sign; otherwise removing it would
         // flip the sign. Nothing here affects what is written.
-        s"{ val raw$$ = $value.asInstanceOf[${schema.getFullName}].bytes(); " +
+        s"{ val raw$$ = $value.bytes(); " +
           s"val sign$$ = if (raw$$(0) < 0) -1L else 0L; val signByte$$ = sign$$.toByte; " +
           s"var first$$ = 0; " +
           s"while (first$$ < raw$$.length - 1 && raw$$(first$$) == signByte$$ && ((raw$$(first$$ + 1) < 0) == (signByte$$ < 0))) first$$ += 1; " +
@@ -384,6 +489,16 @@ private[avro2s] object LogicalTypes {
 
     override def validate(schema: Schema): Boolean =
       Option(schema.getLogicalType).exists(_.isInstanceOf[org.apache.avro.LogicalTypes.Decimal])
+
+    // Avro ships a DecimalConversion but SpecificData.get() deliberately does not register it, so
+    // normally nothing converts and put sees the encoded form. A caller who registers it globally
+    // used to break every decimal record; taking java.math.BigDecimal as the converted shape makes
+    // that case work instead. The field is scala.math.BigDecimal, so it needs wrapping.
+    override def convertedType(schema: Schema): String = "java.math.BigDecimal"
+
+    override def fromConverted(value: String, schema: Schema): String = s"scala.math.BigDecimal($value)"
+
+    override def selfConverting: Boolean = true
   }
 
   case object AvroJavaBigDecimal extends LogicalType("big-decimal", Set(BYTES)) {
@@ -403,21 +518,17 @@ private[avro2s] object LogicalTypes {
   }
 
   case object Duration extends LogicalType("duration", Set(FIXED)) {
-    // Whether put receives a TimePeriod or the raw fixed depends on which reader ran: Avro's fast
-    // reader falls back to the model, which carries DurationConversion, while the slow reader
-    // consults getConversion(pos) alone for a top-level field and converts nothing. Callers choose
-    // the reader, so accept both rather than guess.
+    // The encoded form only. Accepting a TimePeriod as well is the converter's job now, since every
+    // logical type needs the same two arms - see LogicalTypeConverter.acceptEitherShape.
     override def toType(value: String, schema: Schema): String = {
-      val fullName = schema.getFullName
       // Read back the three words fromType writes, rather than calling Avro's fromFixed, which
       // wraps the array in a ByteBuffer and an IntBuffer view to do the same thing. Each word is
       // an unsigned 32-bit little-endian value, so it is masked into a Long rather than an Int.
       def word(offset: Int) =
         s"((bytes$$($offset) & 0xFFL) | ((bytes$$(${offset + 1}) & 0xFFL) << 8) | " +
           s"((bytes$$(${offset + 2}) & 0xFFL) << 16) | ((bytes$$(${offset + 3}) & 0xFFL) << 24))"
-      s"($value match { case null => null; case period$$: org.apache.avro.util.TimePeriod => period$$; " +
-        s"case fixed$$: $fullName => { val bytes$$ = fixed$$.bytes(); " +
-        s"org.apache.avro.util.TimePeriod.of(${word(0)}, ${word(4)}, ${word(8)}) } })"
+      s"{ val bytes$$ = $value.bytes(); " +
+        s"org.apache.avro.util.TimePeriod.of(${word(0)}, ${word(4)}, ${word(8)}) }"
     }
 
     override def fromType(value: String, schema: Schema): String = {

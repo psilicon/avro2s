@@ -162,7 +162,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter, scalaEnums: Bo
               .add("}")
           case ARRAY => printer.call(printArrayValue(_, element, Some("element$")))
           case MAP => printer.call(printMapValue(_, element, Some("element$")))
-          case _ if ltc.selfConverts(element) => printer.add(ltc.fromType(element, "element$"))
+          case _ if ltc.selfConverts(element) => printer.add(ltc.fromTypeBoxed(element, "element$"))
           case BYTES if !ltc.logicalTypeInUse(element) => printer.add("java.nio.ByteBuffer.wrap(element$)")
           case ENUM if scalaEnums => printer.add(ScalaEnumSupport.wrapExpression("element$", element))
           case _ => printer.add("element$")

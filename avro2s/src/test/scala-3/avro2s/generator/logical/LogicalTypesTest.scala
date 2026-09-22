@@ -20,6 +20,29 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
   private val fixedTimestampNanos = java.time.Instant.ofEpochSecond(1234567890L, 123456789L)
   private val fixedLocalTimestampNanos = java.time.LocalDateTime.ofInstant(fixedTimestampNanos, java.time.ZoneOffset.UTC)
 
+  /**
+   * What Avro's own conversion would encode this value as. These assertions used to check that get
+   * handed back the logical type, which only held while the type was delegated; get now hands back
+   * the encoded form. Checking that against Avro's own conversion is the stronger assertion - it
+   * pins the wire form rather than the field type the constructor already fixes, and it is the
+   * thing that has to stay true for a reader built with any model to decode what we wrote.
+   */
+  private def avroEncodes[T](record: org.apache.avro.specific.SpecificRecordBase, index: Int, value: T): AnyRef = {
+    val schema = record.getSchema.getFields.get(index).schema()
+    val conversion = org.apache.avro.specific.SpecificData.get()
+      .getConversionFor[T](schema.getLogicalType)
+    org.apache.avro.Conversions.convertToRawType(value, schema, schema.getLogicalType, conversion)
+  }
+
+  /**
+   * Nanos cannot use Avro as its oracle: TimestampNanosConversion.toLong subtracts 1000000 where it
+   * means 1000000000, so for a negative epoch second with a non-zero nano it encodes ~0.999s off.
+   * Generated code does this arithmetic itself, which is what removed that bug from Scala 2 as
+   * well as Scala 3. LogicalNanosModelTest pins that Avro's fromLong reads these back correctly.
+   */
+  private def nanosOf(seconds: Long, nano: Int): AnyRef =
+    java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(seconds, 1000000000L), nano.toLong))
+
   test("no-arg records share immutable logical defaults while retaining independent fields") {
     val first = new avro2s.test.logical.LogicalTypes()
     val second = new avro2s.test.logical.LogicalTypes()
@@ -34,9 +57,17 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       java.time.LocalDateTime.of(1970, 1, 1, 0, 0)
     )
 
-    expected.zipWithIndex.foreach { case (value, index) =>
-      first.get(index) shouldBe value
-      (first.get(index) eq second.get(index)) shouldBe true
+    // Read through the fields, not get: get encodes on the way out for a self-converting type and
+    // boxes a fresh value each call, which would defeat the identity check without the defaults
+    // having changed at all.
+    val fields = Seq[avro2s.test.logical.LogicalTypes => AnyRef](
+      _._uuid, _._date, _._time_millis, _._time_micros,
+      _._timestamp_millis, _._timestamp_micros,
+      _._local_timestamp_millis, _._local_timestamp_micros)
+
+    expected.zip(fields).foreach { case (value, field) =>
+      field(first) shouldBe value
+      (field(first) eq field(second)) shouldBe true
     }
 
     first._uuid = fixedUuid
@@ -76,8 +107,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endDeserialized = deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema)
     endDeserialized._time_millis shouldBe java.time.LocalTime.ofNanoOfDay(86399999000000L)
 
-    start.get(2).asInstanceOf[java.time.LocalTime] shouldBe startOfDay
-    end.get(2).asInstanceOf[java.time.LocalTime] shouldBe endOfDay
+    start.get(2) shouldBe avroEncodes(start, 2, startOfDay)
+    end.get(2) shouldBe avroEncodes(end, 2, endOfDay)
   }
 
   test("time-micros should work at the edges") {
@@ -108,8 +139,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     val endDeserialized = deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema)
     endDeserialized._time_micros shouldBe java.time.LocalTime.ofNanoOfDay(86399999999000L)
 
-    start.get(3).asInstanceOf[java.time.LocalTime] shouldBe startOfDay
-    end.get(3).asInstanceOf[java.time.LocalTime] shouldBe endOfDay
+    start.get(3) shouldBe avroEncodes(start, 3, startOfDay)
+    end.get(3) shouldBe avroEncodes(end, 3, endOfDay)
   }
 
   test("timestamp-millis should work at the edges") {
@@ -150,11 +181,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
 
-    start.get(4).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
-    end.get(4).asInstanceOf[java.time.Instant] shouldBe endOfFormatRange
-    post.get(4).asInstanceOf[java.time.Instant] shouldBe postFormatRange
-    upper.get(4).asInstanceOf[java.time.Instant] shouldBe upperBound
-    era.get(4).asInstanceOf[java.time.Instant] shouldBe startOfEra
+    start.get(4) shouldBe avroEncodes(start, 4, startOfEpoch)
+    end.get(4) shouldBe avroEncodes(end, 4, endOfFormatRange)
+    post.get(4) shouldBe avroEncodes(post, 4, postFormatRange)
+    upper.get(4) shouldBe avroEncodes(upper, 4, upperBound)
+    era.get(4) shouldBe avroEncodes(era, 4, startOfEra)
   }
 
   test("timestamp-micros should work at the edges") {
@@ -195,11 +226,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
 
-    start.get(5).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
-    end.get(5).asInstanceOf[java.time.Instant] shouldBe endOfFormatRange
-    post.get(5).asInstanceOf[java.time.Instant] shouldBe postFormatRange
-    upper.get(5).asInstanceOf[java.time.Instant] shouldBe upperBound
-    era.get(5).asInstanceOf[java.time.Instant] shouldBe startOfEra
+    start.get(5) shouldBe avroEncodes(start, 5, startOfEpoch)
+    end.get(5) shouldBe avroEncodes(end, 5, endOfFormatRange)
+    post.get(5) shouldBe avroEncodes(post, 5, postFormatRange)
+    upper.get(5) shouldBe avroEncodes(upper, 5, upperBound)
+    era.get(5) shouldBe avroEncodes(era, 5, startOfEra)
   }
 
   test("local-timestamp-millis should work at the edges") {
@@ -240,11 +271,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
 
-    start.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
-    end.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe endOfFormatRange
-    post.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe postFormatRange
-    upper.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
-    era.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEra
+    start.get(6) shouldBe avroEncodes(start, 6, startOfEpoch)
+    end.get(6) shouldBe avroEncodes(end, 6, endOfFormatRange)
+    post.get(6) shouldBe avroEncodes(post, 6, postFormatRange)
+    upper.get(6) shouldBe avroEncodes(upper, 6, upperBound)
+    era.get(6) shouldBe avroEncodes(era, 6, startOfEra)
   }
 
   test("local-timestamp-micros should work at the edges") {
@@ -286,11 +317,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
 
-    start.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
-    end.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe endOfFormatRange
-    post.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe postFormatRange
-    upper.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
-    era.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEra
+    start.get(7) shouldBe avroEncodes(start, 7, startOfEpoch)
+    end.get(7) shouldBe avroEncodes(end, 7, endOfFormatRange)
+    post.get(7) shouldBe avroEncodes(post, 7, postFormatRange)
+    upper.get(7) shouldBe avroEncodes(upper, 7, upperBound)
+    era.get(7) shouldBe avroEncodes(era, 7, startOfEra)
   }
 
   test("timestamp-nanos should work at the edges") {
@@ -330,11 +361,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(pre), pre.getSchema) shouldBe pre
     deserialize[avro2s.test.logical.LogicalTypes](serialize(deep), deep.getSchema) shouldBe deep
 
-    start.get(8).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
-    pre.get(8).asInstanceOf[java.time.Instant] shouldBe preEpoch
-    deep.get(8).asInstanceOf[java.time.Instant] shouldBe deepPreEpoch
-    nano.get(8).asInstanceOf[java.time.Instant] shouldBe nanoPrecision
-    upper.get(8).asInstanceOf[java.time.Instant] shouldBe upperBound
+    start.get(8) shouldBe nanosOf(startOfEpoch.getEpochSecond, startOfEpoch.getNano)
+    pre.get(8) shouldBe nanosOf(preEpoch.getEpochSecond, preEpoch.getNano)
+    deep.get(8) shouldBe nanosOf(deepPreEpoch.getEpochSecond, deepPreEpoch.getNano)
+    nano.get(8) shouldBe nanosOf(nanoPrecision.getEpochSecond, nanoPrecision.getNano)
+    upper.get(8) shouldBe nanosOf(upperBound.getEpochSecond, upperBound.getNano)
   }
 
   test("local-timestamp-nanos should work at the edges") {
@@ -373,10 +404,10 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(pre), pre.getSchema) shouldBe pre
     deserialize[avro2s.test.logical.LogicalTypes](serialize(deep), deep.getSchema) shouldBe deep
 
-    start.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
-    pre.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe preEpoch
-    deep.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe deepPreEpoch
-    nano.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe nanoPrecision
-    upper.get(9).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
+    start.get(9) shouldBe nanosOf(startOfEpoch.toEpochSecond(java.time.ZoneOffset.UTC), startOfEpoch.getNano)
+    pre.get(9) shouldBe nanosOf(preEpoch.toEpochSecond(java.time.ZoneOffset.UTC), preEpoch.getNano)
+    deep.get(9) shouldBe nanosOf(deepPreEpoch.toEpochSecond(java.time.ZoneOffset.UTC), deepPreEpoch.getNano)
+    nano.get(9) shouldBe nanosOf(nanoPrecision.toEpochSecond(java.time.ZoneOffset.UTC), nanoPrecision.getNano)
+    upper.get(9) shouldBe nanosOf(upperBound.toEpochSecond(java.time.ZoneOffset.UTC), upperBound.getNano)
   }
 }
