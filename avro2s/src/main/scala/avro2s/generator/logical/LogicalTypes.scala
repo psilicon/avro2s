@@ -502,11 +502,53 @@ private[avro2s] object LogicalTypes {
   }
 
   case object AvroJavaBigDecimal extends LogicalType("big-decimal", Set(BYTES)) {
+    // A big-decimal payload is a miniature Avro record inside the outer bytes field: the unscaled
+    // two's-complement bytes written as an Avro `bytes` - a zigzag varint length followed by the
+    // bytes - and then the scale as a zigzag varint int. Only that framing is written here; the
+    // decimal arithmetic stays with java.math.BigDecimal.
+    //
+    // Avro's own BigDecimalConversion is not used for either direction. fromBytes reads through
+    // ByteBuffer.array(), which ignores position and arrayOffset and throws on a read-only buffer -
+    // the defect already corrected for decimal on this branch, and one that matters here because
+    // Avro hands put the very buffer the previous record's get returned. toBytes allocates a
+    // ByteArrayOutputStream and a BinaryEncoder for every value.
+
+    /** Reads one zigzag varint from buffer$ at at$, advancing at$. Its own block, so it nests. */
+    private def readVarint: String =
+      "{ var shift$ = 0; var word$ = 0; var more$ = true; " +
+        "while (more$) { val chunk$ = buffer$.get(at$) & 0xFF; at$ += 1; " +
+        "word$ |= (chunk$ & 0x7F) << shift$; shift$ += 7; more$ = (chunk$ & 0x80) != 0 }; " +
+        "(word$ >>> 1) ^ -(word$ & 1) }"
+
     override def toType(value: String, schema: Schema): String =
-      s"$value.asInstanceOf[java.math.BigDecimal]"
+      // Absolute gets throughout, so the caller's buffer is never consumed and needs no restore.
+      s"{ val buffer$$ = $value; var at$$ = buffer$$.position(); " +
+        s"val length$$ = $readVarint; " +
+        s"val unscaled$$ = new Array[Byte](length$$); var index$$ = 0; " +
+        s"while (index$$ < length$$) { unscaled$$(index$$) = buffer$$.get(at$$ + index$$); index$$ += 1 }; " +
+        s"at$$ += length$$; " +
+        s"val scale$$ = $readVarint; " +
+        s"new java.math.BigDecimal(new java.math.BigInteger(unscaled$$), scale$$) }"
 
     override def fromType(value: String, schema: Schema): String =
-      s"new org.apache.avro.Conversions.BigDecimalConversion().toBytes($value, null, null)"
+      // Sized exactly, then filled in one pass: one array beyond the one BigInteger hands back.
+      s"{ val decimal$$ = $value; val unscaled$$ = decimal$$.unscaledValue().toByteArray(); " +
+        s"val zigzagLength$$ = (unscaled$$.length << 1) ^ (unscaled$$.length >> 31); " +
+        s"val zigzagScale$$ = (decimal$$.scale << 1) ^ (decimal$$.scale >> 31); " +
+        // while, not do-while: Scala 3 dropped do-while, and generated code has to compile on both.
+        s"var width$$ = 1; var measure$$ = zigzagLength$$ >>> 7; " +
+        s"while (measure$$ != 0) { width$$ += 1; measure$$ >>>= 7 }; " +
+        s"var scaleWidth$$ = 1; measure$$ = zigzagScale$$ >>> 7; " +
+        s"while (measure$$ != 0) { scaleWidth$$ += 1; measure$$ >>>= 7 }; " +
+        s"val encoded$$ = new Array[Byte](width$$ + unscaled$$.length + scaleWidth$$); " +
+        s"var at$$ = 0; var word$$ = zigzagLength$$; " +
+        s"while ((word$$ & ~0x7F) != 0) { encoded$$(at$$) = ((word$$ | 0x80) & 0xFF).toByte; word$$ >>>= 7; at$$ += 1 }; " +
+        s"encoded$$(at$$) = word$$.toByte; at$$ += 1; " +
+        s"java.lang.System.arraycopy(unscaled$$, 0, encoded$$, at$$, unscaled$$.length); at$$ += unscaled$$.length; " +
+        s"word$$ = zigzagScale$$; " +
+        s"while ((word$$ & ~0x7F) != 0) { encoded$$(at$$) = ((word$$ | 0x80) & 0xFF).toByte; word$$ >>>= 7; at$$ += 1 }; " +
+        s"encoded$$(at$$) = word$$.toByte; " +
+        s"java.nio.ByteBuffer.wrap(encoded$$) }"
 
     override def getType(schema: Schema): String = "java.math.BigDecimal"
 
@@ -514,7 +556,12 @@ private[avro2s] object LogicalTypes {
 
     override def validate(schema: Schema): Boolean = schema.getType == BYTES
 
-    override def conversionClass: Option[String] = Some("org.apache.avro.Conversions.BigDecimalConversion")
+    // Nothing advertised and nothing registered. SpecificData.get() carries BigDecimalConversion,
+    // so a default model still converts on the way in and put takes that shape; an empty one does
+    // not, and put decodes the bytes itself.
+    override def conversionClass: Option[String] = None
+
+    override def selfConverting: Boolean = true
   }
 
   case object Duration extends LogicalType("duration", Set(FIXED)) {

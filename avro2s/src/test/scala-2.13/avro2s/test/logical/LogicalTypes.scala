@@ -24,7 +24,7 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
       case 8 => {java.lang.Math.addExact(java.lang.Math.multiplyExact(_timestamp_nanos.getEpochSecond, 1000000000L), _timestamp_nanos.getNano.toLong)}.asInstanceOf[AnyRef]
       case 9 => {java.lang.Math.addExact(java.lang.Math.multiplyExact(_local_timestamp_nanos.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), _local_timestamp_nanos.getNano.toLong)}.asInstanceOf[AnyRef]
       case 10 => {val decimal$ = (try _decimal.setScale(2).bigDecimal catch { case _: ArithmeticException => throw new org.apache.avro.AvroTypeException("Cannot encode decimal with scale " + _decimal.scale + " as scale 2") }); if (decimal$.precision > 10) throw new org.apache.avro.AvroTypeException("Cannot encode decimal with precision " + decimal$.precision + " as max precision 10"); if (decimal$.precision <= 18) { val unscaled$ = decimal$.movePointRight(2).longValueExact(); val width$ = (64 - java.lang.Long.numberOfLeadingZeros(if (unscaled$ < 0) ~unscaled$ else unscaled$)) / 8 + 1; val encoded$ = new Array[Byte](width$); var rest$ = unscaled$; var at$ = width$ - 1; while (at$ >= 0) { encoded$(at$) = (rest$ & 0xFFL).toByte; rest$ >>= 8; at$ -= 1 }; java.nio.ByteBuffer.wrap(encoded$) } else java.nio.ByteBuffer.wrap(decimal$.unscaledValue().toByteArray)}.asInstanceOf[AnyRef]
-      case 11 => _big_decimal.asInstanceOf[AnyRef]
+      case 11 => {{ val decimal$ = _big_decimal; val unscaled$ = decimal$.unscaledValue().toByteArray(); val zigzagLength$ = (unscaled$.length << 1) ^ (unscaled$.length >> 31); val zigzagScale$ = (decimal$.scale << 1) ^ (decimal$.scale >> 31); var width$ = 1; var measure$ = zigzagLength$ >>> 7; while (measure$ != 0) { width$ += 1; measure$ >>>= 7 }; var scaleWidth$ = 1; measure$ = zigzagScale$ >>> 7; while (measure$ != 0) { scaleWidth$ += 1; measure$ >>>= 7 }; val encoded$ = new Array[Byte](width$ + unscaled$.length + scaleWidth$); var at$ = 0; var word$ = zigzagLength$; while ((word$ & ~0x7F) != 0) { encoded$(at$) = ((word$ | 0x80) & 0xFF).toByte; word$ >>>= 7; at$ += 1 }; encoded$(at$) = word$.toByte; at$ += 1; java.lang.System.arraycopy(unscaled$, 0, encoded$, at$, unscaled$.length); at$ += unscaled$.length; word$ = zigzagScale$; while ((word$ & ~0x7F) != 0) { encoded$(at$) = ((word$ | 0x80) & 0xFF).toByte; word$ >>>= 7; at$ += 1 }; encoded$(at$) = word$.toByte; java.nio.ByteBuffer.wrap(encoded$) }}.asInstanceOf[AnyRef]
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
@@ -42,26 +42,8 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
       case 8 => this._timestamp_nanos = { val in$: Any = value; in$ match { case null => null; case converted$: java.time.Instant => converted$; case encoded$: Long => {java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(encoded$, 1000000000L), java.lang.Math.floorMod(encoded$, 1000000000L))}; case other$ => throw new org.apache.avro.AvroRuntimeException("Cannot decode timestamp-nanos from " + other$.getClass.getName) } }
       case 9 => this._local_timestamp_nanos = { val in$: Any = value; in$ match { case null => null; case converted$: java.time.LocalDateTime => converted$; case encoded$: Long => {java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(encoded$, 1000000000L), java.lang.Math.floorMod(encoded$, 1000000000L).toInt, java.time.ZoneOffset.UTC)}; case other$ => throw new org.apache.avro.AvroRuntimeException("Cannot decode local-timestamp-nanos from " + other$.getClass.getName) } }
       case 10 => this._decimal = { val in$: Any = value; in$ match { case null => null; case converted$: java.math.BigDecimal => scala.math.BigDecimal(converted$); case encoded$: java.nio.ByteBuffer => {{ val buffer$ = encoded$; val length$ = buffer$.remaining; if (length$ >= 1 && length$ <= 8) { val offset$ = buffer$.position(); var unscaled$ = if (buffer$.get(offset$) < 0) -1L else 0L; var index$ = 0; while (index$ < length$) { unscaled$ = (unscaled$ << 8) | (buffer$.get(offset$ + index$) & 0xFFL); index$ += 1 }; scala.math.BigDecimal(java.math.BigDecimal.valueOf(unscaled$, 2)) } else { val offset$ = buffer$.position(); val bytes$ = new Array[Byte](length$); buffer$.get(bytes$); (buffer$: java.nio.Buffer).position(offset$); scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(bytes$), 2)) } }}; case other$ => throw new org.apache.avro.AvroRuntimeException("Cannot decode decimal from " + other$.getClass.getName) } }
-      case 11 => this._big_decimal = value.asInstanceOf[java.math.BigDecimal]
+      case 11 => this._big_decimal = { val in$: Any = value; in$ match { case null => null; case converted$: java.math.BigDecimal => converted$; case encoded$: java.nio.ByteBuffer => {{ val buffer$ = encoded$; var at$ = buffer$.position(); val length$ = { var shift$ = 0; var word$ = 0; var more$ = true; while (more$) { val chunk$ = buffer$.get(at$) & 0xFF; at$ += 1; word$ |= (chunk$ & 0x7F) << shift$; shift$ += 7; more$ = (chunk$ & 0x80) != 0 }; (word$ >>> 1) ^ -(word$ & 1) }; val unscaled$ = new Array[Byte](length$); var index$ = 0; while (index$ < length$) { unscaled$(index$) = buffer$.get(at$ + index$); index$ += 1 }; at$ += length$; val scale$ = { var shift$ = 0; var word$ = 0; var more$ = true; while (more$) { val chunk$ = buffer$.get(at$) & 0xFF; at$ += 1; word$ |= (chunk$ & 0x7F) << shift$; shift$ += 7; more$ = (chunk$ & 0x80) != 0 }; (word$ >>> 1) ^ -(word$ & 1) }; new java.math.BigDecimal(new java.math.BigInteger(unscaled$), scale$) }}; case other$ => throw new org.apache.avro.AvroRuntimeException("Cannot decode big-decimal from " + other$.getClass.getName) } }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
-    }
-  }
-
-  override def getConversion(field: Int): org.apache.avro.Conversion[_] = {
-    (field: @switch) match {
-      case 0 => null
-      case 1 => null
-      case 2 => null
-      case 3 => null
-      case 4 => null
-      case 5 => null
-      case 6 => null
-      case 7 => null
-      case 8 => null
-      case 9 => null
-      case 10 => null
-      case 11 => LogicalTypes.$BigDecimalConversion
-      case _ => null
     }
   }
 }
@@ -78,7 +60,6 @@ object LogicalTypes {
   val $LocalTimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
   val $TimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.Instant = java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L)); override def toLong(value: java.time.Instant, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.getEpochSecond, 1000000000L), value.getNano.toLong)) }
   val $LocalTimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.LocalDateTime = java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L).toInt, java.time.ZoneOffset.UTC); override def toLong(value: java.time.LocalDateTime, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), value.getNano.toLong)) }
-  val $BigDecimalConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.BigDecimalConversion()
   val MODEL$: org.apache.avro.specific.SpecificData = {
     val model = new org.apache.avro.specific.SpecificData()
     model.addLogicalTypeConversion($UUIDConversion)
@@ -91,7 +72,6 @@ object LogicalTypes {
     model.addLogicalTypeConversion($LocalTimestampMicrosConversion)
     model.addLogicalTypeConversion($TimestampNanosConversion)
     model.addLogicalTypeConversion($LocalTimestampNanosConversion)
-    model.addLogicalTypeConversion($BigDecimalConversion)
     model
   }
   private val $default$0: java.util.UUID = java.util.UUID.fromString("00000000-0000-0000-0000-000000000000")

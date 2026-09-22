@@ -93,7 +93,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
       }
       case 12 => _big_decimal match {
         case Inl(x) => x.asInstanceOf[AnyRef]
-        case Inr(Inl(x)) => x.asInstanceOf[AnyRef]
+        case Inr(Inl(x)) => {{ val decimal$ = x; val unscaled$ = decimal$.unscaledValue().toByteArray(); val zigzagLength$ = (unscaled$.length << 1) ^ (unscaled$.length >> 31); val zigzagScale$ = (decimal$.scale << 1) ^ (decimal$.scale >> 31); var width$ = 1; var measure$ = zigzagLength$ >>> 7; while (measure$ != 0) { width$ += 1; measure$ >>>= 7 }; var scaleWidth$ = 1; measure$ = zigzagScale$ >>> 7; while (measure$ != 0) { scaleWidth$ += 1; measure$ >>>= 7 }; val encoded$ = new Array[Byte](width$ + unscaled$.length + scaleWidth$); var at$ = 0; var word$ = zigzagLength$; while ((word$ & ~0x7F) != 0) { encoded$(at$) = ((word$ | 0x80) & 0xFF).toByte; word$ >>>= 7; at$ += 1 }; encoded$(at$) = word$.toByte; at$ += 1; java.lang.System.arraycopy(unscaled$, 0, encoded$, at$, unscaled$.length); at$ += unscaled$.length; word$ = zigzagScale$; while ((word$ & ~0x7F) != 0) { encoded$(at$) = ((word$ | 0x80) & 0xFF).toByte; word$ >>>= 7; at$ += 1 }; encoded$(at$) = word$.toByte; java.nio.ByteBuffer.wrap(encoded$) }}.asInstanceOf[AnyRef]
         case Inr(Inr(Inl(x))) => x.asInstanceOf[AnyRef]
         case _ => throw new AvroRuntimeException("Invalid value")
       }
@@ -221,6 +221,7 @@ case class LogicalMatrixUnions(var _uuid: scala.Null :+: java.util.UUID :+: Int 
         value match {
           case x @ null => Coproduct[scala.Null :+: java.math.BigDecimal :+: String :+: CNil](x)
           case x: java.math.BigDecimal => Coproduct[scala.Null :+: java.math.BigDecimal :+: String :+: CNil](x)
+          case x: java.nio.ByteBuffer => Coproduct[scala.Null :+: java.math.BigDecimal :+: String :+: CNil]({{ val buffer$ = x; var at$ = buffer$.position(); val length$ = { var shift$ = 0; var word$ = 0; var more$ = true; while (more$) { val chunk$ = buffer$.get(at$) & 0xFF; at$ += 1; word$ |= (chunk$ & 0x7F) << shift$; shift$ += 7; more$ = (chunk$ & 0x80) != 0 }; (word$ >>> 1) ^ -(word$ & 1) }; val unscaled$ = new Array[Byte](length$); var index$ = 0; while (index$ < length$) { unscaled$(index$) = buffer$.get(at$ + index$); index$ += 1 }; at$ += length$; val scale$ = { var shift$ = 0; var word$ = 0; var more$ = true; while (more$) { val chunk$ = buffer$.get(at$) & 0xFF; at$ += 1; word$ |= (chunk$ & 0x7F) << shift$; shift$ += 7; more$ = (chunk$ & 0x80) != 0 }; (word$ >>> 1) ^ -(word$ & 1) }; new java.math.BigDecimal(new java.math.BigInteger(unscaled$), scale$) }})
           case x: java.lang.CharSequence => Coproduct[scala.Null :+: java.math.BigDecimal :+: String :+: CNil](x.toString)
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
@@ -251,7 +252,6 @@ object LogicalMatrixUnions {
   val $LocalTimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
   val $LocalTimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
   val $LocalTimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.LocalDateTime = java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L).toInt, java.time.ZoneOffset.UTC); override def toLong(value: java.time.LocalDateTime, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), value.getNano.toLong)) }
-  val $BigDecimalConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.BigDecimalConversion()
   val $DurationConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.DurationConversion()
   val MODEL$: org.apache.avro.specific.SpecificData = {
     val model = new org.apache.avro.specific.SpecificData()
@@ -265,7 +265,6 @@ object LogicalMatrixUnions {
     model.addLogicalTypeConversion($LocalTimestampMillisConversion)
     model.addLogicalTypeConversion($LocalTimestampMicrosConversion)
     model.addLogicalTypeConversion($LocalTimestampNanosConversion)
-    model.addLogicalTypeConversion($BigDecimalConversion)
     model.addLogicalTypeConversion($DurationConversion)
     model
   }
