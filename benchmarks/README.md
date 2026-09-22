@@ -26,11 +26,15 @@ scripts/compare-benchmarks.sh --profile fast --sizes 16 "(IdentityArrays|Maps)Be
 scripts/compare-benchmarks.sh --profile smoke --scala 3 PrimitivesBenchmark.write
 ```
 
-| Profile | Forks | Iterations | Use |
-| --- | --- | --- | --- |
-| `smoke` | 1 | 2 | Does the harness run |
-| `fast` | 1 | 5 | Ballpark while working on a change |
-| `full` (default) | 2 | 10 | Numbers worth quoting |
+| Profile | Forks | Warmup | Measurement | Use |
+| --- | --- | --- | --- | --- |
+| `smoke` | 1 | 1 × 1s | 2 × 1s | Does the harness run |
+| `fast` | 1 | 3 × 2s | 3 × 2s | Ballpark while working on a change |
+| `two` | 2 | 3 × 3s | 3 × 3s | A second fork catches the per-JVM compilation and heap differences a single fork hides |
+| `full` (default) | 3 | 5 × 5s | 5 × 5s | Numbers worth quoting |
+
+Every profile also collects `-prof gc`. Allocation per operation barely moves between runs, so
+read the `B/op` table first and treat timing as corroboration.
 
 `--sizes` narrows the `collectionSize` sweep, which is the other big lever on run time.
 A full unrestricted run takes hours; `--profile fast --sizes 16` over a few shapes takes
@@ -40,8 +44,10 @@ Results are written to `benchmarks/results/`, which is not tracked. Nothing in t
 is published; see the comment on `publish / skip` in `build.sbt`.
 
 To run JMH directly, `sbt 'benchmarks3/Jmh/run -h'` (Scala 3) or `sbt 'benchmarks/Jmh/run -h'`
-(Scala 2.13). Restrict to the working tree with `-p arm=current`; the baseline arm only exists
-after `compare-benchmarks.sh` has generated it.
+(Scala 2.13). That uses the annotations on `ShapeBenchmark` - 2 forks, 5 × 1s warmup, 5 × 1s
+measurement - which is none of the profiles above; pass the flags yourself to match one.
+Restrict to the working tree with `-p arm=current`; the baseline arm only exists after
+`compare-benchmarks.sh` has generated it.
 
 ## What is measured
 

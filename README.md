@@ -225,9 +225,16 @@ field and the colliding branches. Generate the schema with logical types disable
 it: the same branches then map to `Int` and `Long`, which are distinct and round-trip
 correctly.
 
-`time-millis`/`time-micros` is the only pair this can affect. The other same-type pairs -
+The check is on the generated Scala type, so it covers any set of branches that collapses onto
+one, not just that example. The cases Avro itself accepts are:
+
+ - `time-millis` (an `int`) with `time-micros` (a `long`), both `java.time.LocalTime`
+ - a `decimal` on `bytes` with a `decimal` on `fixed`, both `scala.math.BigDecimal`
+ - two `fixed` branches with different names carrying the same logical type - two `decimal`s, or
+   two `duration`s - since Avro keeps named types apart by name
+
 `timestamp-millis`/`timestamp-micros` and `local-timestamp-millis`/`local-timestamp-micros`
-- are both `long` on the wire, so Avro itself rejects a union containing either pair.
+cannot reach the check: both are `long` on the wire, so Avro rejects such a union first.
 
 #### Acknowledgments:
  - Thank you to everyone who contributed to [avrohugger](https://github.com/julianpeeters/avrohugger), upon which this code is based.
