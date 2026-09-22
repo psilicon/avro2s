@@ -9,6 +9,8 @@ case class LogicalFixedDecimal(var _decimal_fixed: scala.math.BigDecimal) extend
 
   override def getSchema: org.apache.avro.Schema = LogicalFixedDecimal.SCHEMA$
 
+  override def getSpecificData(): org.apache.avro.specific.SpecificData = LogicalFixedDecimal.MODEL$
+
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
       case 0 => {val decimal$ = (try _decimal_fixed.setScale(2).bigDecimal catch { case _: ArithmeticException => throw new org.apache.avro.AvroTypeException("Cannot encode decimal with scale " + _decimal_fixed.scale + " as scale 2") }); if (decimal$.precision > 4) throw new org.apache.avro.AvroTypeException("Cannot encode decimal with precision " + decimal$.precision + " as max precision 4"); val padded$ = new Array[Byte](2); if (decimal$.precision <= 18) { val unscaled$ = decimal$.movePointRight(2).longValueExact(); val width$ = (64 - java.lang.Long.numberOfLeadingZeros(if (unscaled$ < 0) ~unscaled$ else unscaled$)) / 8 + 1; if (width$ > 2) throw new org.apache.avro.AvroTypeException("Cannot encode decimal in " + 2 + " bytes"); if (unscaled$ < 0) java.util.Arrays.fill(padded$, 0, 2 - width$, 0xFF.toByte); var rest$ = unscaled$; var at$ = 2 - 1; while (at$ >= 2 - width$) { padded$(at$) = (rest$ & 0xFFL).toByte; rest$ >>= 8; at$ -= 1 } } else { val unscaled$ = decimal$.unscaledValue().toByteArray; if (unscaled$.length > 2) throw new org.apache.avro.AvroTypeException("Cannot encode decimal in " + 2 + " bytes"); if (unscaled$(0) < 0) java.util.Arrays.fill(padded$, 0, 2 - unscaled$.length, 0xFF.toByte); System.arraycopy(unscaled$, 0, padded$, 2 - unscaled$.length, unscaled$.length) }; val result$ = new avro2s.test.logical.DecimalFixed(); result$.bytes(padded$); result$}.asInstanceOf[AnyRef]
@@ -26,5 +28,6 @@ case class LogicalFixedDecimal(var _decimal_fixed: scala.math.BigDecimal) extend
 
 object LogicalFixedDecimal {
   val SCHEMA$: org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalFixedDecimal","namespace":"avro2s.test.logical","fields":[{"name":"_decimal_fixed","type":{"type":"fixed","name":"DecimalFixed","size":2,"logicalType":"decimal","precision":4,"scale":2}}]}""")
+  val MODEL$: org.apache.avro.specific.SpecificData = new org.apache.avro.specific.SpecificData()
   private val $default$0: scala.math.BigDecimal = scala.math.BigDecimal(0)
 }

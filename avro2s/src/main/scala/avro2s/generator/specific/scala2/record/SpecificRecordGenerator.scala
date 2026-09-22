@@ -25,9 +25,12 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     val fields = schema.getFields.asScala.toList
     val ns = Option(schema.getNamespace).orElse(namespace)
     val nsString = ns.getOrElse("")
-    val distinctConversions =
-      if (!generatorConfig.logicalTypesEnabled) Nil
-      else fields.flatMap(f => ltc.collectConversionClasses(f.schema())).distinct
+    // A model is emitted for any record using a logical type, and it registers nothing: generated
+    // code converts in get and accepts either shape in put, so a conversion here would only decide
+    // which arm of put runs. Leaving it out is not the same as emitting an empty one - with no
+    // MODEL$, getSpecificData falls back to SpecificData.get(), which carries Avro's own.
+    val usesLogicalTypes =
+      generatorConfig.logicalTypesEnabled && fields.exists(f => ltc.usesLogicalType(f.schema()))
     val (constructor, defaultValues) = toThis(name, fields)
 
     val functionalPrinter = new FunctionalPrinter()
@@ -47,7 +50,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(fields.nonEmpty)(_.add(constructor))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
-      .when(distinctConversions.nonEmpty)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
+      .when(usesLogicalTypes)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -81,7 +84,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"val SCHEMA$dollar: org.apache.avro.Schema = ${SchemaLiteral.parseExpression(schema.toString)}")
-      .call(printConversionInfrastructure(_, distinctConversions))
+      .call(printConversionInfrastructure(_, usesLogicalTypes))
       .add(defaultValues: _*)
       .outdent
       .add("}")
@@ -117,24 +120,12 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     }
   }
 
-  private def printConversionInfrastructure(printer: FunctionalPrinter, distinctConversions: List[String]): FunctionalPrinter = {
-    if (distinctConversions.isEmpty) printer
-    else distinctConversions
-      .foldLeft(printer) { (p, cls) =>
-        val shortName = cls.split('.').last
-        p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = ${ltc.conversionExpressionFor(cls)}")
-      }
-      .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
-      .indent
-      .add("val model = new org.apache.avro.specific.SpecificData()")
-      .add(distinctConversions.map { cls =>
-        val shortName = cls.split('.').last
-        s"model.addLogicalTypeConversion($dollar$shortName)"
-      }: _*)
-      .add("model")
-      .outdent
-      .add("}")
-  }
+  private def printConversionInfrastructure(printer: FunctionalPrinter, usesLogicalTypes: Boolean): FunctionalPrinter =
+    if (!usesLogicalTypes) printer
+    // Kept a plain SpecificData rather than a subclass: FastReaderBuilder.isSupportedData tests
+    // getClass equality, and a subclass silently drops every reader onto Avro's slow path.
+    else printer.add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = " +
+      "new org.apache.avro.specific.SpecificData()")
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
     fields.map { field =>

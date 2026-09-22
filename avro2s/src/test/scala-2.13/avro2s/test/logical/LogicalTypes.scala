@@ -50,30 +50,7 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
 object LogicalTypes {
   val SCHEMA$: org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalTypes","namespace":"avro2s.test.logical","fields":[{"name":"_uuid","type":{"type":"string","logicalType":"uuid"}},{"name":"_date","type":{"type":"int","logicalType":"date"}},{"name":"_time_millis","type":{"type":"int","logicalType":"time-millis"}},{"name":"_time_micros","type":{"type":"long","logicalType":"time-micros"}},{"name":"_timestamp_millis","type":{"type":"long","logicalType":"timestamp-millis"}},{"name":"_timestamp_micros","type":{"type":"long","logicalType":"timestamp-micros"}},{"name":"_local_timestamp_millis","type":{"type":"long","logicalType":"local-timestamp-millis"}},{"name":"_local_timestamp_micros","type":{"type":"long","logicalType":"local-timestamp-micros"}},{"name":"_timestamp_nanos","type":{"type":"long","logicalType":"timestamp-nanos"}},{"name":"_local_timestamp_nanos","type":{"type":"long","logicalType":"local-timestamp-nanos"}},{"name":"_decimal","type":{"type":"bytes","logicalType":"decimal","precision":10,"scale":2}},{"name":"_big_decimal","type":{"type":"bytes","logicalType":"big-decimal"}}]}""")
-  val $UUIDConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.UUIDConversion()
-  val $DateConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.DateConversion()
-  val $TimeMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMillisConversion()
-  val $TimeMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
-  val $TimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
-  val $TimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
-  val $LocalTimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
-  val $LocalTimestampMicrosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
-  val $TimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.Instant = java.time.Instant.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L)); override def toLong(value: java.time.Instant, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.getEpochSecond, 1000000000L), value.getNano.toLong)) }
-  val $LocalTimestampNanosConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion() { override def fromLong(value: java.lang.Long, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.time.LocalDateTime = java.time.LocalDateTime.ofEpochSecond(java.lang.Math.floorDiv(value.longValue, 1000000000L), java.lang.Math.floorMod(value.longValue, 1000000000L).toInt, java.time.ZoneOffset.UTC); override def toLong(value: java.time.LocalDateTime, schema: org.apache.avro.Schema, logicalType: org.apache.avro.LogicalType): java.lang.Long = java.lang.Long.valueOf(java.lang.Math.addExact(java.lang.Math.multiplyExact(value.toEpochSecond(java.time.ZoneOffset.UTC), 1000000000L), value.getNano.toLong)) }
-  val MODEL$: org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
-    model.addLogicalTypeConversion($UUIDConversion)
-    model.addLogicalTypeConversion($DateConversion)
-    model.addLogicalTypeConversion($TimeMillisConversion)
-    model.addLogicalTypeConversion($TimeMicrosConversion)
-    model.addLogicalTypeConversion($TimestampMillisConversion)
-    model.addLogicalTypeConversion($TimestampMicrosConversion)
-    model.addLogicalTypeConversion($LocalTimestampMillisConversion)
-    model.addLogicalTypeConversion($LocalTimestampMicrosConversion)
-    model.addLogicalTypeConversion($TimestampNanosConversion)
-    model.addLogicalTypeConversion($LocalTimestampNanosConversion)
-    model
-  }
+  val MODEL$: org.apache.avro.specific.SpecificData = new org.apache.avro.specific.SpecificData()
   private val $default$0: java.util.UUID = java.util.UUID.fromString("00000000-0000-0000-0000-000000000000")
   private val $default$1: java.time.LocalDate = java.time.LocalDate.ofEpochDay(0)
   private val $default$2: java.time.LocalTime = java.time.LocalTime.ofNanoOfDay(0)

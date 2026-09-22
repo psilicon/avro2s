@@ -84,16 +84,7 @@ case class LogicalNonNullUnion(var _date_or_string: java.time.LocalDate :+: Stri
 
 object LogicalNonNullUnion {
   val SCHEMA$: org.apache.avro.Schema = new _root_.org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalNonNullUnion","namespace":"avro2s.test.logical","doc":"Unions without a null branch, whose first branch carries a logical type. The no-arg constructor defaults to the first branch, so it has to use the logical type's default rather than the underlying Avro type's.","fields":[{"name":"_date_or_string","type":[{"type":"int","logicalType":"date"},"string"]},{"name":"_instant_or_string","type":[{"type":"long","logicalType":"timestamp-millis"},"string"]},{"name":"_uuid_or_int","type":[{"type":"string","logicalType":"uuid"},"int"]},{"name":"_decimal_or_string","type":[{"type":"bytes","logicalType":"decimal","precision":10,"scale":2},"string"]}]}""")
-  val $DateConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.DateConversion()
-  val $TimestampMillisConversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
-  val $UUIDConversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.UUIDConversion()
-  val MODEL$: org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
-    model.addLogicalTypeConversion($DateConversion)
-    model.addLogicalTypeConversion($TimestampMillisConversion)
-    model.addLogicalTypeConversion($UUIDConversion)
-    model
-  }
+  val MODEL$: org.apache.avro.specific.SpecificData = new org.apache.avro.specific.SpecificData()
   private val $default$0: java.time.LocalDate = java.time.LocalDate.ofEpochDay(0)
   private val $default$1: java.time.Instant = java.time.Instant.ofEpochMilli(0)
   private val $default$2: java.util.UUID = java.util.UUID.fromString("00000000-0000-0000-0000-000000000000")
