@@ -78,7 +78,7 @@ private[avro2s] object ScalaEnumSupport {
       .add("while (symbols$.hasNext) {")
       .indent
       .add("val symbol$ = symbols$.next()")
-      .add(s"cache$$.put(symbol$$, new $symbolType(SCHEMA$$, symbol$$))")
+      .add(s"val _ = cache$$.put(symbol$$, new $symbolType(SCHEMA$$, symbol$$))")
       .outdent
       .add("}")
       .add("cache$")

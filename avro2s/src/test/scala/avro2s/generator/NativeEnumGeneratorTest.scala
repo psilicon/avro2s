@@ -95,6 +95,7 @@ class NativeEnumGeneratorTest extends AnyFunSuite with Matchers {
         val code = enumCode(size)
         code should include("val symbols$ = SCHEMA$.getEnumSymbols.iterator()")
         code should include("val cached$ = avroSymbols$.get(symbol$)")
+        code should include("val _ = cache$.put(symbol$, ")
         code should not include "private val avroSymbol$0:"
         // The schema and case definitions must grow, but the runtime cache must not
         // add initialization statements or lookup branches for every symbol.
